@@ -4,9 +4,14 @@ server:
 spring:
   application:
     name: service-template
-  threads.virtual.enabled: true
+  threads:
+    virtual:
+      enabled: true
   mvc.problemdetails.enabled: true
 
 management:
-  endpoints.web.exposure.include: health,info
+  endpoints:
+    web:
+      exposure:
+        include: health,info
   endpoint.health.show-details: always
