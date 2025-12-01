@@ -1,7 +1,5 @@
 spring:
-  config:
-    activate:
-      on-profile: prod
+  profiles: test
 
 logging:
   level:

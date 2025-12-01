@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+
+    <!-- friendly pattern for indexing and lookups -->
+    <property name="SIMPLE_PATTERN"
+              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" msg="%msg"%n'/>
+
+    <property name="APP_PATTERN"
+              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" userId="%X{userId}" msg="%msg"%n'/>
+
+    <property name="META_PATTERN"
+              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" userId="%X{userId}" method="%X{http.method}" path="%X{http.path}" status="%X{http.status}" durationMs="%X{http.durationMs}" msg="%msg"%n'/>
+
+    <!-- ================= DEV PROFILE ================= -->
+    <springProfile name="dev">
+
+        <!-- Library/Framework logs -->
+        <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${SIMPLE_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <appender name="DEV_APP_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${APP_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <!-- meta logs (one per request) -->
+        <appender name="DEV_META_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${META_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <root level="DEBUG">
+            <appender-ref ref="DEV_CONSOLE"/>
+        </root>
+
+        <!-- All classes under com.jay.template.* logs with MDC traceId/userId -->
+        <logger name="com.jay.template" level="DEBUG" additivity="false">
+            <appender-ref ref="DEV_APP_CONSOLE"/>
+        </logger>
+
+        <property name="META_DATA_APPENDER" value="DEV_META_CONSOLE" />
+
+    </springProfile>
+
+    <!-- ================= PROD PROFILE ================= -->
+    <springProfile name="prod">
+
+        <!-- JSON console appender for CloudWatch -->
+        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+                    <!-- Use Jackson to build JSON -->
+                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter" />
+                    <includeMdc>true</includeMdc>
+                    <includeContextName>false</includeContextName>
+                    <includeThreadName>true</includeThreadName>
+                    <includeLoggerName>true</includeLoggerName>
+                    <includeLevel>true</includeLevel>
+                    <includeMessage>true</includeMessage>
+                    <includeException>true</includeException>
+                </layout>
+            </encoder>
+        </appender>
+
+        <root level="INFO">
+            <appender-ref ref="JSON_CONSOLE"/>
+        </root>
+
+        <property name="META_DATA_APPENDER" value="JSON_CONSOLE" />
+
+    </springProfile>
+
+    <!-- custom loggers -->
+    <logger name="com.jay.template.logging.logger.MetaDataLogger" level="INFO" additivity="false">
+        <appender-ref ref="${META_DATA_APPENDER}" />
+    </logger>
+
+</configuration>

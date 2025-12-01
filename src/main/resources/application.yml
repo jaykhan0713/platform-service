@@ -15,3 +15,14 @@ management:
       exposure:
         include: health,info
   endpoint.health.show-details: always
+
+app:
+  logging:
+    mdc:
+      headers:
+        x-gateway-trace-id: gatewayTraceId
+        x-user-id: userId
+      method: "http.method"
+      path: "http.path"
+      status: "http.status"
+      durationMs: "http.durationMs"
