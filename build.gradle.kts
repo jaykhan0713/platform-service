@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.5.5"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
+    id("org.sonarqube") version "6.3.1.5724"
 }
 
 group = "com.jay.showcase"
@@ -53,4 +54,12 @@ tasks.withType<Test> {
 springBoot {
     mainClass.set("com.jay.showcase.Starter")
     buildInfo()
+}
+
+sonarqube {
+    properties {
+        property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.organization", "YOUR_ORG_KEY_FROM_SONARCLOUD")
+        property("sonar.projectKey", "YOUR_PROJECT_KEY_FROM_SONARCLOUD")
+    }
 }
