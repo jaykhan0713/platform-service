@@ -1,7 +1,10 @@
 package com.jay.template.web.filter;
 
+import java.io.IOException;
+
 import com.jay.template.logging.logger.MetaDataLogger;
 import com.jay.template.logging.properties.MdcProperties;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,11 +13,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import java.io.IOException;
 
 @Component
 public class RequestMdcLoggingFilter extends OncePerRequestFilter {
@@ -46,10 +46,22 @@ public class RequestMdcLoggingFilter extends OncePerRequestFilter {
 
             filterChain.doFilter(request, response);
         } finally {
-            MDC.put(props.getMethod(), method);
-            MDC.put(props.getPath(), path);
-            MDC.put(props.getStatus(), String.valueOf(response.getStatus()));
-            MDC.put(props.getDurationMs(), String.valueOf(System.currentTimeMillis() - start));
+
+            if (props.getMethod() != null && !props.getMethod().isBlank()) {
+                MDC.put(props.getMethod(), method);
+            }
+
+            if (props.getPath() != null && !props.getPath().isBlank()) {
+                MDC.put(props.getPath(), path);
+            }
+
+            if (props.getStatus() != null && !props.getStatus().isBlank()) {
+                MDC.put(props.getStatus(), String.valueOf(response.getStatus()));
+            }
+
+            if (props.getDurationMs() != null && !props.getDurationMs().isBlank()) {
+                MDC.put(props.getDurationMs(), String.valueOf(System.currentTimeMillis() - start));
+            }
 
             LOGGER.info("request_complete");
             MDC.clear();
