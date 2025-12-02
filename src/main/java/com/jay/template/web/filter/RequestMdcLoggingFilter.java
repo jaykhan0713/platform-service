@@ -37,7 +37,7 @@ public class RequestMdcLoggingFilter extends OncePerRequestFilter {
 
         try {
 
-            this.props.getHeaders().forEach((headerName, mdcKey) -> {
+            props.getHeaders().forEach((headerName, mdcKey) -> {
                 String value = request.getHeader(headerName);
                 if (value != null && !value.isBlank()) {
                     MDC.put(mdcKey, value);

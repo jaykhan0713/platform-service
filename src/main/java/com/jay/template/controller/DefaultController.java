@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DefaultController {
 
-    private record DefaultResponse(String message) {}
+    record DefaultResponse(String message) {}
 
     @GetMapping("/")
     DefaultResponse get() {

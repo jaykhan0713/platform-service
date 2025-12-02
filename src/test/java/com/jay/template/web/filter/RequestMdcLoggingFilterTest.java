@@ -12,12 +12,10 @@ import ch.qos.logback.core.read.ListAppender;
 
 import com.jay.template.helper.YamlBinder;
 import com.jay.template.logging.logger.MetaDataLogger;
-
 import com.jay.template.logging.properties.MdcProperties;
+
 import jakarta.servlet.ServletException;
 
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,18 +28,18 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-public class RequestMdcLoggingFilterTest {
+class RequestMdcLoggingFilterTest {
 
     private static final String PROPS_KEY = "app.logging.mdc";
-    private static final Logger META_DATA_LOGGER = (Logger) LoggerFactory.getLogger(MetaDataLogger.class);;
+    private static final Logger META_DATA_LOGGER = (Logger) LoggerFactory.getLogger(MetaDataLogger.class);
 
-    private static YamlBinder BINDER;
+    private static YamlBinder binder;
 
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeAll
     static void initClass() throws IOException {
-        BINDER = new YamlBinder();
+        binder = new YamlBinder();
     }
 
     @BeforeEach
@@ -71,6 +69,29 @@ public class RequestMdcLoggingFilterTest {
         MockFilterChain filterChain = new MockFilterChain();
 
         MdcProperties props = new MdcProperties();
+        props.setHeaders(Map.of("test-header", "testHeader"));
+        RequestMdcLoggingFilter filter = new RequestMdcLoggingFilter(props);
+
+        filter.doFilter(request, response, filterChain);
+
+        assertSame(request, filterChain.getRequest());
+        assertSame(response, filterChain.getResponse());
+    }
+
+    @Test
+    void filterChainBlankProps() throws ServletException, IOException {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        request.addHeader("test-header", " ");
+        MockFilterChain filterChain = new MockFilterChain();
+
+        MdcProperties props = new MdcProperties();
+        props.setHeaders(Map.of("test-header", "testHeader"));
+        props.setMethod(" ");
+        props.setPath(" ");
+        props.setStatus(" ");
+        props.setDurationMs(" ");
+
         RequestMdcLoggingFilter filter = new RequestMdcLoggingFilter(props);
 
         filter.doFilter(request, response, filterChain);
@@ -86,7 +107,7 @@ public class RequestMdcLoggingFilterTest {
 
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcProperties props = BINDER.bind(PROPS_KEY, MdcProperties.class);
+        MdcProperties props = binder.bind(PROPS_KEY, MdcProperties.class);
 
         RequestMdcLoggingFilter filter = new RequestMdcLoggingFilter(props);
 
@@ -105,7 +126,7 @@ public class RequestMdcLoggingFilterTest {
         filter.doFilter(request, response, filterChain);
 
         assertEquals(1, listAppender.list.size());
-        //assertEquals("request_complete", listAppender.list.getFirst().getFormattedMessage());
+        assertEquals("request_complete", listAppender.list.getFirst().getFormattedMessage());
 
         Map<String, String> expected = Map.of(props.getHeaders().get(gatewayTraceIdHeader), gatewayTraceId,
                 props.getHeaders().get(userIdHeader), userId,
