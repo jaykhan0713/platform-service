@@ -59,7 +59,7 @@ springBoot {
 sonarqube {
     properties {
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.organization", "YOUR_ORG_KEY_FROM_SONARCLOUD")
-        property("sonar.projectKey", "YOUR_PROJECT_KEY_FROM_SONARCLOUD")
+        property("sonar.organization", "jaykhan0713")
+        property("sonar.projectKey", "jaykhan0713")
     }
 }
