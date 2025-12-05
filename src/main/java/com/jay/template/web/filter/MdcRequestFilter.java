@@ -19,7 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class MdcRequestFilter extends OncePerRequestFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MetaDataLogger.class);
+    private static final Logger META_DATA_LOGGER = LoggerFactory.getLogger(MetaDataLogger.class);
 
     private final MdcProperties props;
 
@@ -64,7 +64,7 @@ public class MdcRequestFilter extends OncePerRequestFilter {
                 MDC.put(props.getDurationMs(), String.valueOf(System.currentTimeMillis() - start));
             }
 
-            LOGGER.info("request_complete");
+            META_DATA_LOGGER.info("request_complete");
             MDC.clear();
         }
     }

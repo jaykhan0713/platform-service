@@ -11,7 +11,7 @@ import org.slf4j.MDC;
 class MdcContextTest {
 
     @Test
-    void runnableWrapSetsCurrentToCaptured() throws InterruptedException {
+    void runnableWrapSetsCurrentToCaptured() {
         MDC.put("mdc-key", "parent");
         AtomicReference<String> inside = new AtomicReference<>();
 
@@ -27,7 +27,7 @@ class MdcContextTest {
     }
 
     @Test
-    void runnableWrapCleansUp() throws InterruptedException {
+    void runnableWrapCleansUp() {
 
         MDC.clear();
         Runnable wrapped = MdcContext.wrap(() -> {

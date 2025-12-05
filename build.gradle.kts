@@ -68,8 +68,15 @@ sonarqube {
         property("sonar.projectKey", "jaykhan0713_service-template")
 
         // coverage config
+        property("sonar.sources", "src/main/java")
+        property("sonar.tests", "src/test/java")
         property("sonar.java.binaries", "build/classes/java/main")
-        property("sonar.coverage.jacoco.xmlReportPaths", "build/reports/jacoco/test/jacocoTestReport.xml")
+        property("sonar.java.test.binaries", "build/classes/java/test")
+        property("sonar.junit.reportPaths", "build/test-results/test")
+        property(
+            "sonar.coverage.jacoco.xmlReportPaths",
+            "build/reports/jacoco/test/jacocoTestReport.xml"
+        )
     }
 }
 
@@ -112,4 +119,8 @@ tasks.jacocoTestCoverageVerification {
             }
         }
     }
+}
+
+tasks.named("check") {
+    dependsOn("jacocoTestCoverageVerification")
 }

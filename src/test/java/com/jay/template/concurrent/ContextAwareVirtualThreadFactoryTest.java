@@ -2,7 +2,6 @@ package com.jay.template.concurrent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.AfterEach;
