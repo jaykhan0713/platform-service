@@ -2,8 +2,8 @@ package com.jay.template.web.filter;
 
 import java.io.IOException;
 
-import com.jay.template.logging.logger.MetaDataLogger;
-import com.jay.template.logging.properties.MdcProperties;
+import com.jay.template.logging.MetaDataLogger;
+import com.jay.template.logging.mdc.MdcProperties;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,9 +45,6 @@ public class MdcRequestFilter extends OncePerRequestFilter {
                 }
             });
 
-            filterChain.doFilter(request, response);
-        } finally {
-
             if (props.getMethod() != null && !props.getMethod().isBlank()) {
                 MDC.put(props.getMethod(), method);
             }
@@ -55,6 +52,9 @@ public class MdcRequestFilter extends OncePerRequestFilter {
             if (props.getPath() != null && !props.getPath().isBlank()) {
                 MDC.put(props.getPath(), path);
             }
+
+            filterChain.doFilter(request, response);
+        } finally {
 
             if (props.getStatus() != null && !props.getStatus().isBlank()) {
                 MDC.put(props.getStatus(), String.valueOf(response.getStatus()));

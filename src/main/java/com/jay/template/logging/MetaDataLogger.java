@@ -1,4 +1,4 @@
-package com.jay.template.logging.logger;
+package com.jay.template.logging;
 
 public class MetaDataLogger {
     private MetaDataLogger(){};

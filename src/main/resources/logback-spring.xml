@@ -6,7 +6,7 @@
               value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" msg="%msg"%n'/>
 
     <property name="APP_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" gatewayTraceId="%X{gatewayTraceId}" userId="%X{userId}" msg="%msg"%n'/>
+              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" gatewayTraceId="%X{gatewayTraceId}" userId="%X{userId}" method="%X{http.method}" path="%X{http.path}" msg="%msg"%n'/>
 
     <property name="META_PATTERN"
               value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" gatewayTraceId="%X{gatewayTraceId}" userId="%X{userId}" method="%X{http.method}" path="%X{http.path}" status="%X{http.status}" durationMs="%X{http.durationMs}" msg="%msg"%n'/>
@@ -38,9 +38,14 @@
             <appender-ref ref="DEV_CONSOLE"/>
         </root>
 
-        <!-- All classes under com.jay.template.* logs with MDC gatewayTraceId and userId -->
+        <!-- All classes under com.jay.template.* logs with MDC gatewayTraceId and userId etc -->
         <logger name="com.jay.template" level="DEBUG" additivity="false">
             <appender-ref ref="DEV_APP_CONSOLE"/>
+        </logger>
+
+        <!-- Classes in com.jay.template.* Non request based logs -->
+        <logger name="com.jay.template.Starter" level="INFO" additivity="false">
+            <appender-ref ref="DEV_CONSOLE"/>
         </logger>
 
         <property name="META_DATA_APPENDER" value="DEV_META_CONSOLE" />
@@ -76,7 +81,7 @@
     </springProfile>
 
     <!-- custom loggers -->
-    <logger name="com.jay.template.logging.logger.MetaDataLogger" level="INFO" additivity="false">
+    <logger name="com.jay.template.logging.MetaDataLogger" level="INFO" additivity="false">
         <appender-ref ref="${META_DATA_APPENDER}" />
     </logger>
 

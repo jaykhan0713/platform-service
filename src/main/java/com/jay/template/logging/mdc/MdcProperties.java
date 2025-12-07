@@ -1,18 +1,29 @@
-package com.jay.template.logging.properties;
+package com.jay.template.logging.mdc;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import jakarta.validation.constraints.NotBlank;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+@Validated
 @ConfigurationProperties(prefix = "app.logging.mdc")
 public class MdcProperties {
 
-    private Map<String, String> headers = new HashMap<>();
+    private Map<@NotBlank String, @NotBlank String> headers = new HashMap<>();
 
+    @NotBlank
     private String method;
+
+    @NotBlank
     private String path;
+
+    @NotBlank
     private String status;
+
+    @NotBlank
     private String durationMs;
 
     public Map<String, String> getHeaders() {

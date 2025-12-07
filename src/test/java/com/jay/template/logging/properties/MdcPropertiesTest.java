@@ -3,6 +3,7 @@ package com.jay.template.logging.properties;
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.jay.template.helper.YamlBinder;
+import com.jay.template.logging.mdc.MdcProperties;
 import org.junit.jupiter.api.Test;
 
 class MdcPropertiesTest {

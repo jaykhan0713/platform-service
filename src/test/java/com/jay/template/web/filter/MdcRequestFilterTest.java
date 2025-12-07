@@ -4,15 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
 
 import com.jay.template.helper.YamlBinder;
-import com.jay.template.logging.logger.MetaDataLogger;
-import com.jay.template.logging.properties.MdcProperties;
+import com.jay.template.logging.MetaDataLogger;
+import com.jay.template.logging.mdc.MdcProperties;
 
 import jakarta.servlet.ServletException;
 
@@ -113,8 +112,8 @@ class MdcRequestFilterTest {
 
         MdcRequestFilter filter = new MdcRequestFilter(props);
 
-        String gatewayTraceId = UUID.randomUUID().toString();
-        String userId = UUID.randomUUID().toString();
+        String gatewayTraceId = "trace-001";
+        String userId = "user-001";
         String requestUri = "/test";
         String gatewayTraceIdHeader = "x-gateway-trace-id";
         String userIdHeader = "x-user-id";
