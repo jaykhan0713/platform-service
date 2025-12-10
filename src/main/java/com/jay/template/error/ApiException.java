@@ -1,6 +1,6 @@
-package com.jay.template.web.error;
+package com.jay.template.error;
 
-public class ApiException extends RuntimeException {
+public final class ApiException extends RuntimeException {
 
     private final ErrorType type;
 

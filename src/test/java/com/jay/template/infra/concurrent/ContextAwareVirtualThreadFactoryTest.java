@@ -1,36 +1,30 @@
-package com.jay.template.concurrent;
+package com.jay.template.infra.concurrent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 class ContextAwareVirtualThreadFactoryTest {
 
-    private  final ContextAwareVirtualThreadFactory factory = new ContextAwareVirtualThreadFactory();
-
-    @BeforeEach
-    void setUp() {
-        MDC.clear();
-    }
-
-    @AfterEach
-    void tearDown() {
-        MDC.clear();
-    }
-
     @Test
     void newThreadIsVirtual() {
+        final ThreadFactory factory = new ContextAwareVirtualThreadFactory(Collections.emptyList());
         Thread thread = factory.newThread(() -> {});
         assertTrue(thread.isVirtual());
     }
 
     @Test
     void newThreadSeesParentMdc() throws InterruptedException {
+
+        final ThreadFactory factory = new ContextAwareVirtualThreadFactory(List.of(new MdcContextPropagator()));
+
         MDC.put("mdc-key", "parent");
         AtomicReference<String> inside = new AtomicReference<>();
 
@@ -39,10 +33,14 @@ class ContextAwareVirtualThreadFactoryTest {
         thread.join();
 
         assertEquals("parent", inside.get());
+
+        MDC.clear();
     }
 
     @Test
     void newThreadDoesNotPolluteParentMdc() throws InterruptedException {
+        final ThreadFactory factory = new ContextAwareVirtualThreadFactory(List.of(new MdcContextPropagator()));
+
         MDC.put("mdc-key", "parent");
 
         Thread thread = factory.newThread(() -> MDC.put("mdc-key", "child"));
@@ -50,5 +48,7 @@ class ContextAwareVirtualThreadFactoryTest {
         thread.join();
 
         assertEquals("parent", MDC.get("mdc-key"));
+
+        MDC.clear();
     }
 }

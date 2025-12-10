@@ -1,4 +1,4 @@
-package com.jay.template.web.error;
+package com.jay.template.error;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,15 +1,18 @@
-package com.jay.template.concurrent.mdc;
+package com.jay.template.infra.concurrent;
 
 import java.util.Map;
 import java.util.concurrent.Callable;
 
 import org.slf4j.MDC;
+import org.springframework.stereotype.Component;
 
-public class MdcContext {
+@Component
+final class MdcContextPropagator implements ContextPropagator {
 
-    private MdcContext() {}
+    MdcContextPropagator() {}
 
-    public static Runnable wrap(Runnable task) {
+    @Override
+    public Runnable propagate(Runnable task) {
         Map<String, String> captured = MDC.getCopyOfContextMap(); // Calling thread's MDC
         return () -> {
             Map<String, String> previous = MDC.getCopyOfContextMap();
@@ -30,7 +33,8 @@ public class MdcContext {
         };
     }
 
-    public static <T> Callable<T> wrap(Callable<T> task) {
+    @Override
+    public <T> Callable<T> propagate(Callable<T> task) {
         Map<String, String> captured = MDC.getCopyOfContextMap();
         return () -> {
             Map<String, String> previous = MDC.getCopyOfContextMap();

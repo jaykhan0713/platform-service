@@ -1,4 +1,4 @@
-package com.jay.template.concurrent.mdc;
+package com.jay.template.infra.concurrent;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -8,14 +8,16 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
-class MdcContextTest {
+class MdcContextPropagatorTest {
+
+    private final ContextPropagator propagator = new MdcContextPropagator();
 
     @Test
     void runnableWrapSetsCurrentToCaptured() {
         MDC.put("mdc-key", "parent");
         AtomicReference<String> inside = new AtomicReference<>();
-
-        Runnable wrapped = MdcContext.wrap(() -> {
+        ContextPropagator propagator = new MdcContextPropagator();
+        Runnable wrapped = propagator.propagate(() -> {
             inside.set(MDC.get("mdc-key"));
             MDC.put("mdc-key", "child");
         });
@@ -30,7 +32,7 @@ class MdcContextTest {
     void runnableWrapCleansUp() {
 
         MDC.clear();
-        Runnable wrapped = MdcContext.wrap(() -> {
+        Runnable wrapped = propagator.propagate(() -> {
             MDC.put("mdc-key", "child");
         });
 
@@ -42,7 +44,7 @@ class MdcContextTest {
     @Test
     void runnableWrapRestoresPreviousMdcEvenIfCapturedIsNull() {
         MDC.clear();
-        Runnable wrapped = MdcContext.wrap(() -> {
+        Runnable wrapped = propagator.propagate(() -> {
             assertNull(MDC.getCopyOfContextMap());
         });
 
@@ -59,7 +61,7 @@ class MdcContextTest {
         MDC.put("mdc-key", "parent");
         AtomicReference<String> inside = new AtomicReference<>();
 
-        Callable<String> wrapped = MdcContext.wrap(() -> {
+        Callable<String> wrapped = propagator.propagate(() -> {
             inside.set(MDC.get("mdc-key"));
             MDC.put("mdc-key", "child");
             return "result";
@@ -79,7 +81,7 @@ class MdcContextTest {
 
         MDC.clear();
 
-        Callable<String> wrapped = MdcContext.wrap(() -> {
+        Callable<String> wrapped = propagator.propagate(() -> {
             MDC.put("mdc-key", "child");
             return "result";
         });
@@ -93,7 +95,7 @@ class MdcContextTest {
     @Test
     void callableWrapRestoresPreviousMdcEvenIfCapturedIsNull() throws Exception {
         MDC.clear();
-        Callable<String> wrapped = MdcContext.wrap(() -> {
+        Callable<String> wrapped = propagator.propagate(() -> {
             assertNull(MDC.getCopyOfContextMap());
             return "result";
         });

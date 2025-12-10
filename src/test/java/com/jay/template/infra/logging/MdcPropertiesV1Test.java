@@ -1,20 +1,19 @@
-package com.jay.template.logging.properties;
+package com.jay.template.infra.logging;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import com.jay.template.helper.YamlBinder;
-import com.jay.template.logging.mdc.MdcProperties;
 import org.junit.jupiter.api.Test;
 
-class MdcPropertiesTest {
+class MdcPropertiesV1Test {
     private static final String PROPS_KEY = "app.logging.mdc";
 
     @Test
     void propertiesAreLoaded() throws Exception {
         YamlBinder binder = new YamlBinder();
-        MdcProperties props = binder.bind(PROPS_KEY, MdcProperties.class);
+        MdcPropertiesV1 props = binder.bind(PROPS_KEY, MdcPropertiesV1.class);
 
-        assertTrue(props.getHeaders().containsKey("x-gateway-trace-id"));
+        assertTrue(props.getHeaders().containsKey("x-request-id"));
         assertTrue(props.getHeaders().containsKey("x-user-id"));
         assertEquals("http.status", props.getStatus());
         assertEquals("http.method", props.getMethod());
