@@ -1,14 +1,15 @@
 package com.jay.template.web.controller;
 
-import com.jay.template.error.ErrorType;
-import com.jay.template.error.ApiException;
-
-import com.jay.template.infra.identity.RequestIdentity;
-import com.jay.template.web.identity.HttpHeaderIdentityExtractor;
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.jay.template.error.ErrorType;
+import com.jay.template.error.ApiException;
+import com.jay.template.infra.identity.RequestIdentity;
+import com.jay.template.web.identity.HttpHeaderIdentityExtractor;
 
 @RestController
 public class DefaultController {

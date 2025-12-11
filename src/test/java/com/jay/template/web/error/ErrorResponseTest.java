@@ -1,9 +1,10 @@
 package com.jay.template.web.error;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
 
 import com.jay.template.error.ErrorType;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ErrorResponseTest {
     @Test

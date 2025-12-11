@@ -1,13 +1,14 @@
 package com.jay.template.web.identity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import com.jay.template.helper.YamlBinder;
 import com.jay.template.infra.identity.RequestIdentity;
 import com.jay.template.web.request.HttpProperties;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.springframework.mock.web.MockHttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class HttpHeaderIdentityExtractorTest {
 

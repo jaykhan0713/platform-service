@@ -1,9 +1,9 @@
 package com.jay.template.web.error;
 
-import brave.Tracer;
 import com.jay.template.error.ApiException;
 import com.jay.template.error.ErrorType;
 
+import brave.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

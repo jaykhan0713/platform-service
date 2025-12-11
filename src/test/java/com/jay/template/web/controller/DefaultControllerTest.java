@@ -1,7 +1,5 @@
 package com.jay.template.web.controller;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import com.jay.template.error.ApiException;
 import com.jay.template.helper.YamlBinder;
 import com.jay.template.infra.identity.RequestIdentity;
@@ -9,10 +7,13 @@ import com.jay.template.web.identity.HttpHeaderIdentityExtractor;
 import com.jay.template.web.request.HttpProperties;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.mock.web.MockHttpServletRequest;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class DefaultControllerTest {
 

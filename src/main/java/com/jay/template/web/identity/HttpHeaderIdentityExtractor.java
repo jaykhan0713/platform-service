@@ -1,9 +1,12 @@
 package com.jay.template.web.identity;
 
+import jakarta.servlet.http.HttpServletRequest;
+
+import org.springframework.stereotype.Component;
+
 import com.jay.template.infra.identity.RequestIdentity;
 import com.jay.template.web.request.HttpProperties;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.stereotype.Component;
+
 
 @Component
 public final class HttpHeaderIdentityExtractor {

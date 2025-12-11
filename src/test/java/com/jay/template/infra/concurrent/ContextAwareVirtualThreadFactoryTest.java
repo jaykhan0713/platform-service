@@ -1,15 +1,14 @@
 package com.jay.template.infra.concurrent;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class ContextAwareVirtualThreadFactoryTest {
 

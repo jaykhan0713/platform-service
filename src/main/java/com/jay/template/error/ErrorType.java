@@ -1,7 +1,5 @@
 package com.jay.template.error;
 
-import org.springframework.http.HttpStatus;
-
 public enum ErrorType {
     BAD_REQUEST("BAD_REQUEST", "Bad Request"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Internal Server Error"),
