@@ -7,19 +7,19 @@ import static org.junit.jupiter.api.Assertions.*;
 class ApiExceptionTest {
 
     @Test
-    public void testTypeIsSet() {
+    void testTypeIsSet() {
         ApiException exception = new ApiException(ErrorType.BAD_REQUEST);
         assertEquals(ErrorType.BAD_REQUEST, exception.getType());
     }
 
     @Test
-    public void typeConstructorUsesDefaultMessage() {
+    void typeConstructorUsesDefaultMessage() {
         ApiException ex = new ApiException(ErrorType.BAD_REQUEST);
         assertEquals(ErrorType.BAD_REQUEST.getDefaultMessage(), ex.getMessage());
     }
 
     @Test
-    public void customMessageIsUsed() {
+    void customMessageIsUsed() {
         ApiException ex = new ApiException(ErrorType.BAD_REQUEST, "custom message");
         assertEquals("custom message", ex.getMessage());
     }

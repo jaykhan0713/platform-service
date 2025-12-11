@@ -14,13 +14,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jay.template.infra.logging.MdcProperties;
-import com.jay.template.infra.logging.MetaDataLogger;
 import com.jay.template.web.request.HttpProperties;
 
 @Component
 public class MdcRequestFilter extends OncePerRequestFilter {
 
-    private static final Logger META_DATA_LOGGER = LoggerFactory.getLogger(MetaDataLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MdcRequestFilter.class);
 
     private final HttpProperties httpProps;
     private final MdcProperties mdcProps;
@@ -59,7 +58,7 @@ public class MdcRequestFilter extends OncePerRequestFilter {
             long durationMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
             MDC.put(mdcProps.durationMs(), String.valueOf(durationMs));
 
-            META_DATA_LOGGER.info("");
+            LOGGER.info("");
             MDC.clear();
         }
     }

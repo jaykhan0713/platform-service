@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ErrorResponseTest {
     @Test
-    public void testFromCreatesErrorResponse() {
+    void testFromCreatesErrorResponse() {
         ErrorType type = ErrorType.BAD_REQUEST;
         String correlationId = "trace-001";
 

@@ -21,7 +21,6 @@ import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jay.template.helper.YamlBinder;
 import com.jay.template.infra.logging.MdcProperties;
-import com.jay.template.infra.logging.MetaDataLogger;
 import com.jay.template.web.request.HttpProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +29,7 @@ class MdcRequestFilterTest {
 
     private static final String HTTP_PROPS_KEY = "app.http";
     private static final String MDC_PROPS_KEY = "app.logging.mdc";
-    private static final Logger META_DATA_LOGGER = (Logger) LoggerFactory.getLogger(MetaDataLogger.class);
+    private static final Logger MDC_RF_LOGGER = (Logger) LoggerFactory.getLogger(MdcRequestFilter.class);
 
     private static HttpProperties httpProps;
     private static MdcProperties mdcProps;
@@ -57,13 +56,13 @@ class MdcRequestFilterTest {
         };
         listAppender.start();
 
-        META_DATA_LOGGER.addAppender(listAppender);
+        MDC_RF_LOGGER.addAppender(listAppender);
     }
 
     @AfterEach
     void tearDown() {
         MDC.clear();
-        META_DATA_LOGGER.detachAppender(listAppender);
+        MDC_RF_LOGGER.detachAppender(listAppender);
     }
 
     @Test

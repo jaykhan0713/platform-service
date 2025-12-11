@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    private static final String ERROR_FORMAT = "{} exceptionMessage=\"{}\"";
 
     private final Tracer tracer;
 

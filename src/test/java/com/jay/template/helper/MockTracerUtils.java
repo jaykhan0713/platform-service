@@ -7,7 +7,7 @@ import org.mockito.Mockito;
 
 public final class MockTracerUtils {
 
-    private MockTracerUtils(){};
+    private MockTracerUtils(){}
 
     public static Tracer mockTracer(String traceId) {
         Tracer tracer = Mockito.mock(Tracer.class);

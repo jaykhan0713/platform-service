@@ -82,7 +82,7 @@
     </springProfile>
 
     <!-- custom loggers -->
-    <logger name="com.jay.template.infra.logging.MetaDataLogger" level="INFO" additivity="false">
+    <logger name="com.jay.template.web.filter.MdcRequestFilter" level="INFO" additivity="false">
         <appender-ref ref="${META_DATA_APPENDER}" />
     </logger>
 

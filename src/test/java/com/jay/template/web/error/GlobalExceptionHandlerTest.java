@@ -32,7 +32,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    public void testHandleApiException() {
+    void testHandleApiException() {
         String message = "bad request error";
         ApiException ex = new ApiException(ErrorType.BAD_REQUEST, message);
         String traceId = "trace-001";

@@ -16,7 +16,6 @@ class MdcContextPropagatorTest {
     void runnableWrapSetsCurrentToCaptured() {
         MDC.put("mdc-key", "parent");
         AtomicReference<String> inside = new AtomicReference<>();
-        ContextPropagator propagator = new MdcContextPropagator();
         Runnable wrapped = propagator.propagate(() -> {
             inside.set(MDC.get("mdc-key"));
             MDC.put("mdc-key", "child");
