@@ -1,6 +1,7 @@
 package com.jay.template.web.filter;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import com.jay.template.infra.logging.MdcProperties;
 import com.jay.template.infra.logging.MetaDataLogger;
@@ -11,7 +12,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -22,7 +22,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class MdcRequestFilter extends OncePerRequestFilter {
 
     private static final Logger META_DATA_LOGGER = LoggerFactory.getLogger(MetaDataLogger.class);
-    private static final String COMPLETION_MSG = "request_complete";
 
     private final HttpProperties httpProps;
     private final MdcProperties mdcProps;
@@ -37,7 +36,7 @@ public class MdcRequestFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
         String userId = request.getHeader(httpProps.headers().userId());
         String requestId = request.getHeader(httpProps.headers().requestId());
         String method = request.getMethod();
@@ -57,9 +56,11 @@ public class MdcRequestFilter extends OncePerRequestFilter {
         } finally {
 
             MDC.put(mdcProps.status(), String.valueOf(response.getStatus()));
-            MDC.put(mdcProps.durationMs(), String.valueOf(System.currentTimeMillis() - start));
 
-            META_DATA_LOGGER.info(COMPLETION_MSG);
+            long durationMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+            MDC.put(mdcProps.durationMs(), String.valueOf(durationMs));
+
+            META_DATA_LOGGER.info("");
             MDC.clear();
         }
     }

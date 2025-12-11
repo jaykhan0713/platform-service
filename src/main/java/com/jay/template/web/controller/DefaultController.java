@@ -3,23 +3,34 @@ package com.jay.template.web.controller;
 import com.jay.template.error.ErrorType;
 import com.jay.template.error.ApiException;
 
+import com.jay.template.infra.identity.RequestIdentity;
+import com.jay.template.web.identity.HttpHeaderIdentityExtractor;
+import jakarta.servlet.http.HttpServletRequest;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DefaultController {
 
-    record DefaultResponse(String message) {}
+    static final String DEFAULT_MESSAGE = "This works";
+
+    private final HttpHeaderIdentityExtractor extractor;
+
+    public DefaultController(HttpHeaderIdentityExtractor extractor) {
+        this.extractor = extractor;
+    }
 
     @GetMapping("/default")
-    DefaultResponse get() {
+    DefaultResponse get(HttpServletRequest request) {
+        RequestIdentity identity = extractor.extract(request);
 
-        String userId = "12345";
-
-        if (userId == null) {
+        if (Strings.isBlank(identity.userId())) {
             throw new ApiException(ErrorType.USER_ID_MISSING);
         }
 
-        return new DefaultResponse("This works. User Id: " + userId);
+        return new DefaultResponse(DEFAULT_MESSAGE, identity.requestId());
     }
+
+    record DefaultResponse(String message, String requestId) {}
 }

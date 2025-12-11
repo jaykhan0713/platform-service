@@ -1,5 +1,6 @@
 package com.jay.template.web.error;
 
+import brave.Tracer;
 import com.jay.template.error.ApiException;
 import com.jay.template.error.ErrorType;
 
@@ -16,10 +17,17 @@ public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String ERROR_FORMAT = "{} exceptionMessage=\"{}\"";
 
+    private final Tracer tracer;
+
+    public GlobalExceptionHandler(Tracer tracer) {
+        this.tracer = tracer;
+    }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
         ErrorType type = ex.getType();
-        ErrorResponse body = ErrorResponse.from(type, type.getDefaultMessage());
+        String traceId = tracer.currentSpan().context().traceIdString();
+        ErrorResponse body = ErrorResponse.from(type, traceId);
 
         LOGGER.error(type.getCode(), ex);
 
@@ -32,9 +40,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
 
         ErrorType type = ErrorType.INTERNAL_SERVER_ERROR;
+        String traceId = tracer.currentSpan().context().traceIdString();
 
         //Don't expose internal server errors to client, so body uses defaultMessage. Log real error.
-        ErrorResponse body = ErrorResponse.from(type, type.getDefaultMessage());
+        ErrorResponse body = ErrorResponse.from(type, traceId);
 
         LOGGER.error(type.getCode(), ex);
 

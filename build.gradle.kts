@@ -106,6 +106,7 @@ tasks.jacocoTestReport {
             fileTree(it) {
                 exclude(
                     "**/*Config.class",
+                    "**/*Properties.class",
                     "**/Starter.class"
                 )
             }

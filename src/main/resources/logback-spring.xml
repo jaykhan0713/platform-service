@@ -9,7 +9,7 @@
               value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" msg="%msg"%n'/>
 
     <property name="META_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{userId}" requestId="%X{requestId}" method="%X{http.method}" path="%X{http.path}" status="%X{http.status}" durationMs="%X{http.durationMs}" msg="%msg"%n'/>
+              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{userId}" requestId="%X{requestId}" method="%X{http.method}" path="%X{http.path}" status="%X{http.status}" durationMs="%X{http.durationMs}"%n'/>
 
     <!-- ================= DEV PROFILE ================= -->
     <springProfile name="dev">

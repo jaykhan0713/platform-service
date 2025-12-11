@@ -9,11 +9,12 @@ class ErrorResponseTest {
     @Test
     public void testFromCreatesErrorResponse() {
         ErrorType type = ErrorType.BAD_REQUEST;
-        String message = "Bad Request";
+        String correlationId = "trace-001";
 
-        ErrorResponse response = ErrorResponse.from(type, message);
+        ErrorResponse response = ErrorResponse.from(type, correlationId);
 
         assertEquals(type.getCode(), response.code());
-        assertEquals(message, response.message());
+        assertEquals(type.getDefaultMessage(), response.message());
+        assertEquals(correlationId, response.correlationId());
     }
 }

@@ -16,17 +16,6 @@ management:
         include: health,info
   endpoint.health.show-details: always
 
-app1:
-  logging:
-    mdc:
-      headers:
-        x-request-id: "requestId"
-        x-user-id: "userId"
-      method: "http.method"
-      path: "http.path"
-      status: "http.status"
-      durationMs: "http.durationMs"
-
 app:
   http:
     headers:
