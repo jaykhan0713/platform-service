@@ -38,8 +38,9 @@ dependencies {
     implementation("ch.qos.logback.contrib:logback-jackson")
 
     // micrometer tracing with brave
+    implementation("io.micrometer:micrometer-core")
     implementation("io.micrometer:micrometer-tracing-bridge-brave")
-    implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+    implementation("io.micrometer:micrometer-registry-prometheus")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -104,6 +105,8 @@ tasks.jacocoTestReport {
         files(classDirectories.files.map {
             fileTree(it) {
                 exclude(
+                    "**/*Config.class",
+                    "**/*Properties.class",
                     "**/Starter.class"
                 )
             }

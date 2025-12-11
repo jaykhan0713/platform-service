@@ -1,21 +1,12 @@
 package com.jay.template.web.filter;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.io.IOException;
 import java.util.Map;
-import java.util.UUID;
+import jakarta.servlet.ServletException;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-
-import com.jay.template.helper.YamlBinder;
-import com.jay.template.logging.logger.MetaDataLogger;
-import com.jay.template.logging.properties.MdcProperties;
-
-import jakarta.servlet.ServletException;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,18 +19,28 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import com.jay.template.helper.YamlBinder;
+import com.jay.template.infra.logging.MdcProperties;
+import com.jay.template.web.request.HttpProperties;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 class MdcRequestFilterTest {
 
-    private static final String PROPS_KEY = "app.logging.mdc";
-    private static final Logger META_DATA_LOGGER = (Logger) LoggerFactory.getLogger(MetaDataLogger.class);
+    private static final String HTTP_PROPS_KEY = "app.http";
+    private static final String MDC_PROPS_KEY = "app.logging.mdc";
+    private static final Logger MDC_RF_LOGGER = (Logger) LoggerFactory.getLogger(MdcRequestFilter.class);
 
-    private static YamlBinder binder;
+    private static HttpProperties httpProps;
+    private static MdcProperties mdcProps;
 
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeAll
-    static void initClass() throws IOException {
-        binder = new YamlBinder();
+    static void initClass() throws Exception {
+        YamlBinder binder = new YamlBinder();
+        httpProps = binder.bind(HTTP_PROPS_KEY, HttpProperties.class);
+        mdcProps = binder.bind(MDC_PROPS_KEY, MdcProperties.class);
     }
 
     @BeforeEach
@@ -55,13 +56,13 @@ class MdcRequestFilterTest {
         };
         listAppender.start();
 
-        META_DATA_LOGGER.addAppender(listAppender);
+        MDC_RF_LOGGER.addAppender(listAppender);
     }
 
     @AfterEach
     void tearDown() {
         MDC.clear();
-        META_DATA_LOGGER.detachAppender(listAppender);
+        MDC_RF_LOGGER.detachAppender(listAppender);
     }
 
     @Test
@@ -70,9 +71,7 @@ class MdcRequestFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcProperties props = new MdcProperties();
-        props.setHeaders(Map.of("test-header", "testHeader"));
-        MdcRequestFilter filter = new MdcRequestFilter(props);
+        MdcRequestFilter filter = new MdcRequestFilter(httpProps, mdcProps);
 
         filter.doFilter(request, response, filterChain);
 
@@ -81,46 +80,20 @@ class MdcRequestFilterTest {
     }
 
     @Test
-    void filterChainBlankProps() throws ServletException, IOException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-        request.addHeader("test-header", " ");
-        MockFilterChain filterChain = new MockFilterChain();
-
-        MdcProperties props = new MdcProperties();
-        props.setHeaders(Map.of("test-header", "testHeader"));
-        props.setMethod(" ");
-        props.setPath(" ");
-        props.setStatus(" ");
-        props.setDurationMs(" ");
-
-        MdcRequestFilter filter = new MdcRequestFilter(props);
-
-        filter.doFilter(request, response, filterChain);
-
-        assertSame(request, filterChain.getRequest());
-        assertSame(response, filterChain.getResponse());
-    }
-
-    @Test
-    void mdcFieldsArePopulatedAndCleared() throws Exception {
+    void mdcFieldsArePopulatedAndCleared() throws ServletException, IOException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcProperties props = binder.bind(PROPS_KEY, MdcProperties.class);
+        MdcRequestFilter filter = new MdcRequestFilter(httpProps, mdcProps);
 
-        MdcRequestFilter filter = new MdcRequestFilter(props);
-
-        String gatewayTraceId = UUID.randomUUID().toString();
-        String userId = UUID.randomUUID().toString();
+        String requestId = "rid-001";
+        String userId = "uid-001";
         String requestUri = "/test";
-        String gatewayTraceIdHeader = "x-gateway-trace-id";
-        String userIdHeader = "x-user-id";
 
-        request.addHeader(gatewayTraceIdHeader, gatewayTraceId);
-        request.addHeader(userIdHeader, userId);
+        request.addHeader(httpProps.headers().userId(), userId);
+        request.addHeader(httpProps.headers().requestId(), requestId);
         request.setRequestURI(requestUri);
         request.setMethod(HttpMethod.GET.name());
         response.setStatus(HttpStatus.OK.value());
@@ -128,21 +101,23 @@ class MdcRequestFilterTest {
         filter.doFilter(request, response, filterChain);
 
         assertEquals(1, listAppender.list.size());
-        assertEquals("request_complete", listAppender.list.getFirst().getFormattedMessage());
+        assertEquals("", listAppender.list.getFirst().getFormattedMessage());
 
-        Map<String, String> expected = Map.of(props.getHeaders().get(gatewayTraceIdHeader), gatewayTraceId,
-                props.getHeaders().get(userIdHeader), userId,
-                props.getPath(), requestUri,
-                props.getMethod(), HttpMethod.GET.name(),
-                props.getStatus(), String.valueOf(HttpStatus.OK.value()),
-                props.getDurationMs(), "0");
+        Map<String, String> expected = Map.of(
+                mdcProps.userId(), userId,
+                mdcProps.requestId(), requestId,
+                mdcProps.kind(), httpProps.kind(),
+                mdcProps.name(), requestUri,
+                mdcProps.method(), HttpMethod.GET.name(),
+                mdcProps.status(), String.valueOf(HttpStatus.OK.value()),
+                mdcProps.durationMs(), "0");
 
         Map<String, String> actual = listAppender.list.getFirst().getMDCPropertyMap();
 
         assertEquals(expected.size(), actual.size());
         assertTrue(expected.entrySet().stream()
                 .allMatch(e -> {
-                    if (e.getKey().equals(props.getDurationMs())) {
+                    if (e.getKey().equals(mdcProps.durationMs())) {
                         return Integer.parseInt(actual.get(e.getKey())) >= 0;
                     }
                     return actual.get(e.getKey()).equals(e.getValue());

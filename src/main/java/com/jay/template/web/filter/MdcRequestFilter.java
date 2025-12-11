@@ -1,10 +1,7 @@
 package com.jay.template.web.filter;
 
 import java.io.IOException;
-
-import com.jay.template.logging.logger.MetaDataLogger;
-import com.jay.template.logging.properties.MdcProperties;
-
+import java.util.concurrent.TimeUnit;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,55 +13,52 @@ import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.jay.template.infra.logging.MdcProperties;
+import com.jay.template.web.request.HttpProperties;
+
 @Component
 public class MdcRequestFilter extends OncePerRequestFilter {
 
-    private static final Logger META_DATA_LOGGER = LoggerFactory.getLogger(MetaDataLogger.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MdcRequestFilter.class);
 
-    private final MdcProperties props;
+    private final HttpProperties httpProps;
+    private final MdcProperties mdcProps;
 
-    public MdcRequestFilter(MdcProperties props) {
-        this.props = props;
+    public MdcRequestFilter(HttpProperties httpProps, MdcProperties mdcProps) {
+        this.httpProps = httpProps;
+        this.mdcProps = mdcProps;
     }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        long start = System.currentTimeMillis();
+        long start = System.nanoTime();
+        String userId = request.getHeader(httpProps.headers().userId());
+        String requestId = request.getHeader(httpProps.headers().requestId());
         String method = request.getMethod();
         String path = request.getRequestURI();
-        request.getRequestId();
 
         try {
 
-            props.getHeaders().forEach((headerName, mdcKey) -> {
-                String value = request.getHeader(headerName);
-                if (value != null && !value.isBlank()) {
-                    MDC.put(mdcKey, value);
-                }
-            });
+            //note that MDC does not allow null values so it removes the key and logback will print empty.
+
+            MDC.put(mdcProps.userId(), userId);
+            MDC.put(mdcProps.requestId(), requestId);
+            MDC.put(mdcProps.kind(), httpProps.kind());
+            MDC.put(mdcProps.method(), method);
+            MDC.put(mdcProps.name(), path);
 
             filterChain.doFilter(request, response);
         } finally {
 
-            if (props.getMethod() != null && !props.getMethod().isBlank()) {
-                MDC.put(props.getMethod(), method);
-            }
+            MDC.put(mdcProps.status(), String.valueOf(response.getStatus()));
 
-            if (props.getPath() != null && !props.getPath().isBlank()) {
-                MDC.put(props.getPath(), path);
-            }
+            long durationMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+            MDC.put(mdcProps.durationMs(), String.valueOf(durationMs));
 
-            if (props.getStatus() != null && !props.getStatus().isBlank()) {
-                MDC.put(props.getStatus(), String.valueOf(response.getStatus()));
-            }
-
-            if (props.getDurationMs() != null && !props.getDurationMs().isBlank()) {
-                MDC.put(props.getDurationMs(), String.valueOf(System.currentTimeMillis() - start));
-            }
-
-            META_DATA_LOGGER.info("request_complete");
+            LOGGER.info("");
             MDC.clear();
         }
     }

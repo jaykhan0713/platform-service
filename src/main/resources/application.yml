@@ -17,12 +17,19 @@ management:
   endpoint.health.show-details: always
 
 app:
+  http:
+    headers:
+      userId: "x-user-id"
+      requestId: "x-request-id"
+    kind: "http"
+
   logging:
     mdc:
-      headers:
-        x-gateway-trace-id: gatewayTraceId
-        x-user-id: userId
-      method: "http.method"
-      path: "http.path"
-      status: "http.status"
-      durationMs: "http.durationMs"
+      # transport protocol agnostic
+      userId: "userId"
+      requestId: "requestId"
+      kind: "kind" # http, sqs etc
+      name: "name" # e.g. "/users/{id}", "queue:orders"
+      method: "method" #GET, POST, QUERY
+      status: "status"
+      durationMs: "durationMs"

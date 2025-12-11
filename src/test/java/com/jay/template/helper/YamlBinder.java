@@ -11,7 +11,7 @@ import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.StandardEnvironment;
 import org.springframework.core.io.ClassPathResource;
 
-public class YamlBinder {
+public final class YamlBinder {
 
     private static final String APP_YAML = "application.yml";
 
