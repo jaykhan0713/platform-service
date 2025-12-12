@@ -1,5 +1,5 @@
 # ---- build stage ----
-FROM eclipse-temurin:21-jdk AS build
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 
 # Copy Gradle wrapper FIRST so layers cache well
@@ -12,10 +12,10 @@ COPY settings.gradle.kts build.gradle.kts ./
 # Sources
 COPY src ./src
 
-RUN chmod +x gradlew && ./gradlew --no-daemon clean bootJar
+RUN chmod +x gradlew && ./gradlew --no-daemon clean bootJar -x generateGitProperties
 
 # ---- runtime stage ----
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*-SNAPSHOT.jar app.jar
 ENV JAVA_OPTS=""
