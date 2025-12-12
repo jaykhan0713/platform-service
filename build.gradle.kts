@@ -1,13 +1,13 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.5"
+    id("org.springframework.boot") version "4.0.0"
     id("io.spring.dependency-management") version "1.1.7"
     id("com.gorylenko.gradle-git-properties") version "2.4.1"
     id("org.sonarqube") version "6.3.1.5724"
     jacoco
 }
 
-group = "com.jay.showcase"
+group = "com.jay.template"
 version = "0.0.1-SNAPSHOT"
 description = "service-template"
 
@@ -31,15 +31,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    // tracing for micrometer with OpenTelemetry
+    implementation("org.springframework.boot:spring-boot-starter-opentelemetry")
 
     //logback
     implementation(platform("com.eoniantech.build:logback-contrib-bom:0.1.5"))
     implementation("ch.qos.logback.contrib:logback-json-classic")
     implementation("ch.qos.logback.contrib:logback-jackson")
 
-    // micrometer tracing with brave
-    implementation("io.micrometer:micrometer-core")
-    implementation("io.micrometer:micrometer-tracing-bridge-brave")
+    //micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -57,7 +57,7 @@ tasks.withType<Test> {
 
 //Spring boot
 springBoot {
-    mainClass.set("com.jay.showcase.Starter")
+    mainClass.set("com.jay.template.Starter")
     buildInfo()
 }
 

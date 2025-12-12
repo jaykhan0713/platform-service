@@ -1,8 +1,8 @@
 package com.jay.template.helper;
 
-import brave.Span;
-import brave.Tracer;
-import brave.propagation.TraceContext;
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.TraceContext;
+import io.micrometer.tracing.Tracer;
 import org.mockito.Mockito;
 
 public final class MockTracerUtils {
@@ -16,7 +16,7 @@ public final class MockTracerUtils {
 
         Mockito.when(tracer.currentSpan()).thenReturn(span);
         Mockito.when(span.context()).thenReturn(context);
-        Mockito.when(context.traceIdString()).thenReturn(traceId);
+        Mockito.when(context.traceId()).thenReturn(traceId);
 
         return tracer;
     }

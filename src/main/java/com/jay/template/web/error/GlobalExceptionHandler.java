@@ -3,7 +3,7 @@ package com.jay.template.web.error;
 import com.jay.template.error.ApiException;
 import com.jay.template.error.ErrorType;
 
-import brave.Tracer;
+import io.micrometer.tracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
         ErrorType type = ex.getType();
-        String traceId = tracer.currentSpan().context().traceIdString();
+        String traceId = tracer.currentSpan().context().traceId();
         ErrorResponse body = ErrorResponse.from(type, traceId);
 
         LOGGER.error(type.getCode(), ex);
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
 
         ErrorType type = ErrorType.INTERNAL_SERVER_ERROR;
-        String traceId = tracer.currentSpan().context().traceIdString();
+        String traceId = tracer.currentSpan().context().traceId();
 
         //Don't expose internal server errors to client, so body uses defaultMessage. Log real error.
         ErrorResponse body = ErrorResponse.from(type, traceId);

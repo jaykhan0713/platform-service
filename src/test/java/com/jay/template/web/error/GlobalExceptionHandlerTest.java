@@ -4,7 +4,7 @@ import com.jay.template.error.ApiException;
 import com.jay.template.error.ErrorType;
 import com.jay.template.helper.MockTracerUtils;
 
-import brave.Tracer;
+import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
