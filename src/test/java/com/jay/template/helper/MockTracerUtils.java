@@ -20,5 +20,4 @@ public final class MockTracerUtils {
 
         return tracer;
     }
-
 }

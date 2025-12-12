@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ApiExceptionTest {
 
     @Test
-    void testTypeIsSet() {
+    void typeIsSet() {
         ApiException exception = new ApiException(ErrorType.BAD_REQUEST);
         assertEquals(ErrorType.BAD_REQUEST, exception.getType());
     }
