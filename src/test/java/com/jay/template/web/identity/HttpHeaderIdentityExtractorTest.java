@@ -23,7 +23,7 @@ class HttpHeaderIdentityExtractorTest {
     }
 
     @Test
-    void extractsRequest() {
+    void shouldExtractRequest() {
         String userId = "user-001";
         String requestId = "request-001";
 

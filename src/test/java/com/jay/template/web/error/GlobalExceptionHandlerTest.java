@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class GlobalExceptionHandlerTest {
 
     @Test
-    void handleGenericException() {
+    void handlesGenericException() {
         String message = "generic error";
         Exception ex = new Exception(message);
         String traceId = "trace-001";
@@ -33,7 +33,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleApiException() {
+    void handlesApiException() {
         String message = "bad request error";
         ApiException ex = new ApiException(ErrorType.BAD_REQUEST, message);
         String traceId = "trace-001";
@@ -51,7 +51,7 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void handleExceptionWithNullSpan() {
+    void handlesExceptionWhenSpanIsNull() {
         String message = "generic error";
         Exception ex = new Exception(message);
         String traceId = "trace-001";
