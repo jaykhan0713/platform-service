@@ -3,16 +3,13 @@ spring:
     activate:
       on-profile: prod
 
-logging:
-  level:
-    root: INFO
-
 management:
   endpoints:
     web:
       exposure:
         include: health,info,metrics,loggers,prometheus
-  info:
+  endpoint.health.show-details: never
+  info: #will be on actuator info endpoint
     git:
       mode: full
   tracing:

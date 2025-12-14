@@ -5,12 +5,24 @@ import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ContextAwareVirtualThreadFactoryTest {
+
+    @BeforeEach
+    void setUp() {
+        MDC.clear();
+    }
+
+    @AfterEach
+    void tearDown() {
+        MDC.clear();
+    }
 
     @Test
     void newThreadIsVirtual() {
@@ -32,8 +44,6 @@ class ContextAwareVirtualThreadFactoryTest {
         thread.join();
 
         assertEquals("parent", inside.get());
-
-        MDC.clear();
     }
 
     @Test
@@ -47,7 +57,5 @@ class ContextAwareVirtualThreadFactoryTest {
         thread.join();
 
         assertEquals("parent", MDC.get("mdc-key"));
-
-        MDC.clear();
     }
 }

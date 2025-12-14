@@ -3,108 +3,121 @@ package com.jay.template.infra.concurrent;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.MDC;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MdcContextPropagatorTest {
+    private static final String MDC_KEY = "mdc-key";
+    private static final String PARENT = "parent";
+    private static final String CHILD = "child";
+    private static final String PREVIOUS = "previous";
+    private static final String RESULT = "result";
 
     private final ContextPropagator propagator = new MdcContextPropagator();
 
-    @Test
-    void runnableWrapSetsCurrentToCaptured() {
-        MDC.put("mdc-key", "parent");
-        AtomicReference<String> inside = new AtomicReference<>();
-        Runnable wrapped = propagator.propagate(() -> {
-            inside.set(MDC.get("mdc-key"));
-            MDC.put("mdc-key", "child");
-        });
+    @BeforeEach
+    void setUp() {
+        MDC.clear();
+    }
 
-        wrapped.run();
-
-        assertEquals("parent", inside.get());
-        assertEquals("parent", MDC.get("mdc-key"));
+    @AfterEach
+    void tearDown() {
+        MDC.clear();
     }
 
     @Test
-    void runnableWrapCleansUp() {
+    void runnablePropagateAppliesCurrentToCaptured() {
 
-        MDC.clear();
-        Runnable wrapped = propagator.propagate(() -> {
-            MDC.put("mdc-key", "child");
+        MDC.put(MDC_KEY, PARENT);
+        AtomicReference<String> inside = new AtomicReference<>();
+        Runnable propagated = propagator.propagate(() -> {
+            inside.set(MDC.get(MDC_KEY));
+            MDC.put(MDC_KEY, CHILD);
         });
 
-        wrapped.run();
+        propagated.run();
+
+        assertEquals(PARENT, inside.get());
+        assertEquals(PARENT, MDC.get(MDC_KEY));
+    }
+
+    @Test
+    void runnablePropagateCleansUp() {
+
+        Runnable propagated = propagator.propagate(() -> MDC.put(MDC_KEY, CHILD));
+
+        propagated.run();
 
         assertNull(MDC.getCopyOfContextMap());
     }
 
     @Test
-    void runnableWrapRestoresPreviousMdcEvenIfCapturedIsNull() {
-        MDC.clear();
-        Runnable wrapped = propagator.propagate(() -> {
+    void runnablePropagateRestoresPreviousWhenCapturedIsNull() {
+
+        Runnable propagated = propagator.propagate(() -> {
             assertNull(MDC.getCopyOfContextMap());
         });
 
-        // Between wrap() and run(), something sets MDC:
-        MDC.put("mdc-key", "previous");
+        // Between propagate() and run(), something sets MDC:
+        MDC.put(MDC_KEY, PREVIOUS);
 
-        wrapped.run();
+        propagated.run();
 
-        assertEquals("previous", MDC.get("mdc-key"));
+        assertEquals(PREVIOUS, MDC.get(MDC_KEY));
     }
 
     @Test
-    void callableWrapSetsCurrentToCaptured() throws Exception {
-        MDC.put("mdc-key", "parent");
+    void callablePropagateAppliesCurrentToCaptured() throws Exception {
+
+        MDC.put(MDC_KEY, PARENT);
         AtomicReference<String> inside = new AtomicReference<>();
 
-        Callable<String> wrapped = propagator.propagate(() -> {
-            inside.set(MDC.get("mdc-key"));
-            MDC.put("mdc-key", "child");
-            return "result";
+        Callable<String> propagated = propagator.propagate(() -> {
+            inside.set(MDC.get(MDC_KEY));
+            MDC.put(MDC_KEY, CHILD);
+            return RESULT;
         });
 
-        String result = wrapped.call();
+        String result = propagated.call();
 
-        assertEquals("result", result);
-        assertEquals("parent", inside.get());
-        assertEquals("parent", MDC.get("mdc-key"));
+        assertEquals(RESULT, result);
+        assertEquals(PARENT, inside.get());
+        assertEquals(PARENT, MDC.get(MDC_KEY));
     }
 
 
 
     @Test
-    void callableWrapCleansUp() throws Exception {
-
-        MDC.clear();
-
-        Callable<String> wrapped = propagator.propagate(() -> {
-            MDC.put("mdc-key", "child");
-            return "result";
+    void callablePropagateCleansUp() throws Exception {
+        Callable<String> propagated = propagator.propagate(() -> {
+            MDC.put(MDC_KEY, CHILD);
+            return RESULT;
         });
 
-        String result = wrapped.call();
+        String result = propagated.call();
 
-        assertEquals("result", result);
+        assertEquals(RESULT, result);
         assertNull(MDC.getCopyOfContextMap());
     }
 
     @Test
-    void callableWrapRestoresPreviousMdcEvenIfCapturedIsNull() throws Exception {
-        MDC.clear();
-        Callable<String> wrapped = propagator.propagate(() -> {
+    void callablePropagateRestoresPreviousEvenIfCapturedIsNull() throws Exception {
+
+        Callable<String> propagated = propagator.propagate(() -> {
             assertNull(MDC.getCopyOfContextMap());
-            return "result";
+            return RESULT;
         });
 
-        // Between wrap() and run(), something sets MDC:
-        MDC.put("mdc-key", "previous");
+        // Between propagate() and run(), something sets MDC:
+        MDC.put(MDC_KEY, PREVIOUS);
 
-        String result = wrapped.call();
+        String result = propagated.call();
 
-        assertEquals("result", result);
-        assertEquals("previous", MDC.get("mdc-key"));
+        assertEquals(RESULT, result);
+        assertEquals(PREVIOUS, MDC.get(MDC_KEY));
     }
 }

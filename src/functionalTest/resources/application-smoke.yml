@@ -1,4 +1,4 @@
 spring:
   config:
     activate:
-      on-profile: test
+      on-profile: smoke

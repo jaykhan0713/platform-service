@@ -3,11 +3,6 @@ spring:
     activate:
       on-profile: dev
 
-logging:
-  level:
-    root: DEBUG
-    org.springframework.boot.autoconfigure: INFO #so spring boot autoconfig logs are less noisy
-
 management:
   endpoints:
     web:
@@ -16,9 +11,6 @@ management:
   info:
     git:
       mode: full
-  tracing:
-    sampling:
-      probability: 1.0
   prometheus:
     metrics:
       export:

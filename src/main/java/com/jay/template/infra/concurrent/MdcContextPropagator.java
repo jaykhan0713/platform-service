@@ -9,26 +9,16 @@ import org.springframework.stereotype.Component;
 @Component
 final class MdcContextPropagator implements ContextPropagator {
 
-    MdcContextPropagator() {}
-
     @Override
     public Runnable propagate(Runnable task) {
         Map<String, String> captured = MDC.getCopyOfContextMap(); // Calling thread's MDC
         return () -> {
             Map<String, String> previous = MDC.getCopyOfContextMap();
             try {
-                if (captured != null) {
-                    MDC.setContextMap(captured);
-                } else {
-                    MDC.clear();
-                }
+                apply(captured);
                 task.run();
             } finally {
-                if (previous != null) {
-                    MDC.setContextMap(previous);
-                } else {
-                    MDC.clear();
-                }
+                apply(previous);
             }
         };
     }
@@ -40,19 +30,19 @@ final class MdcContextPropagator implements ContextPropagator {
             Map<String, String> previous = MDC.getCopyOfContextMap();
 
             try {
-                if (captured != null) {
-                    MDC.setContextMap(captured);
-                } else {
-                    MDC.clear();
-                }
+                apply(captured);
                 return task.call();
             } finally {
-                if (previous != null) {
-                    MDC.setContextMap(previous);
-                } else {
-                    MDC.clear();
-                }
+                apply(previous);
             }
         };
+    }
+
+    private void apply(Map<String, String> contextMap) {
+        if (contextMap == null) {
+            MDC.clear();
+        } else {
+            MDC.setContextMap(contextMap);
+        }
     }
 }

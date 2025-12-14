@@ -35,8 +35,10 @@ public class MdcRequestFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         long start = System.nanoTime();
-        String userId = request.getHeader(httpProps.headers().userId());
-        String requestId = request.getHeader(httpProps.headers().requestId());
+
+        String userId = normalize(request.getHeader(httpProps.headers().userId()));
+        String requestId = normalize(request.getHeader(httpProps.headers().requestId()));
+
         String method = request.getMethod();
         String path = request.getRequestURI();
 
@@ -61,5 +63,10 @@ public class MdcRequestFilter extends OncePerRequestFilter {
             LOGGER.info("");
             MDC.clear();
         }
+    }
+
+    // normalizing to empty string ensures key is always present, even with missing value
+    private String normalize(String value) {
+        return value == null ? "" : value;
     }
 }

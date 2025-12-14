@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration scan="true">
+<configuration scan="false">
 
-    <!-- friendly pattern for indexing and lookups -->
+    <!-- MDC key Spring properties -->
+    <springProperty name="MDC_USER_ID" source="app.logging.mdc.userId"/>
+    <springProperty name="MDC_REQUEST_ID" source="app.logging.mdc.requestId"/>
+    <springProperty name="MDC_KIND" source="app.logging.mdc.kind"/>
+    <springProperty name="MDC_NAME" source="app.logging.mdc.name"/>
+    <springProperty name="MDC_METHOD" source="app.logging.mdc.method"/>
+    <springProperty name="MDC_STATUS" source="app.logging.mdc.status"/>
+    <springProperty name="MDC_DURATION_MS" source="app.logging.mdc.durationMs"/>
+
+    <!-- index friendly pattern for lookups -->
     <property name="SIMPLE_PATTERN"
               value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" msg="%msg"%n'/>
 
     <property name="APP_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" msg="%msg"%n'/>
+              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" msg="%msg"%n'/>
+    Changes:
 
-    <property name="META_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{userId}" requestId="%X{requestId}" kind="%X{kind}" path="%X{name}" method="%X{method}" status="%X{status}" durationMs="%X{durationMs}"%n'/>
+    <property name="MDC_FILTER_PATTERN"
+              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{${MDC_USER_ID}}" requestId="%X{${MDC_REQUEST_ID}}" kind="%X{${MDC_KIND}}" name="%X{${MDC_NAME}}" method="%X{${MDC_METHOD}}" status="%X{${MDC_STATUS}}" durationMs="%X{${MDC_DURATION_MS}}"%n'/>
 
     <!-- ================= DEV PROFILE ================= -->
-    <springProfile name="dev">
+    <springProfile name="dev,smoke"> <!-- for helping with seeing logs in smoke tests -->
 
         <!-- Library/Framework logs -->
         <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -27,14 +37,14 @@
             </encoder>
         </appender>
 
-        <!-- meta logs (one per request) -->
-        <appender name="DEV_META_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- mdc filter logs (one per request) -->
+        <appender name="DEV_MDC_FILTER_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
-                <pattern>${META_PATTERN}</pattern>
+                <pattern>${MDC_FILTER_PATTERN}</pattern>
             </encoder>
         </appender>
 
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="DEV_CONSOLE"/>
         </root>
 
@@ -48,8 +58,8 @@
             <appender-ref ref="DEV_APP_CONSOLE"/>
         </logger>
 
-        <!-- Meta Data logger with response info as well -->
-        <property name="META_DATA_APPENDER" value="DEV_META_CONSOLE" />
+        <!-- MDC filter logger with response info as well -->
+        <property name="MDC_FILTER_APPENDER" value="DEV_MDC_FILTER_CONSOLE" />
 
     </springProfile>
 
@@ -69,6 +79,11 @@
                     <includeLevel>true</includeLevel>
                     <includeMessage>true</includeMessage>
                     <includeException>true</includeException>
+
+                    <!-- timstamp -->
+                    <includeTimestamp>true</includeTimestamp>
+                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</timestampFormat>
+                    <timestampTimeZone>UTC</timestampTimeZone>
                 </layout>
             </encoder>
         </appender>
@@ -77,13 +92,13 @@
             <appender-ref ref="JSON_CONSOLE"/>
         </root>
 
-        <property name="META_DATA_APPENDER" value="JSON_CONSOLE" />
+        <property name="MDC_FILTER_APPENDER" value="JSON_CONSOLE" />
 
     </springProfile>
 
     <!-- custom loggers -->
     <logger name="com.jay.template.web.filter.MdcRequestFilter" level="INFO" additivity="false">
-        <appender-ref ref="${META_DATA_APPENDER}" />
+        <appender-ref ref="${MDC_FILTER_APPENDER}" />
     </logger>
 
 </configuration>
