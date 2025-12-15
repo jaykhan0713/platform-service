@@ -1,7 +1,7 @@
 package com.jay.template.web.error;
 
-import com.jay.template.error.ApiException;
-import com.jay.template.error.ErrorType;
+import com.jay.template.infra.error.ApiException;
+import com.jay.template.infra.error.ErrorType;
 
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
@@ -27,7 +27,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleApiException(ApiException ex) {
         ErrorType type = ex.getType();
 
-        LOGGER.error(type.getCode(), ex);
+        // NOTE: expected error, no stack trace noise
+        // TODO: optionally surface errorCode via MDC for request-complete logging for MDCRequestFilter}
+        LOGGER.error(type.getCode());
 
         return buildResponseEntity(type);
     }

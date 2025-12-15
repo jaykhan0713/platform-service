@@ -1,7 +1,7 @@
 package com.jay.template.web.error;
 
-import com.jay.template.error.ApiException;
-import com.jay.template.error.ErrorType;
+import com.jay.template.infra.error.ApiException;
+import com.jay.template.infra.error.ErrorType;
 import com.jay.template.helper.MockTracerUtils;
 
 import io.micrometer.tracing.Tracer;
@@ -54,7 +54,6 @@ class GlobalExceptionHandlerTest {
     void handlesExceptionWhenSpanIsNull() {
         String message = "generic error";
         Exception ex = new Exception(message);
-        String traceId = "trace-001";
         Tracer tracer = Mockito.mock(Tracer.class);
 
         GlobalExceptionHandler handler = new GlobalExceptionHandler(tracer);

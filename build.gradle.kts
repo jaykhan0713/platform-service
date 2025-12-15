@@ -119,7 +119,10 @@ tasks.jacocoTestReport {
                 exclude(
                     "**/*Config.class",
                     "**/*Properties.class",
-                    "**/Starter.class"
+                    "**/Starter.class",
+
+                    // OpenAPI contract surface (DTOs, error models, annotations)
+                    "**/com/jay/template/api/**"
                 )
             }
         })

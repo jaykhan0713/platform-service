@@ -16,6 +16,26 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.jay.template.infra.logging.MdcProperties;
 import com.jay.template.web.request.HttpProperties;
 
+/**
+ * Populates MDC (Mapped Diagnostic Context) fields for structured request logging.
+ *
+ * <p>
+ * {@code MdcRequestFilter} extracts a small set of request attributes and configured
+ * inbound headers and writes them into {@link MDC} so all log entries produced during
+ * request handling include consistent context.
+ * </p>
+ *
+ * <p>
+ * This filter does not depend on {@code IdentityContextHolder}. It reads headers
+ * directly and normalizes missing values to empty strings to ensure MDC keys are
+ * always present in log output.
+ * </p>
+ *
+ * <p>
+ * MDC is cleared in a {@code finally} block to prevent context leakage across thread
+ * reuse.
+ * </p>
+ */
 @Component
 public class MdcRequestFilter extends OncePerRequestFilter {
 
@@ -38,6 +58,7 @@ public class MdcRequestFilter extends OncePerRequestFilter {
 
         String userId = normalize(request.getHeader(httpProps.headers().userId()));
         String requestId = normalize(request.getHeader(httpProps.headers().requestId()));
+        // additional headers can be added here
 
         String method = request.getMethod();
         String path = request.getRequestURI();

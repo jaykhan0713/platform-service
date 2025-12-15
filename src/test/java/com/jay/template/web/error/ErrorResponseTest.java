@@ -2,7 +2,7 @@ package com.jay.template.web.error;
 
 import org.junit.jupiter.api.Test;
 
-import com.jay.template.error.ErrorType;
+import com.jay.template.infra.error.ErrorType;
 
 import static org.junit.jupiter.api.Assertions.*;
 

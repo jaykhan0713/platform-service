@@ -1,5 +1,7 @@
 package com.jay.template.error;
 
+import com.jay.template.infra.error.ApiException;
+import com.jay.template.infra.error.ErrorType;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

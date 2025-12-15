@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.error.ApiException;
+import com.jay.template.infra.error.ApiException;
 import com.jay.template.infra.request.Identity;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,7 +30,7 @@ class SampleControllerTest {
         String requestId = "request-001";
 
         Identity identity = new Identity(userId, requestId);
-        IdentityContextHolder.setContext(new IdentityContextSnapshot(identity));
+        IdentityContextHolder.setContext(IdentityContextSnapshot.of(identity));
 
         SampleController controller = new SampleController();
 
@@ -46,7 +46,7 @@ class SampleControllerTest {
         String requestId = "request-001";
 
         Identity identity = new Identity(null, requestId);
-        IdentityContextHolder.setContext(new IdentityContextSnapshot(identity));
+        IdentityContextHolder.setContext(IdentityContextSnapshot.of(identity));
 
         SampleController controller = new SampleController();
 
