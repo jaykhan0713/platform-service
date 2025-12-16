@@ -1,14 +1,15 @@
 package com.jay.template.web.error;
 
-import com.jay.template.infra.error.ApiException;
-import com.jay.template.infra.error.ErrorType;
-import com.jay.template.helper.MockTracerUtils;
-
 import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import com.jay.template.api.v1.common.error.ErrorResponse;
+import com.jay.template.error.ApiException;
+import com.jay.template.error.ErrorType;
+import com.jay.template.helper.MockTracerUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.infra.error.ErrorType;
-import com.jay.template.infra.error.ApiException;
+import com.jay.template.error.ErrorType;
+import com.jay.template.error.ApiException;
 import com.jay.template.infra.request.Identity;
 
 @RestController

@@ -1,8 +1,5 @@
 package com.jay.template.web.error;
 
-import com.jay.template.infra.error.ApiException;
-import com.jay.template.infra.error.ErrorType;
-
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import org.slf4j.Logger;
@@ -11,6 +8,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import com.jay.template.api.v1.common.error.ErrorResponse;
+import com.jay.template.error.ApiException;
+import com.jay.template.error.ErrorType;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -50,7 +51,7 @@ public class GlobalExceptionHandler {
         String traceId = (span != null) ? span.context().traceId() : null;
 
         //Don't expose internal server errors to client, so body uses defaultMessage. Log real error.
-        ErrorResponse body = ErrorResponse.from(type, traceId);
+        ErrorResponse body = new ErrorResponse(type.getCode(), type.getDefaultMessage(), traceId);
 
         return ResponseEntity
                 .status(toStatus(type))

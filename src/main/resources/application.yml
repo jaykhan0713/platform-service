@@ -26,7 +26,7 @@ management:
         enabled: false # would try to export to something like http://localhost:4318/v1/metrics
 
 app:
-  http:
+  http: # inbound http configuration
     headers:
       userId: "x-user-id"
       requestId: "x-request-id"
@@ -42,3 +42,24 @@ app:
       method: "method" #GET, POST, QUERY
       status: "status"
       durationMs: "durationMs"
+
+  outbound:
+    http:
+      headers:
+        userId: "x-user-id"
+        requestId: "x-request-id"
+
+      defaults:
+        connect-timeout: 2s
+        read-timeout: 5s
+
+      clients: # add configurable outbound http clients here.
+        internal: # example client for services in same VPC or organization
+          base-url: "http://ping-service:8080"
+          connect-timeout: 2s
+          read-timeout: 5s
+          propagate-identity: true
+        external: # example client for third party APIs
+          propagate-identity: false # identity is not propagated to third Party APIs
+
+

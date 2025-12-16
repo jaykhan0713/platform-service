@@ -1,4 +1,4 @@
-package com.jay.template.infra.error;
+package com.jay.template.error;
 
 public enum ErrorType {
     BAD_REQUEST("BAD_REQUEST", "Bad Request"),

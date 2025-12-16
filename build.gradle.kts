@@ -54,6 +54,11 @@ dependencies {
     implementation(platform("org.springdoc:springdoc-openapi-bom:3.0.0"))
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
 
+    //Resilience4j
+    implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
+    implementation("io.github.resilience4j:resilience4j-spring-boot3")
+    implementation("io.github.resilience4j:resilience4j-micrometer")
+
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
