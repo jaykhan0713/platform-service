@@ -7,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.jay.template.infra.identity.IdentityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -14,15 +15,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jay.template.infra.logging.MdcProperties;
-import com.jay.template.web.request.HttpProperties;
 
 /**
- * Populates MDC (Mapped Diagnostic Context) fields for structured request logging.
+ * Populates MDC (Mapped Diagnostic Context) fields for structured identity logging.
  *
  * <p>
- * {@code MdcRequestFilter} extracts a small set of request attributes and configured
+ * {@code MdcRequestFilter} extracts a small set of identity attributes and configured
  * inbound headers and writes them into {@link MDC} so all log entries produced during
- * request handling include consistent context.
+ * identity handling include consistent context.
  * </p>
  *
  * <p>
@@ -41,11 +41,11 @@ public class MdcRequestFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MdcRequestFilter.class);
 
-    private final HttpProperties httpProps;
+    private final IdentityProperties.Http.Headers headerKeys;
     private final MdcProperties mdcProps;
 
-    public MdcRequestFilter(HttpProperties httpProps, MdcProperties mdcProps) {
-        this.httpProps = httpProps;
+    public MdcRequestFilter(IdentityProperties identityProps, MdcProperties mdcProps) {
+        this.headerKeys = identityProps.http().headers();
         this.mdcProps = mdcProps;
     }
 
@@ -56,8 +56,8 @@ public class MdcRequestFilter extends OncePerRequestFilter {
 
         long start = System.nanoTime();
 
-        String userId = normalize(request.getHeader(httpProps.headers().userId()));
-        String requestId = normalize(request.getHeader(httpProps.headers().requestId()));
+        String userId = normalize(request.getHeader(headerKeys.userId()));
+        String requestId = normalize(request.getHeader(headerKeys.requestId()));
         // additional headers can be added here
 
         String method = request.getMethod();
@@ -69,7 +69,7 @@ public class MdcRequestFilter extends OncePerRequestFilter {
 
             MDC.put(mdcProps.userId(), userId);
             MDC.put(mdcProps.requestId(), requestId);
-            MDC.put(mdcProps.kind(), httpProps.kind());
+            MDC.put(mdcProps.kind(), mdcProps.kindValues().http());
             MDC.put(mdcProps.method(), method);
             MDC.put(mdcProps.name(), path);
 

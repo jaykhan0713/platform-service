@@ -2,8 +2,8 @@ package com.jay.template.infra.concurrent;
 
 import java.util.concurrent.Callable;
 
-import com.jay.template.infra.request.IdentityContextHolder;
-import com.jay.template.infra.request.IdentityContextSnapshot;
+import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.infra.identity.IdentityContextSnapshot;
 
 /**
  * Propagates {@link IdentityContextSnapshot} across execution boundaries.

@@ -6,20 +6,20 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.jay.template.infra.request.Identity;
-import com.jay.template.infra.request.IdentityContextHolder;
-import com.jay.template.infra.request.IdentityContextSnapshot;
+import com.jay.template.infra.identity.Identity;
+import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.infra.identity.IdentityContextSnapshot;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class IdentityContextPropagatorTest {
 
     private static final String PARENT_USER = "parent-user";
-    private static final String PARENT_REQUEST = "parent-request";
+    private static final String PARENT_REQUEST = "parent-identity";
     private static final String CHILD_USER = "child-user";
-    private static final String CHILD_REQUEST = "child-request";
+    private static final String CHILD_REQUEST = "child-identity";
     private static final String PREVIOUS_USER = "previous-user";
-    private static final String PREVIOUS_REQUEST = "previous-request";
+    private static final String PREVIOUS_REQUEST = "previous-identity";
 
     private final IdentityContextPropagator propagator = new IdentityContextPropagator();
 

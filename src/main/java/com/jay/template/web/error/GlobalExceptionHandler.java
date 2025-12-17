@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.error.ApiException;
-import com.jay.template.error.ErrorType;
+import com.jay.template.app.error.ApiException;
+import com.jay.template.app.error.ErrorType;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         ErrorType type = ex.getType();
 
         // NOTE: expected error, no stack trace noise
-        // TODO: optionally surface errorCode via MDC for request-complete logging for MDCRequestFilter}
+        // TODO: optionally surface errorCode via MDC for identity-complete logging for MDCRequestFilter}
         LOGGER.error(type.getCode());
 
         return buildResponseEntity(type);
@@ -50,7 +50,7 @@ public class GlobalExceptionHandler {
         Span span = tracer.currentSpan();
         String traceId = (span != null) ? span.context().traceId() : null;
 
-        //Don't expose internal server errors to client, so body uses defaultMessage. Log real error.
+        //Don't expose smoke server errors to client, so body uses defaultMessage. Log real error.
         ErrorResponse body = new ErrorResponse(type.getCode(), type.getDefaultMessage(), traceId);
 
         return ResponseEntity

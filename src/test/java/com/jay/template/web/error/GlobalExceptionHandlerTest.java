@@ -7,8 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.error.ApiException;
-import com.jay.template.error.ErrorType;
+import com.jay.template.app.error.ApiException;
+import com.jay.template.app.error.ErrorType;
 import com.jay.template.helper.MockTracerUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,7 +35,7 @@ class GlobalExceptionHandlerTest {
 
     @Test
     void handlesApiException() {
-        String message = "bad request error";
+        String message = "bad identity error";
         ApiException ex = new ApiException(ErrorType.BAD_REQUEST, message);
         String traceId = "trace-001";
         Tracer tracer = MockTracerUtils.mockTracer(traceId);

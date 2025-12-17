@@ -1,4 +1,4 @@
-package com.jay.template.api.v1.common.openapi;
+package com.jay.template.api.v1.common.error.openapi;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -21,7 +21,7 @@ import com.jay.template.api.v1.common.error.ErrorResponse;
  * success responses and endpoint-specific errors (for example {@code 404}).</p>
  *
  * <p>It is intended to be applied to OpenAPI contract interfaces or individual
- * endpoint methods and has no effect on runtime request handling.</p>
+ * endpoint methods and has no effect on runtime identity handling.</p>
  *
  * <p>{@link RetentionPolicy#RUNTIME} is required so OpenAPI tooling can
  * discover and expand the composed {@link ApiResponses} via reflection

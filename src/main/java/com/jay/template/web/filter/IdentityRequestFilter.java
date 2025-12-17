@@ -6,35 +6,35 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.jay.template.infra.identity.IdentityProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.infra.request.Identity;
-import com.jay.template.infra.request.IdentityContextHolder;
-import com.jay.template.infra.request.IdentityContextSnapshot;
-import com.jay.template.web.request.HttpProperties;
+import com.jay.template.infra.identity.Identity;
+import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.infra.identity.IdentityContextSnapshot;
 
 /**
- * Binds request identity to the current thread for the duration of a single HTTP request.
+ * Binds identity identity to the current thread for the duration of a single HTTP identity.
  *
  * <p>
  * {@code IdentityRequestFilter} extracts identity metadata from configured inbound headers
  * and stores it in {@link IdentityContextHolder} so downstream code can access a stable,
- * immutable {@link Identity} during request processing.
+ * immutable {@link Identity} during identity processing.
  * </p>
  *
  * <p>
- * The identity context is cleared in a {@code finally} block to prevent leaking request
+ * The identity context is cleared in a {@code finally} block to prevent leaking identity
  * state across thread reuse.
  * </p>
  */
 @Component
 public class IdentityRequestFilter extends OncePerRequestFilter {
 
-    private final HttpProperties httpProps;
+    private final IdentityProperties.Http.Headers headerKeys;
 
-    public IdentityRequestFilter(HttpProperties httpProps) {
-        this.httpProps = httpProps;
+    public IdentityRequestFilter(IdentityProperties props) {
+        this.headerKeys = props.http().headers();
     }
 
     @Override
@@ -42,8 +42,8 @@ public class IdentityRequestFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        String userId = request.getHeader(httpProps.headers().userId());
-        String requestId = request.getHeader(httpProps.headers().requestId());
+        String userId = request.getHeader(headerKeys.userId());
+        String requestId = request.getHeader(headerKeys.requestId());
 
         Identity identity = new Identity(userId, requestId);
 

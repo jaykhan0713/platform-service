@@ -1,9 +1,10 @@
-app:
-  http:
-    headers:
-      userId: "x-user-id"
-      requestId: "x-request-id"
-    kind: "http"
+app: # namespace for Spring configuration keys
+  identity: # ex can add app.differentConcern.http.headers for other headers
+    http:
+      headers:
+        userId: "x-user-id"
+        requestId: "x-request-id"
+    #future protocols can be added here.
 
   logging:
     mdc:
@@ -15,3 +16,22 @@ app:
       method: "method" #GET, POST, QUERY
       status: "status"
       durationMs: "durationMs"
+
+      kindValues: # future protocol can be added here
+        http: "http"
+
+  outbound:
+    # configuration for outbound clients, add protocols as needed
+    http:
+      defaults:
+        connect-timeout: 2s
+        read-timeout: 5s
+        propagate-identity: false
+
+      # add configurable outbound http clients here.
+      clients:
+        ping: # example client for services in same VPC or organization, propagates identity
+          base-url: "http://ping-service:8080"
+          connect-timeout: 2s
+          read-timeout: 5s
+          propagate-identity: true

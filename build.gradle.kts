@@ -39,7 +39,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    // tracing for micrometer with OpenTelemetry
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
     implementation("org.springframework.boot:spring-boot-starter-opentelemetry")
 
     //logback
@@ -47,17 +47,18 @@ dependencies {
     implementation("ch.qos.logback.contrib:logback-json-classic")
     implementation("ch.qos.logback.contrib:logback-jackson")
 
-    //micrometer
+    //micrometer + Otel
     implementation("io.micrometer:micrometer-registry-prometheus")
+    implementation("io.micrometer:micrometer-tracing-bridge-otel")
 
     //OpenAPI
     implementation(platform("org.springdoc:springdoc-openapi-bom:3.0.0"))
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
 
     //Resilience4j
-    implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
-    implementation("io.github.resilience4j:resilience4j-spring-boot3")
-    implementation("io.github.resilience4j:resilience4j-micrometer")
+    //implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
+    //implementation("io.github.resilience4j:resilience4j-spring-boot3")
+    //implementation("io.github.resilience4j:resilience4j-micrometer")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -157,7 +158,14 @@ testing {
 
             dependencies {
                 implementation(project())
+
+                implementation("org.springframework.boot:spring-boot-starter-web")
+
                 implementation("org.springframework.boot:spring-boot-starter-test")
+
+                implementation(platform("com.squareup.okhttp3:okhttp-bom:5.2.1"))
+                implementation("com.squareup.okhttp3:mockwebserver")
+                implementation("com.squareup.okhttp3:okhttp")
             }
 
             targets.all {

@@ -37,7 +37,7 @@
             </encoder>
         </appender>
 
-        <!-- mdc filter logs (one per request) -->
+        <!-- mdc filter logs (one per identity) -->
         <appender name="DEV_MDC_FILTER_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>${MDC_FILTER_PATTERN}</pattern>
@@ -48,7 +48,7 @@
             <appender-ref ref="DEV_CONSOLE"/>
         </root>
 
-        <!-- Classes in com.jay.template.* Non-request-based logs -->
+        <!-- Classes in com.jay.template.* Non-identity-based logs -->
         <logger name="com.jay.template.Starter" level="INFO" additivity="false">
             <appender-ref ref="DEV_CONSOLE"/>
         </logger>

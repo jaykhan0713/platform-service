@@ -1,4 +1,4 @@
-package com.jay.template.infra.request;
+package com.jay.template.infra.identity;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

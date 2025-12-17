@@ -2,3 +2,14 @@ spring:
   config:
     activate:
       on-profile: smoke
+
+mock:
+  ping:
+    port: 18081
+
+app:
+  outbound:
+    http:
+      clients:
+        ping:
+          base-url: "http://localhost:${mock.ping.port}"

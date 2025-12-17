@@ -20,18 +20,18 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jay.template.helper.YamlBinder;
+import com.jay.template.infra.identity.IdentityProperties;
 import com.jay.template.infra.logging.MdcProperties;
-import com.jay.template.web.request.HttpProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class MdcRequestFilterTest {
 
-    private static final String HTTP_PROPS_KEY = "app.http";
+    private static final String IDENTITY_PROPS_KEY = "app.identity";
     private static final String MDC_PROPS_KEY = "app.logging.mdc";
     private static final Logger MDC_RF_LOGGER = (Logger) LoggerFactory.getLogger(MdcRequestFilter.class);
 
-    private static HttpProperties httpProps;
+    private static IdentityProperties identityProps;
     private static MdcProperties mdcProps;
 
     private ListAppender<ILoggingEvent> listAppender;
@@ -39,7 +39,7 @@ class MdcRequestFilterTest {
     @BeforeAll
     static void initClass() throws Exception {
         YamlBinder binder = new YamlBinder();
-        httpProps = binder.bind(HTTP_PROPS_KEY, HttpProperties.class);
+        identityProps = binder.bind(IDENTITY_PROPS_KEY, IdentityProperties.class);
         mdcProps = binder.bind(MDC_PROPS_KEY, MdcProperties.class);
     }
 
@@ -72,7 +72,7 @@ class MdcRequestFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcRequestFilter filter = new MdcRequestFilter(httpProps, mdcProps);
+        MdcRequestFilter filter = new MdcRequestFilter(identityProps, mdcProps);
 
         filter.doFilter(request, response, filterChain);
 
@@ -87,14 +87,16 @@ class MdcRequestFilterTest {
 
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcRequestFilter filter = new MdcRequestFilter(httpProps, mdcProps);
+        MdcRequestFilter filter = new MdcRequestFilter(identityProps, mdcProps);
 
         String userId = "user-001";
         String requestId = "req-001";
         String requestUri = "/test";
 
-        request.addHeader(httpProps.headers().userId(), userId);
-        request.addHeader(httpProps.headers().requestId(), requestId);
+        var headerKeys = identityProps.http().headers();
+
+        request.addHeader(headerKeys.userId(), userId);
+        request.addHeader(headerKeys.requestId(), requestId);
         request.setRequestURI(requestUri);
         request.setMethod(HttpMethod.GET.name());
         response.setStatus(HttpStatus.OK.value());
@@ -107,7 +109,7 @@ class MdcRequestFilterTest {
         Map<String, String> expected = Map.of(
                 mdcProps.userId(), userId,
                 mdcProps.requestId(), requestId,
-                mdcProps.kind(), httpProps.kind(),
+                mdcProps.kind(), mdcProps.kindValues().http(),
                 mdcProps.name(), requestUri,
                 mdcProps.method(), HttpMethod.GET.name(),
                 mdcProps.status(), String.valueOf(HttpStatus.OK.value()));
@@ -130,13 +132,15 @@ class MdcRequestFilterTest {
         String requestId = "req-001";
         String requestUri = "/test";
 
-        request.addHeader(httpProps.headers().userId(), userId);
-        request.addHeader(httpProps.headers().requestId(), requestId);
+        var headerKeys = identityProps.http().headers();
+
+        request.addHeader(headerKeys.userId(), userId);
+        request.addHeader(headerKeys.requestId(), requestId);
         request.setRequestURI(requestUri);
         request.setMethod(HttpMethod.GET.name());
         response.setStatus(HttpStatus.OK.value());
 
-        MdcRequestFilter filter = new MdcRequestFilter(httpProps, mdcProps);
+        MdcRequestFilter filter = new MdcRequestFilter(identityProps, mdcProps);
 
         assertThrows(ServletException.class, () ->
                 filter.doFilter(request, response, (req, res) -> {
@@ -154,7 +158,7 @@ class MdcRequestFilterTest {
         Map<String, String> expected = Map.of(
                 mdcProps.userId(), userId,
                 mdcProps.requestId(), requestId,
-                mdcProps.kind(), httpProps.kind(),
+                mdcProps.kind(), mdcProps.kindValues().http(),
                 mdcProps.name(), requestUri,
                 mdcProps.method(), HttpMethod.GET.name(),
                 mdcProps.status(), String.valueOf(HttpStatus.OK.value()));

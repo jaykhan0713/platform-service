@@ -12,7 +12,7 @@ public record SampleResponse(
         String message,
 
         @Schema(
-                description = "Request id from the incoming request header. Empty when not provided.",
+                description = "Request id from the incoming identity header. Empty when not provided.",
                 example = "a1a7c9a73c4bdcb9acf3175c41371da0"
         )
         String requestId

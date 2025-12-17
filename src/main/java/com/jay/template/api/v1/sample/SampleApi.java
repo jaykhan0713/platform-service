@@ -7,9 +7,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import com.jay.template.api.v1.common.openapi.StandardErrorResponses;
+import com.jay.template.api.v1.common.error.openapi.StandardErrorResponses;
 import com.jay.template.api.v1.sample.model.SampleResponse;
 
 @Tag(
@@ -20,7 +19,7 @@ public interface SampleApi {
 
     @Operation(
             summary = "Sample endpoint",
-            description = "Demonstrates API structure, request identity extraction, and OpenAPI documentation."
+            description = "Demonstrates API structure, identity identity extraction, and OpenAPI documentation."
     )
     @StandardErrorResponses
     @ApiResponses({
@@ -33,6 +32,6 @@ public interface SampleApi {
                     )
             )
     })
-    @GetMapping("/v1/sample")
+
     SampleResponse get();
 }

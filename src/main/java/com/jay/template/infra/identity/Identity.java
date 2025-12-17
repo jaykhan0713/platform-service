@@ -1,10 +1,10 @@
-package com.jay.template.infra.request;
+package com.jay.template.infra.identity;
 
 /**
- * Immutable request identity.
+ * Immutable identity identity.
  *
  * <p>
- * {@code Identity} represents request-scoped identity metadata as known to the service.
+ * {@code Identity} represents identity-scoped identity metadata as known to the service.
  * It may originate from an API gateway, reverse proxy, or another upstream service.
  * </p>
  *
@@ -15,16 +15,16 @@ package com.jay.template.infra.request;
  *
  * <p>
  * An {@code Identity} is considered <em>empty</em> only when all of its fields are blank.
- * Partial identity is valid and represents available request context.
+ * Partial identity is valid and represents available identity context.
  * </p>
  *
  * <p>
- * {@code Identity} is immutable for the lifetime of a request and is intended for
+ * {@code Identity} is immutable for the lifetime of a identity and is intended for
  * correlation, tracing, auditing, and logging purposes.
  * </p>
  *
  * @param userId identifier of the calling user or service, if available
- * @param requestId correlation identifier for the request, if available
+ * @param requestId correlation identifier for the identity, if available
  */
 public record Identity(String userId, String requestId /*, future fields */) {
 
@@ -34,7 +34,7 @@ public record Identity(String userId, String requestId /*, future fields */) {
     }
 
     /**
-     * Indicates whether this identity carries no meaningful request information.
+     * Indicates whether this identity carries no meaningful identity information.
      *
      * <p>
      * An identity is considered empty only if all fields are blank.

@@ -1,10 +1,10 @@
-package com.jay.template.infra.request;
+package com.jay.template.infra.identity;
 
 /**
- * Snapshot of request-scoped identity context.
+ * Snapshot of identity-scoped identity context.
  *
  * <p>
- * {@code IdentityContextSnapshot} represents a point-in-time view of request identity
+ * {@code IdentityContextSnapshot} represents a point-in-time view of identity identity
  * that can be safely passed across layers and thread boundaries.
  * </p>
  *
@@ -17,25 +17,25 @@ package com.jay.template.infra.request;
  * </p>
  *
  * <p>
- * An empty request context is represented exclusively by the {@link #EMPTY} sentinel
+ * An empty identity context is represented exclusively by the {@link #EMPTY} sentinel
  * instance. Callers must not assume value equality implies emptiness; reference
  * equality against {@link #EMPTY} defines the absence of identity.
  * </p>
  *
  * <p>
- * To modify request context, a new snapshot must be created and bound via
+ * To modify identity context, a new snapshot must be created and bound via
  * {@link IdentityContextHolder#setContext(IdentityContextSnapshot)}.
  * </p>
  *
- * @param identity immutable identity associated with the request
+ * @param identity immutable identity associated with the identity
  */
 public record IdentityContextSnapshot(Identity identity) {
 
     /**
-     * Sentinel instance representing the absence of request identity.
+     * Sentinel instance representing the absence of identity identity.
      *
      * <p>
-     * This instance is used to model an unbound or empty request context and must be
+     * This instance is used to model an unbound or empty identity context and must be
      * treated as a singleton. Reference equality checks against this instance are
      * intentional and relied upon by infrastructure code.
      * </p>

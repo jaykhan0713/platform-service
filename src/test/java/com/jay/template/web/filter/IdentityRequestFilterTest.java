@@ -13,22 +13,22 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jay.template.helper.YamlBinder;
-import com.jay.template.infra.request.IdentityContextHolder;
-import com.jay.template.infra.request.IdentityContextSnapshot;
-import com.jay.template.web.request.HttpProperties;
+import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.infra.identity.IdentityContextSnapshot;
+import com.jay.template.infra.identity.IdentityProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class IdentityRequestFilterTest {
 
-    private static final String HTTP_PROPS_KEY = "app.http";
+    private static final String IDENTITY_PROPS_KEY = "app.identity";
 
-    private static HttpProperties httpProps;
+    private static IdentityProperties props;
 
     @BeforeAll
     static void initClass() throws Exception {
         YamlBinder binder = new YamlBinder();
-        httpProps = binder.bind(HTTP_PROPS_KEY, HttpProperties.class);
+        props = binder.bind(IDENTITY_PROPS_KEY, IdentityProperties.class);
     }
 
     @BeforeEach
@@ -47,7 +47,7 @@ class IdentityRequestFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        IdentityRequestFilter filter = new IdentityRequestFilter(httpProps);
+        IdentityRequestFilter filter = new IdentityRequestFilter(props);
 
         filter.doFilter(request, response, filterChain);
 
@@ -60,9 +60,11 @@ class IdentityRequestFilterTest {
         String userId = "user-001";
         String requestId = "req-001";
 
+        var headerKeys = props.http().headers();
+
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(httpProps.headers().userId(), userId);
-        request.addHeader(httpProps.headers().requestId(), requestId);
+        request.addHeader(headerKeys.userId(), userId);
+        request.addHeader(headerKeys.requestId(), requestId);
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain assertingChain = (req, res) -> {
             IdentityContextSnapshot ctx = IdentityContextHolder.getContext();
@@ -72,7 +74,7 @@ class IdentityRequestFilterTest {
             assertEquals(requestId, ctx.identity().requestId());
         };
 
-        IdentityRequestFilter filter = new IdentityRequestFilter(httpProps);
+        IdentityRequestFilter filter = new IdentityRequestFilter(props);
 
         filter.doFilter(request, response, assertingChain);
 
@@ -83,11 +85,12 @@ class IdentityRequestFilterTest {
     @Test
     void clearsContextWhenChainThrows() {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(httpProps.headers().userId(), "user-001");
-        request.addHeader(httpProps.headers().requestId(), "req-001");
+        var headerKeys = props.http().headers();
+        request.addHeader(headerKeys.userId(), "user-001");
+        request.addHeader(headerKeys.requestId(), "req-001");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        IdentityRequestFilter filter = new IdentityRequestFilter(httpProps);
+        IdentityRequestFilter filter = new IdentityRequestFilter(props);
 
         FilterChain throwingChain = (req, res) -> { throw new ServletException("error"); };
 

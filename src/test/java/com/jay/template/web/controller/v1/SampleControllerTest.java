@@ -1,14 +1,14 @@
-package com.jay.template.web.controller;
+package com.jay.template.web.controller.v1;
 
-import com.jay.template.infra.request.IdentityContextHolder;
-import com.jay.template.infra.request.IdentityContextSnapshot;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.error.ApiException;
-import com.jay.template.infra.request.Identity;
+import com.jay.template.app.error.ApiException;
+import com.jay.template.infra.identity.Identity;
+import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.infra.identity.IdentityContextSnapshot;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +27,7 @@ class SampleControllerTest {
     @Test
     void getReturnsResponse() {
         String userId = "user-001";
-        String requestId = "request-001";
+        String requestId = "identity-001";
 
         Identity identity = new Identity(userId, requestId);
         IdentityContextHolder.setContext(IdentityContextSnapshot.of(identity));
@@ -43,7 +43,7 @@ class SampleControllerTest {
     @Test
     void getThrowsWhenIdentityUserIdMissing() {
 
-        String requestId = "request-001";
+        String requestId = "identity-001";
 
         Identity identity = new Identity(null, requestId);
         IdentityContextHolder.setContext(IdentityContextSnapshot.of(identity));

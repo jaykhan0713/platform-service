@@ -1,4 +1,4 @@
-package com.jay.template.error;
+package com.jay.template.app.error;
 
 public final class ApiException extends RuntimeException {
 

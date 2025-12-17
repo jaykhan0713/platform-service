@@ -8,6 +8,8 @@ spring:
     virtual:
       enabled: true
   mvc.problemdetails.enabled: true #return RFC7807 problem details in error responses
+  main:
+    web-application-type: servlet # This application is a servlet-based web application
 
 management:
   endpoints:
@@ -25,12 +27,13 @@ management:
       export:
         enabled: false # would try to export to something like http://localhost:4318/v1/metrics
 
-app:
-  http: # inbound http configuration
-    headers:
-      userId: "x-user-id"
-      requestId: "x-request-id"
-    kind: "http"
+app: # namespace for Spring configuration keys
+  identity: # ex can add app.differentConcern.http.headers for other headers. Inbound/Outbound share these
+    http:
+      headers:
+        userId: "x-user-id"
+        requestId: "x-request-id"
+    #future protocols can be added here.
 
   logging:
     mdc:
@@ -43,23 +46,28 @@ app:
       status: "status"
       durationMs: "durationMs"
 
-  outbound:
-    http:
-      headers:
-        userId: "x-user-id"
-        requestId: "x-request-id"
+      kindValues: # future protocol can be added here
+        http: "http"
 
+  outbound:
+    # configuration for outbound clients, add protocols as needed
+    http:
       defaults:
         connect-timeout: 2s
         read-timeout: 5s
+        propagate-identity: false
 
-      clients: # add configurable outbound http clients here.
-        internal: # example client for services in same VPC or organization
-          base-url: "http://ping-service:8080"
+        # Advertise supported encodings (server may ignore).
+        # Client handles gzip automatically via the underlying HTTP client.
+        accept-encoding: gzip
+
+      # add configurable outbound http clients here. Transport agnostic, doesn't need to be RestClient
+      clients:
+        ping: # example client for services in same VPC or organization, propagates identity
+          base-url: "http://ping-service.internal" # Example smoke service endpoint
           connect-timeout: 2s
           read-timeout: 5s
           propagate-identity: true
-        external: # example client for third party APIs
-          propagate-identity: false # identity is not propagated to third Party APIs
+          accept-encoding: "" # disables header.
 
 

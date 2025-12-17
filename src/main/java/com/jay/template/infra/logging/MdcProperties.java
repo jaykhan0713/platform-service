@@ -1,6 +1,8 @@
 package com.jay.template.infra.logging;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -14,5 +16,10 @@ public record MdcProperties(
         @NotBlank String name,
         @NotBlank String method,
         @NotBlank String status,
-        @NotBlank String durationMs
-) {}
+        @NotBlank String durationMs,
+        @NotNull @Valid KindValues kindValues
+) {
+    public record KindValues(
+            @NotBlank String http
+    ){}
+}
