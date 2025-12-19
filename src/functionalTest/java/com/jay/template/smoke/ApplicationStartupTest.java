@@ -1,16 +1,16 @@
 package com.jay.template.smoke;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 
-import com.jay.template.Starter;
+import com.jay.template.common.FunctionalTestBase;
+import com.jay.template.common.SpringBootTestShared;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-@SpringBootTest(classes = Starter.class, webEnvironment = RANDOM_PORT)
-public class ApplicationStartupTest {
+
+@SpringBootTestShared
+public class ApplicationStartupTest extends FunctionalTestBase {
 
     private final ApplicationContext appContext;
 

@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.MediaType;
 
 import com.jay.template.api.v1.common.error.openapi.StandardErrorResponses;
 import com.jay.template.api.v1.sample.model.SampleResponse;
+
 
 @Tag(
         name = "Sample",
@@ -27,7 +27,7 @@ public interface SampleApi {
                     responseCode = "200",
                     description = "Success",
                     content = @Content(
-                            mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            mediaType = "application/json",
                             schema = @Schema(implementation = SampleResponse.class)
                     )
             )

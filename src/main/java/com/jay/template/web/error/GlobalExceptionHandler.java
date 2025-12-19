@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
         ErrorType type = ex.getType();
 
         // NOTE: expected error, no stack trace noise
-        // TODO: optionally surface errorCode via MDC for identity-complete logging for MDCRequestFilter}
+        // optionally surface errorCode via MDC for identity-complete logging for MDCRequestFilter
         LOGGER.error(type.getCode());
 
         return buildResponseEntity(type);

@@ -2,7 +2,6 @@ package com.jay.template.infra.http.interceptor;
 
 import java.io.IOException;
 
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
@@ -15,8 +14,9 @@ import com.jay.template.infra.identity.IdentityContextHolder;
 import com.jay.template.infra.identity.IdentityProperties;
 
 @Component
-public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor {
+public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor, OutboundRequestInterceptorFeature {
 
+    static final String KEY = "identity";
 
     private final IdentityProperties.Http.Headers headerKeys;
 
@@ -34,5 +34,15 @@ public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor {
         headers.set(headerKeys.requestId(), identity.requestId());
 
         return execution.execute(request, body);
+    }
+
+    @Override
+    public ClientHttpRequestInterceptor interceptor() {
+        return this;
+    }
+
+    @Override
+    public String key() {
+        return KEY;
     }
 }

@@ -8,17 +8,17 @@ final class ContextAwareVirtualThreadFactory implements ThreadFactory {
     private final ThreadFactory delegate;
     private final List<ContextPropagator> propagators;
 
-    public ContextAwareVirtualThreadFactory(List<ContextPropagator> propagators) {
+    ContextAwareVirtualThreadFactory(List<ContextPropagator> propagators) {
         this.delegate = Thread.ofVirtual().factory();
         this.propagators = propagators;
     }
 
     @Override
     public Thread newThread(Runnable task) {
-        Runnable propogatedTask = task;
+        Runnable propagatedTask = task;
         for (ContextPropagator propagator : propagators) {
-            propogatedTask = propagator.propagate(propogatedTask);
+            propagatedTask = propagator.propagate(propagatedTask);
         }
-        return delegate.newThread(propogatedTask);
+        return delegate.newThread(propagatedTask);
     }
 }

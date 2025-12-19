@@ -49,7 +49,6 @@ dependencies {
 
     //micrometer + Otel
     implementation("io.micrometer:micrometer-registry-prometheus")
-    implementation("io.micrometer:micrometer-tracing-bridge-otel")
 
     //OpenAPI
     implementation(platform("org.springdoc:springdoc-openapi-bom:3.0.0"))
@@ -60,9 +59,11 @@ dependencies {
     //implementation("io.github.resilience4j:resilience4j-spring-boot3")
     //implementation("io.github.resilience4j:resilience4j-micrometer")
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
+    //runtimeOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure")
+
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -123,12 +124,21 @@ tasks.jacocoTestReport {
         files(classDirectories.files.map {
             fileTree(it) {
                 exclude(
-                    "**/*Config.class",
-                    "**/*Properties.class",
+                    // SpringApplication runner class.
                     "**/Starter.class",
 
+                    //@Configuration and @ConfigurationProperties classes.
+                    "**/*Config.class",
+                    "**/*Config$*.class",
+                    "**/*Properties.class",
+                    "**/*Properties$*.class", //nested records
+
+
                     // OpenAPI contract surface (DTOs, error models, annotations)
-                    "**/com/jay/template/api/**"
+                    "**/com/jay/template/api/**",
+
+                    // Functional Test related
+                    "**/smoke/**"
                 )
             }
         })
@@ -162,10 +172,10 @@ testing {
                 implementation("org.springframework.boot:spring-boot-starter-web")
 
                 implementation("org.springframework.boot:spring-boot-starter-test")
+                implementation("org.springframework.boot:spring-boot-resttestclient")
 
                 implementation(platform("com.squareup.okhttp3:okhttp-bom:5.2.1"))
                 implementation("com.squareup.okhttp3:mockwebserver")
-                implementation("com.squareup.okhttp3:okhttp")
             }
 
             targets.all {

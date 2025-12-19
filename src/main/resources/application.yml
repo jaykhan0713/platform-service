@@ -17,15 +17,21 @@ management:
       exposure:
         include: health,info
   endpoint.health.show-details: always
+
   tracing:
+    propagation:
+      type: w3c
     sampling:
       probability: 1.0
     export:
-      enabled: false # tracer still exists, but nothing leaves the process
+      otlp:
+        # NOTE: this flag MUST be explicit for spring to configure correct handler Propagators
+        enabled: false # tracer still exists, but spans don't leave the process
+
   otlp:
     metrics:
       export:
-        enabled: false # would try to export to something like http://localhost:4318/v1/metrics
+        enabled: false # would try to export metrics to something like http://localhost:4318/v1/metrics
 
 app: # namespace for Spring configuration keys
   identity: # ex can add app.differentConcern.http.headers for other headers. Inbound/Outbound share these
@@ -50,16 +56,13 @@ app: # namespace for Spring configuration keys
         http: "http"
 
   outbound:
-    # configuration for outbound clients, add protocols as needed
-    http:
+
+    http:  # configuration for outbound http clients, add protocols as needed
       defaults:
         connect-timeout: 2s
         read-timeout: 5s
-        propagate-identity: false
-
-        # Advertise supported encodings (server may ignore).
-        # Client handles gzip automatically via the underlying HTTP client.
-        accept-encoding: gzip
+        # ORDER matters for interceptors, applied in list-order. client value overwrites defaults when present
+        request-interceptors: []
 
       # add configurable outbound http clients here. Transport agnostic, doesn't need to be RestClient
       clients:
@@ -67,7 +70,6 @@ app: # namespace for Spring configuration keys
           base-url: "http://ping-service.internal" # Example smoke service endpoint
           connect-timeout: 2s
           read-timeout: 5s
-          propagate-identity: true
-          accept-encoding: "" # disables header.
+          request-interceptors: ["identity"]
 
 
