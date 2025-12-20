@@ -19,7 +19,7 @@ import com.jay.template.infra.identity.IdentityProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IdentityRequestFilterTest {
+class IdentityFilterTest {
 
     private static final String IDENTITY_PROPS_KEY = "app.identity";
 
@@ -47,7 +47,7 @@ class IdentityRequestFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        IdentityRequestFilter filter = new IdentityRequestFilter(props);
+        IdentityFilter filter = new IdentityFilter(props);
 
         filter.doFilter(request, response, filterChain);
 
@@ -74,7 +74,7 @@ class IdentityRequestFilterTest {
             assertEquals(requestId, ctx.identity().requestId());
         };
 
-        IdentityRequestFilter filter = new IdentityRequestFilter(props);
+        IdentityFilter filter = new IdentityFilter(props);
 
         filter.doFilter(request, response, assertingChain);
 
@@ -90,7 +90,7 @@ class IdentityRequestFilterTest {
         request.addHeader(headerKeys.requestId(), "req-001");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
-        IdentityRequestFilter filter = new IdentityRequestFilter(props);
+        IdentityFilter filter = new IdentityFilter(props);
 
         FilterChain throwingChain = (req, res) -> { throw new ServletException("error"); };
 

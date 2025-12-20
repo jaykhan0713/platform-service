@@ -33,7 +33,7 @@ public class PingSmokeTest extends FunctionalTestBase {
     @Test
     void smokePingCallsDownstreamAndPropagatesTraceAndIdentityHeaders() throws Exception {
 
-        //the mocked response that the downstream mock server respondes with
+        //the mocked response that the downstream mock server responds with
         DownstreamPingResponse downstreamResponse = new DownstreamPingResponse("pong");
         ObjectMapper mapper = new ObjectMapper();
         mockWebServer.enqueue(new MockResponse()

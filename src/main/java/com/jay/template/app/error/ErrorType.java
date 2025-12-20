@@ -1,9 +1,14 @@
 package com.jay.template.app.error;
 
 public enum ErrorType {
-    BAD_REQUEST("BAD_REQUEST", "Bad Request"),
+    //Server errors
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Internal Server Error"),
-    USER_ID_MISSING("USER_ID_MISSING", "User ID is missing");
+
+    //Client errors
+    BAD_REQUEST("BAD_REQUEST", "Bad Request"),
+    USER_ID_MISSING("USER_ID_MISSING", "User ID is missing"),
+    TOO_MANY_REQUESTS("TOO_MANY_REQUESTS", "Too many requests");
+
 
     private final String code;
     private final String message;

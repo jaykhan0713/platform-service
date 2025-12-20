@@ -25,11 +25,11 @@ import com.jay.template.infra.logging.MdcProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class MdcRequestFilterTest {
+class MdcFilterTest {
 
     private static final String IDENTITY_PROPS_KEY = "app.identity";
     private static final String MDC_PROPS_KEY = "app.logging.mdc";
-    private static final Logger MDC_RF_LOGGER = (Logger) LoggerFactory.getLogger(MdcRequestFilter.class);
+    private static final Logger MDC_RF_LOGGER = (Logger) LoggerFactory.getLogger(MdcFilter.class);
 
     private static IdentityProperties identityProps;
     private static MdcProperties mdcProps;
@@ -72,7 +72,7 @@ class MdcRequestFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcRequestFilter filter = new MdcRequestFilter(identityProps, mdcProps);
+        MdcFilter filter = new MdcFilter(identityProps, mdcProps);
 
         filter.doFilter(request, response, filterChain);
 
@@ -87,7 +87,7 @@ class MdcRequestFilterTest {
 
         MockFilterChain filterChain = new MockFilterChain();
 
-        MdcRequestFilter filter = new MdcRequestFilter(identityProps, mdcProps);
+        MdcFilter filter = new MdcFilter(identityProps, mdcProps);
 
         String userId = "user-001";
         String requestId = "req-001";
@@ -140,7 +140,7 @@ class MdcRequestFilterTest {
         request.setMethod(HttpMethod.GET.name());
         response.setStatus(HttpStatus.OK.value());
 
-        MdcRequestFilter filter = new MdcRequestFilter(identityProps, mdcProps);
+        MdcFilter filter = new MdcFilter(identityProps, mdcProps);
 
         assertThrows(ServletException.class, () ->
                 filter.doFilter(request, response, (req, res) -> {

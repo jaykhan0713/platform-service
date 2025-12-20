@@ -1,22 +1,50 @@
-server:
+server: # embedded servlet container configs
   port: 8080
+
+  tomcat: # edge / connector-level (NIO) configs
+    # Slow client protection (time allowed to receive request line + headers + start of body)
+    connection-timeout: 5s
+
+    # Cap concurrent accepted TCP connections (Tomcat-owned sockets)
+    # Protects from file descriptor exhaustion + kernel/Tomcat memory pressure
+    max-connections: 2000
+
+    # Accept backlog size: how many completed TCP handshakes can wait
+    # before Tomcat calls accept() and the kernel hands off a new socket FD
+    accept-count: 200
+
+    # Don’t let idle keep-alive connections stay around forever
+    # Protects from clients that keep sockets open but don't send another request
+    keep-alive-timeout: 15s
+
+  # max-http-request-header-size: 16KB # optional
 
 spring:
   application:
     name: service-template
-  threads:
+
+  threads: # This app is built around project loom design, MUST enable virtual threads.
     virtual:
       enabled: true
+
   mvc.problemdetails.enabled: true #return RFC7807 problem details in error responses
+
   main:
-    web-application-type: servlet # This application is a servlet-based web application
+    # This application is a servlet-based web application.
+    # Auto configure embedded servlet container, Spring MVC, registers the DispatcherServlet
+    web-application-type: servlet
 
 management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: "*" #health,metrics,prometheus,env,loggers,beans
+
   endpoint.health.show-details: always
+
+  info:
+    git:
+      mode: full
 
   tracing:
     propagation:
@@ -33,13 +61,20 @@ management:
       export:
         enabled: false # would try to export metrics to something like http://localhost:4318/v1/metrics
 
+resilience4j:
+  bulkhead:
+    instances:
+      webInboundFilter: #bulkhead used in web.filter.BulkheadFilter
+        max-concurrent-calls: 200 # max number of permits given at the inbound filter.
+        max-wait-duration: 0 # fail-fast when no permits available.
+
 app: # namespace for Spring configuration keys
   identity: # ex can add app.differentConcern.http.headers for other headers. Inbound/Outbound share these
     http:
       headers:
         userId: "x-user-id"
         requestId: "x-request-id"
-    #future protocols can be added here.
+    #future protocol identity properties can be added here.
 
   logging:
     mdc:
@@ -52,7 +87,7 @@ app: # namespace for Spring configuration keys
       status: "status"
       durationMs: "durationMs"
 
-      kindValues: # future protocol can be added here
+      kindValues: # future protocol kindValue can be added here
         http: "http"
 
   outbound:
@@ -61,7 +96,9 @@ app: # namespace for Spring configuration keys
       defaults:
         connect-timeout: 2s
         read-timeout: 5s
+
         # ORDER matters for interceptors, applied in list-order. client value overwrites defaults when present
+        # String key defined for implementation of infra.http.interceptor.OutboundRequestInterceptorFeature
         request-interceptors: []
 
       # add configurable outbound http clients here. Transport agnostic, doesn't need to be RestClient

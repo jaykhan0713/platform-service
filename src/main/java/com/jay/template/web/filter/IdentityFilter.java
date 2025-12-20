@@ -6,19 +6,18 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.jay.template.infra.identity.IdentityProperties;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jay.template.infra.identity.Identity;
 import com.jay.template.infra.identity.IdentityContextHolder;
 import com.jay.template.infra.identity.IdentityContextSnapshot;
+import com.jay.template.infra.identity.IdentityProperties;
 
 /**
- * Binds identity identity to the current thread for the duration of a single HTTP identity.
+ * Binds identity to the current thread for the duration of a single HTTP identity.
  *
  * <p>
- * {@code IdentityRequestFilter} extracts identity metadata from configured inbound headers
+ * {@code IdentityFilter} extracts identity metadata from configured inbound headers
  * and stores it in {@link IdentityContextHolder} so downstream code can access a stable,
  * immutable {@link Identity} during identity processing.
  * </p>
@@ -28,12 +27,11 @@ import com.jay.template.infra.identity.IdentityContextSnapshot;
  * state across thread reuse.
  * </p>
  */
-@Component
-public class IdentityRequestFilter extends OncePerRequestFilter {
+class IdentityFilter extends OncePerRequestFilter {
 
     private final IdentityProperties.Http.Headers headerKeys;
 
-    public IdentityRequestFilter(IdentityProperties props) {
+    IdentityFilter(IdentityProperties props) {
         this.headerKeys = props.http().headers();
     }
 

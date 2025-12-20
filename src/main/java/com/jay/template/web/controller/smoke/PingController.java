@@ -20,7 +20,7 @@ public class PingController {
         this.pingService = pingService;
     }
 
-    @GetMapping("/smoke/ping")
+    @GetMapping("/api/smoke/ping")
     public PingResponse get() {
         PingModel model = pingService.pingDependency();
         return new PingResponse(model.ok(), model.msg());

@@ -104,4 +104,13 @@ class IdentityHeaderInterceptorTest {
         assertSame(response, result);
     }
 
+    @Test
+    void interceptorAndKeyReturnExpectedValues() {
+        IdentityHeaderInterceptor interceptor = new IdentityHeaderInterceptor(props);
+
+        assertEquals("identity", interceptor.key());
+        assertSame(interceptor, interceptor.interceptor());
+    }
+
+
 }

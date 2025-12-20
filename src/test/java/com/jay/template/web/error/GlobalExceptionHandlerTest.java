@@ -1,70 +1,36 @@
 package com.jay.template.web.error;
 
-import io.micrometer.tracing.Tracer;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
-import com.jay.template.api.v1.common.error.ErrorResponse;
 import com.jay.template.app.error.ApiException;
 import com.jay.template.app.error.ErrorType;
-import com.jay.template.helper.MockTracerUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class GlobalExceptionHandlerTest {
 
     @Test
     void handlesGenericException() {
-        String message = "generic error";
-        Exception ex = new Exception(message);
-        String traceId = "trace-001";
-        Tracer tracer = MockTracerUtils.mockTracer(traceId);
+        Exception ex = mock(Exception.class);
 
-        GlobalExceptionHandler handler = new GlobalExceptionHandler(tracer);
-        ResponseEntity<ErrorResponse> entity = handler.handleGenericException(ex);
+        ErrorResponseFactory errorResponseFactory = mock(ErrorResponseFactory.class);
 
-        ErrorResponse body = entity.getBody();
-        assertNotNull(body);
-        assertEquals(ErrorType.INTERNAL_SERVER_ERROR.getDefaultMessage(), body.message());
-        assertEquals(ErrorType.INTERNAL_SERVER_ERROR.getCode(), body.code());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
-        assertEquals(traceId, body.correlationId());
+        GlobalExceptionHandler handler = new GlobalExceptionHandler(errorResponseFactory);
+        handler.handleGenericException(ex);
+
+        verify(errorResponseFactory).buildResponseEntity(ErrorType.INTERNAL_SERVER_ERROR);
     }
 
     @Test
     void handlesApiException() {
-        String message = "bad identity error";
-        ApiException ex = new ApiException(ErrorType.BAD_REQUEST, message);
-        String traceId = "trace-001";
-        Tracer tracer = MockTracerUtils.mockTracer(traceId);
+        ErrorType type = ErrorType.USER_ID_MISSING;
+        ApiException ex = new ApiException(type);
 
-        GlobalExceptionHandler handler = new GlobalExceptionHandler(tracer);
-        ResponseEntity<ErrorResponse> entity = handler.handleApiException(ex);
+        ErrorResponseFactory errorResponseFactory = mock(ErrorResponseFactory.class);
 
-        ErrorResponse body = entity.getBody();
-        assertNotNull(body);
-        assertEquals(ErrorType.BAD_REQUEST.getDefaultMessage(), body.message());
-        assertEquals(ErrorType.BAD_REQUEST.getCode(), body.code());
-        assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
-        assertEquals(traceId, body.correlationId());
-    }
+        GlobalExceptionHandler handler = new GlobalExceptionHandler(errorResponseFactory);
+        handler.handleApiException(ex);
 
-    @Test
-    void handlesExceptionWhenSpanIsNull() {
-        String message = "generic error";
-        Exception ex = new Exception(message);
-        Tracer tracer = Mockito.mock(Tracer.class);
-
-        GlobalExceptionHandler handler = new GlobalExceptionHandler(tracer);
-        ResponseEntity<ErrorResponse> entity = handler.handleGenericException(ex);
-
-        ErrorResponse body = entity.getBody();
-        assertNotNull(body);
-        assertEquals(ErrorType.INTERNAL_SERVER_ERROR.getDefaultMessage(), body.message());
-        assertEquals(ErrorType.INTERNAL_SERVER_ERROR.getCode(), body.code());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
-        assertNull(body.correlationId());
+        verify(errorResponseFactory).buildResponseEntity(type);
     }
 }

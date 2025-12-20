@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") // embedded tomcat servlet container
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-restclient")
@@ -47,7 +47,7 @@ dependencies {
     implementation("ch.qos.logback.contrib:logback-json-classic")
     implementation("ch.qos.logback.contrib:logback-jackson")
 
-    //micrometer + Otel
+    //micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
 
     //OpenAPI
@@ -55,15 +55,15 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
 
     //Resilience4j
-    //implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
-    //implementation("io.github.resilience4j:resilience4j-spring-boot3")
-    //implementation("io.github.resilience4j:resilience4j-micrometer")
+    implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
+    implementation("io.github.resilience4j:resilience4j-spring-boot3")
+    implementation("io.github.resilience4j:resilience4j-micrometer")
 
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-
-    //runtimeOnly("io.opentelemetry:opentelemetry-sdk-extension-autoconfigure")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    //IDE support such as yml configs with javadocs, generates meta-data json at build time.
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")

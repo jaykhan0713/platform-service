@@ -18,7 +18,7 @@ public class SampleController implements SampleApi {
 
 
     @Override
-    @GetMapping("/v1/sample")
+    @GetMapping("/api/v1/sample")
     public SampleResponse get() {
 
         Identity identity = IdentityContextHolder.getContext().identity();

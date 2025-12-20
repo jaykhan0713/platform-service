@@ -7,20 +7,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.jay.template.infra.identity.IdentityProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.jay.template.infra.identity.IdentityProperties;
 import com.jay.template.infra.logging.MdcProperties;
 
 /**
  * Populates MDC (Mapped Diagnostic Context) fields for structured identity logging.
  *
  * <p>
- * {@code MdcRequestFilter} extracts a small set of identity attributes and configured
+ * {@code MdcFilter} extracts a small set of identity attributes and configured
  * inbound headers and writes them into {@link MDC} so all log entries produced during
  * identity handling include consistent context.
  * </p>
@@ -36,15 +35,14 @@ import com.jay.template.infra.logging.MdcProperties;
  * reuse.
  * </p>
  */
-@Component
-public class MdcRequestFilter extends OncePerRequestFilter {
+class MdcFilter extends OncePerRequestFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MdcRequestFilter.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MdcFilter.class);
 
     private final IdentityProperties.Http.Headers headerKeys;
     private final MdcProperties mdcProps;
 
-    public MdcRequestFilter(IdentityProperties identityProps, MdcProperties mdcProps) {
+    MdcFilter(IdentityProperties identityProps, MdcProperties mdcProps) {
         this.headerKeys = identityProps.http().headers();
         this.mdcProps = mdcProps;
     }
