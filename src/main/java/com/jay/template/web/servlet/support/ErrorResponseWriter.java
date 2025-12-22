@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import jakarta.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -17,8 +15,6 @@ import com.jay.template.web.error.ErrorResponseFactory;
 
 @Component
 public class ErrorResponseWriter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ErrorResponseWriter.class);
 
     private final ObjectMapper objectMapper;
     private final ErrorResponseFactory errorResponseFactory;

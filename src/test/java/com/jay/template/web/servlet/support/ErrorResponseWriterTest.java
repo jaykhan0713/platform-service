@@ -2,11 +2,7 @@ package com.jay.template.web.servlet.support;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import jakarta.servlet.ServletOutputStream;
 
-import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.app.error.ErrorType;
-import com.jay.template.web.error.ErrorResponseFactory;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,12 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.jay.template.api.v1.common.error.ErrorResponse;
+import com.jay.template.app.error.ErrorType;
+import com.jay.template.web.error.ErrorResponseFactory;
 
-import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
+
 class ErrorResponseWriterTest {
+
     @Test
     void writeErrorResponseWriterTest() throws IOException {
         ObjectMapper objectMapper = mock(ObjectMapper.class);
@@ -41,17 +42,28 @@ class ErrorResponseWriterTest {
         writer.writeJsonErrorResponse(response, type);
 
         verify(factory).buildResponseEntity(type);
-
         // Verify the writer passes the response output stream and the response body to Jackson
-        verify(objectMapper).writeValue(any(java.io.OutputStream.class), eq(body));
+        verify(objectMapper).writeValue(response.getOutputStream(), body);
 
         MediaType contentType = MediaType.parseMediaType(response.getContentType());
         MediaType expected = new MediaType(MediaType.APPLICATION_JSON, StandardCharsets.UTF_8);
 
         assertEquals(expected, contentType);
         assertEquals(entity.getStatusCode().value(), response.getStatus());
+    }
 
-        //ensure factory and objectMapper are never called in this method again
-        verifyNoMoreInteractions(factory, objectMapper);
+    @Test
+    void whenResponseIsCommittedReturns() throws IOException {
+        ObjectMapper objectMapper = mock(ObjectMapper.class);
+        ErrorResponseFactory factory = mock(ErrorResponseFactory.class);
+
+        ErrorResponseWriter writer = new ErrorResponseWriter(objectMapper, factory);
+
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        response.setCommitted(true);
+
+        writer.writeJsonErrorResponse(response, TOO_MANY_REQUESTS);
+
+        verifyNoInteractions(objectMapper, factory);
     }
 }
