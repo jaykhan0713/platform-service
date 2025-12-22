@@ -21,5 +21,5 @@ public record MdcProperties(
 ) {
     public record KindValues(
             @NotBlank String http
-    ){}
+    ) {}
 }

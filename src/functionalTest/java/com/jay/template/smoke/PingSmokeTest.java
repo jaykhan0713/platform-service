@@ -49,7 +49,7 @@ public class PingSmokeTest extends FunctionalTestBase {
         //request the app server
         ResponseEntity<PingResponse> response =
                 restTemplate.exchange(
-                        "/smoke/ping",
+                        "/api/smoke/ping",
                         HttpMethod.GET,
                         entity,
                         PingResponse.class

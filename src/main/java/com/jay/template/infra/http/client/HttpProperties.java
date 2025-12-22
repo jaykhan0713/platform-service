@@ -20,7 +20,7 @@ public record HttpProperties(
             @NotNull Duration connectTimeout,
             @NotNull Duration readTimeout,
             @NotNull List<String> requestInterceptors
-            ) {}
+    ) {}
 
     public record ClientConfig(
             @NotNull String baseUrl,

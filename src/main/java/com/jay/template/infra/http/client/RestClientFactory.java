@@ -54,8 +54,10 @@ public class RestClientFactory {
         builder.requestFactory(requestFactory)
                 .baseUrl(cfg.baseUrl());
 
-        List<ClientHttpRequestInterceptor> requestInterceptors = requestInterceptorRegistry
-                .getInterceptors(cfg.requestInterceptorsOrDefault(defaults));
+        List<ClientHttpRequestInterceptor> requestInterceptors =
+                requestInterceptorRegistry
+                        .getInterceptors(cfg.requestInterceptorsOrDefault(defaults));
+
         builder.requestInterceptors(list -> list.addAll(requestInterceptors));
 
 

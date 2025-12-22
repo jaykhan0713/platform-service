@@ -12,7 +12,7 @@ final class RequestInterceptorRegistry {
     private final Map<String, ClientHttpRequestInterceptor> featureMap;
 
     //OutboundRequestInterceptorFeature makes sure only app interceptors are injected, and not Spring interceptors
-    RequestInterceptorRegistry(List<OutboundRequestInterceptorFeature> features){
+    RequestInterceptorRegistry(List<OutboundRequestInterceptorFeature> features) {
         featureMap = new HashMap<>(features.size());
         for (OutboundRequestInterceptorFeature feature : features) {
             if (featureMap.containsKey(feature.key())) {
@@ -29,14 +29,14 @@ final class RequestInterceptorRegistry {
         Set<String> seenKeys = new HashSet<>(requestInterceptorKeys.size());
 
         List<ClientHttpRequestInterceptor> httpRequestInterceptors = new ArrayList<>(requestInterceptorKeys.size());
-        for (String key: requestInterceptorKeys){
-            if (seenKeys.contains(key)){
+        for (String key: requestInterceptorKeys) {
+            if (seenKeys.contains(key)) {
                 throw new IllegalArgumentException("Duplicate request interceptor for key: " + key);
             }
 
             ClientHttpRequestInterceptor httpRequestInterceptor = featureMap.get(key);
 
-            if (httpRequestInterceptor == null){
+            if (httpRequestInterceptor == null) {
                 throw new IllegalArgumentException("No request interceptor found for key: " + key);
             }
 

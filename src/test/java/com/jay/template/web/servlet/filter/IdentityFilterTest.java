@@ -1,9 +1,10 @@
-package com.jay.template.web.filter;
+package com.jay.template.web.servlet.filter;
 
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 
+import com.jay.template.web.servlet.filter.IdentityFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,11 +44,11 @@ class IdentityFilterTest {
 
     @Test
     void filterChainIsCalled() throws ServletException, IOException {
+        IdentityFilter filter = new IdentityFilter(props);
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
-
-        IdentityFilter filter = new IdentityFilter(props);
 
         filter.doFilter(request, response, filterChain);
 
@@ -57,6 +58,8 @@ class IdentityFilterTest {
 
     @Test
     void identityContextSnapshotIsSetAndClears() throws ServletException, IOException {
+        IdentityFilter filter = new IdentityFilter(props);
+
         String userId = "user-001";
         String requestId = "req-001";
 
@@ -74,8 +77,6 @@ class IdentityFilterTest {
             assertEquals(requestId, ctx.identity().requestId());
         };
 
-        IdentityFilter filter = new IdentityFilter(props);
-
         filter.doFilter(request, response, assertingChain);
 
         IdentityContextSnapshot context = IdentityContextHolder.getContext();
@@ -84,13 +85,13 @@ class IdentityFilterTest {
 
     @Test
     void clearsContextWhenChainThrows() {
+        IdentityFilter filter = new IdentityFilter(props);
+
         MockHttpServletRequest request = new MockHttpServletRequest();
         var headerKeys = props.http().headers();
         request.addHeader(headerKeys.userId(), "user-001");
         request.addHeader(headerKeys.requestId(), "req-001");
         MockHttpServletResponse response = new MockHttpServletResponse();
-
-        IdentityFilter filter = new IdentityFilter(props);
 
         FilterChain throwingChain = (req, res) -> { throw new ServletException("error"); };
 

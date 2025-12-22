@@ -14,7 +14,7 @@ public record IdentityProperties(
 ) {
     public record Http(
             @NotNull @Valid Headers headers
-    ){
+    ) {
         public record Headers(
                 @NotBlank String userId,
                 @NotBlank String requestId

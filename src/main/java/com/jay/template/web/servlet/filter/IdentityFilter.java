@@ -1,4 +1,4 @@
-package com.jay.template.web.filter;
+package com.jay.template.web.servlet.filter;
 
 import java.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -36,9 +36,11 @@ class IdentityFilter extends OncePerRequestFilter {
     }
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            FilterChain filterChain
+    ) throws ServletException, IOException {
 
         String userId = request.getHeader(headerKeys.userId());
         String requestId = request.getHeader(headerKeys.requestId());

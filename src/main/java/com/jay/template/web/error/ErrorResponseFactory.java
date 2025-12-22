@@ -13,9 +13,11 @@ import com.jay.template.app.error.ErrorType;
 public class ErrorResponseFactory {
 
     private final Tracer tracer;
+    private final ErrorTypeHttpStatusMapper statusMapper;
 
-    public ErrorResponseFactory(Tracer tracer) {
+    public ErrorResponseFactory(Tracer tracer, ErrorTypeHttpStatusMapper statusMapper) {
         this.tracer = tracer;
+        this.statusMapper = statusMapper;
     }
 
     public ResponseEntity<ErrorResponse> buildResponseEntity(ErrorType type) {
@@ -27,18 +29,7 @@ public class ErrorResponseFactory {
         ErrorResponse body = new ErrorResponse(type.getCode(), type.getDefaultMessage(), traceId);
 
         return ResponseEntity
-                .status(toStatus(type))
+                .status(statusMapper.mapErrorTypeToHttpStatus(type))
                 .body(body);
-    }
-
-    private HttpStatus toStatus(ErrorType type) {
-        return switch (type) {
-            //400
-            case BAD_REQUEST, USER_ID_MISSING -> HttpStatus.BAD_REQUEST;
-            case TOO_MANY_REQUESTS -> HttpStatus.TOO_MANY_REQUESTS;
-
-            //500
-            case INTERNAL_SERVER_ERROR -> HttpStatus.INTERNAL_SERVER_ERROR;
-        };
     }
 }

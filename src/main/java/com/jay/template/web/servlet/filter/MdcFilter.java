@@ -1,4 +1,4 @@
-package com.jay.template.web.filter;
+package com.jay.template.web.servlet.filter;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -7,6 +7,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.jay.template.infra.identity.Identity;
+import com.jay.template.infra.identity.IdentityContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -39,11 +41,9 @@ class MdcFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MdcFilter.class);
 
-    private final IdentityProperties.Http.Headers headerKeys;
     private final MdcProperties mdcProps;
 
-    MdcFilter(IdentityProperties identityProps, MdcProperties mdcProps) {
-        this.headerKeys = identityProps.http().headers();
+    MdcFilter(MdcProperties mdcProps) {
         this.mdcProps = mdcProps;
     }
 
@@ -54,9 +54,9 @@ class MdcFilter extends OncePerRequestFilter {
 
         long start = System.nanoTime();
 
-        String userId = normalize(request.getHeader(headerKeys.userId()));
-        String requestId = normalize(request.getHeader(headerKeys.requestId()));
-        // additional headers can be added here
+        Identity identity = IdentityContextHolder.getContext().identity();
+        String userId = identity.userId();
+        String requestId = identity.requestId();
 
         String method = request.getMethod();
         String path = request.getRequestURI();
@@ -82,10 +82,5 @@ class MdcFilter extends OncePerRequestFilter {
             LOGGER.info("");
             MDC.clear();
         }
-    }
-
-    // normalizing to empty string ensures key is always present, even with missing value
-    private String normalize(String value) {
-        return value == null ? "" : value;
     }
 }

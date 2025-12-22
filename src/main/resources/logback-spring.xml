@@ -97,7 +97,7 @@
     </springProfile>
 
     <!-- custom loggers -->
-    <logger name="com.jay.template.web.filter.MdcFilter" level="INFO" additivity="false">
+    <logger name="com.jay.template.web.servlet.filter.MdcFilter" level="INFO" additivity="false">
         <appender-ref ref="${MDC_FILTER_APPENDER}" />
     </logger>
 

@@ -16,7 +16,6 @@ public class SampleController implements SampleApi {
 
     static final String SUCCESS_MESSAGE = "Sample Endpoint Success.";
 
-
     @Override
     @GetMapping("/api/v1/sample")
     public SampleResponse get() {
