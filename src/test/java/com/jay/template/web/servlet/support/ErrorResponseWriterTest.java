@@ -12,7 +12,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
 import com.jay.template.app.error.ErrorType;
-import com.jay.template.web.error.ErrorResponseFactory;
+import com.jay.template.web.error.ErrorResponseSpecFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -24,24 +24,24 @@ class ErrorResponseWriterTest {
     @Test
     void writeErrorResponseWriterTest() throws IOException {
         ObjectMapper objectMapper = mock(ObjectMapper.class);
-        ErrorResponseFactory factory = mock(ErrorResponseFactory.class);
+        ErrorResponseSpecFactory factory = mock(ErrorResponseSpecFactory.class);
 
         ErrorResponseWriter writer = new ErrorResponseWriter(objectMapper, factory);
 
         ErrorType type = TOO_MANY_REQUESTS;
         String correlationId = "trace-001";
-        ErrorResponse body = new ErrorResponse(type.getCode(), type.getDefaultMessage(), correlationId);
+        ErrorResponse body = new ErrorResponse(type.code(), type.defaultMessage(), correlationId);
 
         ResponseEntity<ErrorResponse> entity =
                 ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(body);
 
-        when(factory.buildResponseEntity(type)).thenReturn(entity);
+        when(factory.buildResponseSpec(type)).thenReturn(entity);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         writer.writeJsonErrorResponse(response, type);
 
-        verify(factory).buildResponseEntity(type);
+        verify(factory).buildResponseSpec(type);
         // Verify the writer passes the response output stream and the response body to Jackson
         verify(objectMapper).writeValue(response.getOutputStream(), body);
 
@@ -55,7 +55,7 @@ class ErrorResponseWriterTest {
     @Test
     void whenResponseIsCommittedReturns() throws IOException {
         ObjectMapper objectMapper = mock(ObjectMapper.class);
-        ErrorResponseFactory factory = mock(ErrorResponseFactory.class);
+        ErrorResponseSpecFactory factory = mock(ErrorResponseSpecFactory.class);
 
         ErrorResponseWriter writer = new ErrorResponseWriter(objectMapper, factory);
 

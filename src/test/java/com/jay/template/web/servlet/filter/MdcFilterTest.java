@@ -95,7 +95,7 @@ class MdcFilterTest {
         String requestId = "req-001";
         String requestUri = "/test";
 
-        IdentityContextHolder.setContext(IdentityContextSnapshot.of(new Identity(userId, requestId)));
+        IdentityContextHolder.context(IdentityContextSnapshot.of(new Identity(userId, requestId)));
 
         request.setRequestURI(requestUri);
         request.setMethod(HttpMethod.GET.name());
@@ -134,7 +134,7 @@ class MdcFilterTest {
         String requestId = "req-001";
         String requestUri = "/test";
 
-        IdentityContextHolder.setContext(IdentityContextSnapshot.of(new Identity(userId, requestId)));
+        IdentityContextHolder.context(IdentityContextSnapshot.of(new Identity(userId, requestId)));
 
         request.setRequestURI(requestUri);
         request.setMethod(HttpMethod.GET.name());

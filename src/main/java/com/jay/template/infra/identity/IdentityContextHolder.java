@@ -15,7 +15,7 @@ package com.jay.template.infra.identity;
  * </p>
  *
  * <p>
- * {@link #getContext()} never returns {@code null}. If no identity context is currently
+ * {@link #context()} never returns {@code null}. If no identity context is currently
  * bound to the thread, {@link IdentityContextSnapshot#EMPTY} is returned.
  * </p>
  *
@@ -41,7 +41,7 @@ public final class IdentityContextHolder {
      *
      * @return a non-null snapshot of the current identity identity context
      */
-    public static IdentityContextSnapshot getContext() {
+    public static IdentityContextSnapshot context() {
         IdentityContextSnapshot ctx = LOCAL.get();
         if (ctx == null) {
             return IdentityContextSnapshot.EMPTY;
@@ -60,7 +60,7 @@ public final class IdentityContextHolder {
      *
      * @param snapshot snapshot representing the identity identity context to bind
      */
-    public static void setContext(IdentityContextSnapshot snapshot) {
+    public static void context(IdentityContextSnapshot snapshot) {
         if (snapshot == null) {
             clear();
             return;

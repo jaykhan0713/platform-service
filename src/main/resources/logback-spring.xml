@@ -15,8 +15,7 @@
               value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" msg="%msg"%n'/>
 
     <property name="APP_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" msg="%msg"%n'/>
-    Changes:
+              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" %msg%n'/>
 
     <property name="MDC_FILTER_PATTERN"
               value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{${MDC_USER_ID}}" requestId="%X{${MDC_REQUEST_ID}}" kind="%X{${MDC_KIND}}" name="%X{${MDC_NAME}}" method="%X{${MDC_METHOD}}" status="%X{${MDC_STATUS}}" durationMs="%X{${MDC_DURATION_MS}}"%n'/>

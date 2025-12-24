@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import com.jay.template.app.error.ErrorType;
 
@@ -14,16 +13,15 @@ import static com.jay.template.app.error.ErrorType.INTERNAL_SERVER_ERROR;
 import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
 import static com.jay.template.app.error.ErrorType.USER_ID_MISSING;
 
-@Component
-class ErrorTypeHttpStatusMapper {
+final class ErrorTypeHttpStatusMapper {
 
-    final Map<ErrorType,HttpStatus> map = createMap();
+    private static final Map<ErrorType,HttpStatus> TYPE_TO_STATUS_MAP = createMap();
 
     HttpStatus mapErrorTypeToHttpStatus(ErrorType type) {
-        return map.getOrDefault(type, HttpStatus.INTERNAL_SERVER_ERROR);
+        return TYPE_TO_STATUS_MAP.getOrDefault(type, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private Map<ErrorType, HttpStatus> createMap() {
+    private static Map<ErrorType, HttpStatus> createMap() {
 
         final Map<ErrorType, HttpStatus> map = new EnumMap<>(ErrorType.class);
 

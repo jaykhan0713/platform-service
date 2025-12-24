@@ -48,7 +48,7 @@ class IdentityFilter extends OncePerRequestFilter {
         Identity identity = new Identity(userId, requestId);
 
         try {
-            IdentityContextHolder.setContext(IdentityContextSnapshot.of(identity));
+            IdentityContextHolder.context(IdentityContextSnapshot.of(identity));
             filterChain.doFilter(request, response);
         } finally {
             IdentityContextHolder.clear();

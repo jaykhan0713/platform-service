@@ -20,15 +20,15 @@ class IdentityContextHolderTest {
 
     @Test
     void setContextNullClearsAndGetReturnsEmpty() {
-        IdentityContextHolder.setContext(null);
-        IdentityContextSnapshot context = IdentityContextHolder.getContext();
+        IdentityContextHolder.context(null);
+        IdentityContextSnapshot context = IdentityContextHolder.context();
         assertSame(IdentityContextSnapshot.EMPTY, context);
     }
 
     @Test
     void setContextEmptyAndGetReturnsEmpty() {
-        IdentityContextHolder.setContext(IdentityContextSnapshot.EMPTY);
-        IdentityContextSnapshot context = IdentityContextHolder.getContext();
+        IdentityContextHolder.context(IdentityContextSnapshot.EMPTY);
+        IdentityContextSnapshot context = IdentityContextHolder.context();
         assertSame(IdentityContextSnapshot.EMPTY, context);
     }
 
@@ -36,9 +36,9 @@ class IdentityContextHolderTest {
     void setContextAndGetReturnsCopyOfContext() {
         Identity identity = new Identity("user-001", "req-001");
         IdentityContextSnapshot snapshot = IdentityContextSnapshot.of(identity);
-        IdentityContextHolder.setContext(snapshot);
+        IdentityContextHolder.context(snapshot);
 
-        IdentityContextSnapshot context = IdentityContextHolder.getContext();
+        IdentityContextSnapshot context = IdentityContextHolder.context();
         assertNotSame(IdentityContextSnapshot.EMPTY, context);
         assertNotSame(snapshot, context); //getContext returns a copy of snapshot
         assertEquals(identity, context.identity());

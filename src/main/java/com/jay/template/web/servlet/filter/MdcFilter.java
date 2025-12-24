@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.infra.identity.IdentityProperties;
 import com.jay.template.infra.logging.MdcProperties;
 
 /**
@@ -54,7 +53,7 @@ class MdcFilter extends OncePerRequestFilter {
 
         long start = System.nanoTime();
 
-        Identity identity = IdentityContextHolder.getContext().identity();
+        Identity identity = IdentityContextHolder.context().identity();
         String userId = identity.userId();
         String requestId = identity.requestId();
 

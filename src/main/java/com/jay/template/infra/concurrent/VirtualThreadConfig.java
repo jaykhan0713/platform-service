@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 class VirtualThreadConfig {
 
-    @Bean
+    @Bean //defensive copy as propagators List is a mutable bean
     ThreadFactory contextAwareVirtualThreadFactory(List<ContextPropagator> propagators) {
-        return new ContextAwareVirtualThreadFactory(propagators);
+        return new ContextAwareVirtualThreadFactory(List.copyOf(propagators));
     }
 
     @Bean(destroyMethod = "shutdown")

@@ -3,6 +3,7 @@ package com.jay.template.app.error;
 public enum ErrorType {
     //Server errors
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Internal Server Error"),
+    DEPENDENCY_UNAVAILABLE("DEPENDENCY_UNAVAILABLE", "Dependency Unavailable"),
 
     //Client errors
     BAD_REQUEST("BAD_REQUEST", "Bad Request"),
@@ -11,18 +12,18 @@ public enum ErrorType {
 
 
     private final String code;
-    private final String message;
+    private final String message; //these messages are for human readability of the consumer
 
     ErrorType(String code, String defaultMessage) {
         this.code = code;
         this.message = defaultMessage;
     }
 
-    public String getCode() {
+    public String code() {
         return code;
     }
 
-    public String getDefaultMessage() {
+    public String defaultMessage() {
         return message;
     }
 }

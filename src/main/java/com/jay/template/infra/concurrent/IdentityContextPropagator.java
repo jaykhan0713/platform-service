@@ -41,9 +41,9 @@ final class IdentityContextPropagator implements ContextPropagator {
      */
     @Override
     public Runnable propagate(Runnable task) {
-        IdentityContextSnapshot captured = IdentityContextHolder.getContext();
+        IdentityContextSnapshot captured = IdentityContextHolder.context();
         return () -> {
-            IdentityContextSnapshot previous = IdentityContextHolder.getContext();
+            IdentityContextSnapshot previous = IdentityContextHolder.context();
 
             try {
                 apply(captured);
@@ -68,9 +68,9 @@ final class IdentityContextPropagator implements ContextPropagator {
      */
     @Override
     public <T> Callable<T> propagate(Callable<T> task) {
-        IdentityContextSnapshot captured = IdentityContextHolder.getContext();
+        IdentityContextSnapshot captured = IdentityContextHolder.context();
         return () -> {
-            IdentityContextSnapshot previous = IdentityContextHolder.getContext();
+            IdentityContextSnapshot previous = IdentityContextHolder.context();
 
             try {
                 apply(captured);
@@ -95,7 +95,7 @@ final class IdentityContextPropagator implements ContextPropagator {
         if (snapshot == IdentityContextSnapshot.EMPTY) { // sentinel instance check
             IdentityContextHolder.clear();
         } else {
-            IdentityContextHolder.setContext(snapshot);
+            IdentityContextHolder.context(snapshot);
         }
     }
 }

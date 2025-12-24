@@ -1,19 +1,32 @@
 package com.jay.template.app.error;
 
+import java.util.Objects;
+
+// app layer exception
 public final class ApiException extends RuntimeException {
 
     private final ErrorType type;
 
     public ApiException(ErrorType type) {
-        this(type, type.getDefaultMessage());
+        this.type = Objects.requireNonNull(type);
     }
 
     public ApiException(ErrorType type, String customMessage) {
-        super(customMessage);
-        this.type = type;
+        super(Objects.requireNonNull(customMessage));
+        this.type = Objects.requireNonNull(type);
     }
 
-    public ErrorType getType() {
+    public ApiException(ErrorType type, Throwable cause) {
+        super(cause);
+        this.type = Objects.requireNonNull(type);
+    }
+
+    public ApiException(ErrorType type, String customMessage, Throwable cause) {
+        super(Objects.requireNonNull(customMessage), cause);
+        this.type = Objects.requireNonNull(type);
+    }
+
+    public ErrorType type() {
         return type;
     }
 }

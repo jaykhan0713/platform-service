@@ -24,7 +24,7 @@ package com.jay.template.infra.identity;
  *
  * <p>
  * To modify identity context, a new snapshot must be created and bound via
- * {@link IdentityContextHolder#setContext(IdentityContextSnapshot)}.
+ * {@link IdentityContextHolder#context(IdentityContextSnapshot)}.
  * </p>
  *
  * @param identity immutable identity associated with the identity

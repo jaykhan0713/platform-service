@@ -4,7 +4,6 @@ import java.io.IOException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 
-import com.jay.template.web.servlet.filter.IdentityFilter;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +69,7 @@ class IdentityFilterTest {
         request.addHeader(headerKeys.requestId(), requestId);
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain assertingChain = (req, res) -> {
-            IdentityContextSnapshot ctx = IdentityContextHolder.getContext();
+            IdentityContextSnapshot ctx = IdentityContextHolder.context();
             assertNotNull(ctx);
             assertNotSame(IdentityContextSnapshot.EMPTY, ctx);
             assertEquals(userId, ctx.identity().userId());
@@ -79,7 +78,7 @@ class IdentityFilterTest {
 
         filter.doFilter(request, response, assertingChain);
 
-        IdentityContextSnapshot context = IdentityContextHolder.getContext();
+        IdentityContextSnapshot context = IdentityContextHolder.context();
         assertSame(IdentityContextSnapshot.EMPTY, context);
     }
 
@@ -96,7 +95,7 @@ class IdentityFilterTest {
         FilterChain throwingChain = (req, res) -> { throw new ServletException("error"); };
 
         assertThrows(ServletException.class, () -> filter.doFilter(request, response, throwingChain));
-        assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.getContext());
+        assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context());
     }
 
 }

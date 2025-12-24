@@ -35,61 +35,61 @@ class IdentityContextPropagatorTest {
 
     @Test
     void runnablePropagateAppliesCurrentToCaptured() {
-        IdentityContextHolder.setContext(
+        IdentityContextHolder.context(
                 IdentityContextSnapshot.of(new Identity(PARENT_USER, PARENT_REQUEST)));
-        IdentityContextSnapshot captured = IdentityContextHolder.getContext();
+        IdentityContextSnapshot captured = IdentityContextHolder.context();
 
         Runnable propagated = propagator.propagate(() -> {
-            IdentityContextSnapshot inside = IdentityContextHolder.getContext();
+            IdentityContextSnapshot inside = IdentityContextHolder.context();
             assertEquals(captured, inside);
-            IdentityContextHolder.setContext(
+            IdentityContextHolder.context(
                     IdentityContextSnapshot.of(new Identity(CHILD_USER, CHILD_REQUEST)));
         });
 
         propagated.run();
 
-        assertEquals(captured, IdentityContextHolder.getContext());
+        assertEquals(captured, IdentityContextHolder.context());
     }
 
     @Test
     void runnablePropagateCleansUp() {
         Runnable propagated = propagator.propagate(() ->
-            IdentityContextHolder.setContext(
+            IdentityContextHolder.context(
                     IdentityContextSnapshot.of(new Identity(CHILD_USER, CHILD_REQUEST)))
         );
 
         propagated.run();
 
-        assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.getContext());
+        assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context());
     }
 
     @Test
     void runnablePropagateRestoresPreviousWhenCapturedIsEmpty() {
 
         Runnable propagated = propagator.propagate(() -> {
-            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.getContext()); // Captured context is empty
+            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context()); // Captured context is empty
         });
 
         // Between propagate() and run(), something sets new snapshot:
         IdentityContextSnapshot previous = IdentityContextSnapshot.of(new Identity(PREVIOUS_USER, PREVIOUS_REQUEST));
-        IdentityContextHolder.setContext(previous);
+        IdentityContextHolder.context(previous);
 
         propagated.run();
 
-        assertEquals(previous, IdentityContextHolder.getContext());
+        assertEquals(previous, IdentityContextHolder.context());
     }
 
     @Test
     void callablePropagateAppliesCurrentToCaptured() throws Exception {
-        IdentityContextHolder.setContext(
+        IdentityContextHolder.context(
                 IdentityContextSnapshot.of(new Identity(PARENT_USER, PARENT_REQUEST)));
-        IdentityContextSnapshot captured = IdentityContextHolder.getContext();
+        IdentityContextSnapshot captured = IdentityContextHolder.context();
 
         Callable<Identity> propagated = propagator.propagate(() -> {
-            IdentityContextSnapshot inside = IdentityContextHolder.getContext();
+            IdentityContextSnapshot inside = IdentityContextHolder.context();
             Identity id = inside.identity();
             assertEquals(captured, inside);
-            IdentityContextHolder.setContext(
+            IdentityContextHolder.context(
                     IdentityContextSnapshot.of(new Identity(CHILD_USER, CHILD_REQUEST)));
             return id;
         });
@@ -97,13 +97,13 @@ class IdentityContextPropagatorTest {
         Identity result = propagated.call();
 
         assertEquals(captured.identity(), result);
-        assertEquals(captured, IdentityContextHolder.getContext());
+        assertEquals(captured, IdentityContextHolder.context());
     }
 
     @Test
     void callablePropagateCleansUp() throws Exception {
         Callable<Void> propagated = propagator.propagate(() -> {
-                IdentityContextHolder.setContext(
+                IdentityContextHolder.context(
                         IdentityContextSnapshot.of(new Identity(CHILD_USER, CHILD_REQUEST)));
                 return null;
             }
@@ -111,23 +111,23 @@ class IdentityContextPropagatorTest {
 
         propagated.call();
 
-        assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.getContext());
+        assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context());
     }
 
     @Test
     void callablePropagateRestoresPreviousWhenCapturedIsEmpty() throws Exception {
 
         Callable<Void> propagated = propagator.propagate(() -> {
-            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.getContext()); // Captured context is empty
+            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context()); // Captured context is empty
             return null;
         });
 
         // Between propagate() and run(), something sets new snapshot:
         IdentityContextSnapshot previous = IdentityContextSnapshot.of(new Identity(PREVIOUS_USER, PREVIOUS_REQUEST));
-        IdentityContextHolder.setContext(previous);
+        IdentityContextHolder.context(previous);
 
         propagated.call();
 
-        assertEquals(previous, IdentityContextHolder.getContext());
+        assertEquals(previous, IdentityContextHolder.context());
     }
 }
