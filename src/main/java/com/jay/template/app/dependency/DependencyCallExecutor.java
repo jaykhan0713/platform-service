@@ -1,4 +1,4 @@
-package com.jay.template.app.outbound;
+package com.jay.template.app.dependency;
 
 import java.util.function.Supplier;
 

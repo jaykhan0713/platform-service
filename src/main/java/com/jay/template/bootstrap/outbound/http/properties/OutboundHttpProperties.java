@@ -1,4 +1,4 @@
-package com.jay.template.infra.outbound.http.client.properties;
+package com.jay.template.bootstrap.outbound.http.properties;
 
 import java.time.Duration;
 import java.util.List;
@@ -10,9 +10,9 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-@ConfigurationProperties(prefix = "app.ping.http")
+@ConfigurationProperties(prefix = "platform.outbound.http")
 @Validated
-public record HttpProperties(
+public record OutboundHttpProperties(
         @NotNull @Valid ClientDefaults defaults,
         @NotEmpty @Valid Map<String, ClientConfig> clients
 ) {
@@ -20,8 +20,8 @@ public record HttpProperties(
             @NotNull Duration connectTimeout,
             @NotNull Duration readTimeout,
             @NotNull List<String> requestInterceptors,
-            // Only defaults cascade validation; ping overrides are intentionally partial.
-            @NotNull @Valid ClientResiliencyConfig resiliency
+            // Only defaults cascade @Validation; client overrides are intentionally partial.
+            @NotNull @Valid OutboundHttpClientResiliencyConfig resiliency
     ) {}
 
     public record ClientConfig(
@@ -29,7 +29,7 @@ public record HttpProperties(
             Duration connectTimeout,
             Duration readTimeout,
             List<String> requestInterceptors,
-            ClientResiliencyConfig resiliency
+            OutboundHttpClientResiliencyConfig resiliency
     ) {
         public Duration connectTimeoutOrDefault(ClientDefaults defaults) {
             return connectTimeout == null ? defaults.connectTimeout() : connectTimeout;
@@ -43,7 +43,7 @@ public record HttpProperties(
             return requestInterceptors == null ? defaults.requestInterceptors() : requestInterceptors;
         }
 
-        public ClientResiliencyConfig resiliencyOrDefault(ClientDefaults defaults) {
+        public OutboundHttpClientResiliencyConfig resiliencyOrDefault(ClientDefaults defaults) {
             return resiliency == null ? defaults.resiliency() : resiliency;
         }
     }

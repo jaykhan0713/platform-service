@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 class IdentityHeaderInterceptorTest {
 
-    private static final String IDENTITY_PROPS_KEY = "app.identity";
+    private static final String IDENTITY_PROPS_KEY = "platform.identity";
 
     private static IdentityProperties props;
 

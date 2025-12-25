@@ -44,8 +44,9 @@ class FilterConfig {
         ErrorResponseWriter errorResponseWriter
     ) {
         FilterRegistrationBean<BulkheadFilter> registration = new FilterRegistrationBean<>();
+        String instanceName = BulkheadFilter.BULKHEAD_INSTANCE_NAME;
         BulkheadFilter bulkheadFilter = new BulkheadFilter(
-                bulkheadRegistry.bulkhead("webInboundFilter"),
+                bulkheadRegistry.bulkhead(instanceName),
                 errorResponseWriter
         );
 

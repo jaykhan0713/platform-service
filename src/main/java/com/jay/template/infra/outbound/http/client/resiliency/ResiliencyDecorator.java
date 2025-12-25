@@ -2,7 +2,7 @@ package com.jay.template.infra.outbound.http.client.resiliency;
 
 import java.time.Duration;
 
-import com.jay.template.infra.outbound.http.client.properties.ClientResiliencyConfig;
+import com.jay.template.bootstrap.outbound.http.properties.OutboundHttpClientResiliencyConfig;
 import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.bulkhead.BulkheadConfig;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
@@ -28,8 +28,8 @@ public class ResiliencyDecorator {
 
     public ClientHttpRequestFactory decorate(
             ClientHttpRequestFactory delegate,
-            ClientResiliencyConfig resiliencyConfig,
-            ClientResiliencyConfig defaults,
+            OutboundHttpClientResiliencyConfig resiliencyConfig,
+            OutboundHttpClientResiliencyConfig defaults,
             String clientName
     ) {
         String instanceName = createInstanceName(clientName);
@@ -49,8 +49,8 @@ public class ResiliencyDecorator {
     //bulkhead
     private ClientHttpRequestFactory decorate(
             ClientHttpRequestFactory delegate,
-            ClientResiliencyConfig.BulkheadConfig clientBulkheadConfig,
-            ClientResiliencyConfig.BulkheadConfig clientBulkheadDefaults,
+            OutboundHttpClientResiliencyConfig.BulkheadConfig clientBulkheadConfig,
+            OutboundHttpClientResiliencyConfig.BulkheadConfig clientBulkheadDefaults,
             String instanceName
     ) {
 

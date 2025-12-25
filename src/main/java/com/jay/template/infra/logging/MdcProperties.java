@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-@ConfigurationProperties(prefix = "app.logging.mdc")
+@ConfigurationProperties(prefix = "platform.logging.mdc")
 @Validated
 public record MdcProperties(
         @NotBlank String userId,

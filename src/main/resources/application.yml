@@ -2,7 +2,7 @@ server: # embedded servlet container configs
   port: 8080
 
   tomcat: # edge / connector-level (NIO) configs
-    # Slow ping protection (time allowed to receive request line + headers + start of body)
+    # Slow client protection (time allowed to receive request line + headers + start of body)
     connection-timeout: 5s
 
     # Cap concurrent accepted TCP connections (Tomcat-owned sockets)
@@ -64,45 +64,45 @@ management:
 resilience4j:
   bulkhead:
     instances: #inbound instances only as it's a framework level concern.
-      webInboundFilter:
+      webBulkheadFilter:
         max-concurrent-calls: 200 # max number of permits given at the inbound filter.
         max-wait-duration: 0 # fail-fast when no permits available.
 
-app: # namespace for Spring configuration keys
+platform: # namespace for Spring configuration keys
   identity: # ex can add app.differentConcern.http.headers for other headers. Inbound/Outbound share these
     http:
       headers:
-        userId: "x-user-id"
-        requestId: "x-request-id"
+        user-id: "x-user-id"
+        request-id: "x-request-id"
     #future protocol identity properties can be added here.
 
   logging:
     mdc:
       # transport protocol agnostic
-      userId: "userId"
-      requestId: "requestId"
+      user-id: "userId"
+      request-id: "requestId"
       kind: "kind" # http, sqs etc
       name: "name" # e.g. "/users/{id}", "queue:orders"
       method: "method" #GET, POST, QUERY
       status: "status"
-      durationMs: "durationMs"
+      duration-ms: "durationMs"
 
       kindValues: # future protocol kindValue can be added here
         http: "http"
 
   outbound:
-    http:  # configuration for ping http clients, add protocols as needed
-      defaults:
+    http:  # configuration for http clients, add protocols as needed
+      client-defaults:
         connect-timeout: 2s # max time allowed for getting a usable network connection (DNS + TCP + TLS), end to end.
         read-timeout: 5s # waiting on external I/O
 
-        # ORDER matters for interceptors, applied in list-order. ping value overwrites defaults when present
+        # ORDER matters for interceptors, applied in list-order. client value overwrites defaults when present
         # String key defined for implementation of infra.http.interceptor.RequestInterceptorFeature
         request-interceptors: []
 
         resiliency:
           bulkhead:
-            enabled: true #for ping ping we ALWAYS want to enable for backpressure safety.
+            enabled: true #for downstream we ALWAYS want to enable for backpressure safety.
             max-concurrent-calls: 50
             max-wait-duration: 0
 
@@ -117,9 +117,9 @@ app: # namespace for Spring configuration keys
 #            permitted-number-of-calls-in-half-open-state: 10
 #            wait-duration-in-open-state: 10s
 
-      # add configurable ping http clients here. Transport agnostic, doesn't need to be RestClient
+      # add configurable http clients here. Transport agnostic, doesn't need to be RestClient
       clients:
-        ping: # example ping for services in same VPC or organization, propagates identity
+        ping: # example client for services in same VPC or organization, propagates identity
           base-url: "http://ping-service.internal" # Example smoke service endpoint
           connect-timeout: 2s
           read-timeout: 5s

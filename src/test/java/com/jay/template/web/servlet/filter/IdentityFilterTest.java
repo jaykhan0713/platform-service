@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class IdentityFilterTest {
 
-    private static final String IDENTITY_PROPS_KEY = "app.identity";
+    private static final String IDENTITY_PROPS_KEY = "platform.identity";
 
     private static IdentityProperties props;
 

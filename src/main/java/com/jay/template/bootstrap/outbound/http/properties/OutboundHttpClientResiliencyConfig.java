@@ -1,11 +1,11 @@
-package com.jay.template.infra.outbound.http.client.properties;
+package com.jay.template.bootstrap.outbound.http.properties;
 
 import java.time.Duration;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
 //for use with HttpProperties
-public record ClientResiliencyConfig(
+public record OutboundHttpClientResiliencyConfig(
         @NotNull @Valid BulkheadConfig bulkhead
 ) {
     public record BulkheadConfig(@NotNull Boolean enabled,

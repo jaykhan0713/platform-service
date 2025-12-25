@@ -2,13 +2,13 @@
 <configuration scan="false">
 
     <!-- MDC key Spring properties -->
-    <springProperty name="MDC_USER_ID" source="app.logging.mdc.userId"/>
-    <springProperty name="MDC_REQUEST_ID" source="app.logging.mdc.requestId"/>
-    <springProperty name="MDC_KIND" source="app.logging.mdc.kind"/>
-    <springProperty name="MDC_NAME" source="app.logging.mdc.name"/>
-    <springProperty name="MDC_METHOD" source="app.logging.mdc.method"/>
-    <springProperty name="MDC_STATUS" source="app.logging.mdc.status"/>
-    <springProperty name="MDC_DURATION_MS" source="app.logging.mdc.durationMs"/>
+    <springProperty name="MDC_USER_ID" source="platform.logging.mdc.userId"/>
+    <springProperty name="MDC_REQUEST_ID" source="platform.logging.mdc.requestId"/>
+    <springProperty name="MDC_KIND" source="platform.logging.mdc.kind"/>
+    <springProperty name="MDC_NAME" source="platform.logging.mdc.name"/>
+    <springProperty name="MDC_METHOD" source="platform.logging.mdc.method"/>
+    <springProperty name="MDC_STATUS" source="platform.logging.mdc.status"/>
+    <springProperty name="MDC_DURATION_MS" source="platform.logging.mdc.durationMs"/>
 
     <!-- index friendly pattern for lookups -->
     <property name="SIMPLE_PATTERN"

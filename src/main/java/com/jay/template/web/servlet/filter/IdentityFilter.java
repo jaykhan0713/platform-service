@@ -27,7 +27,7 @@ import com.jay.template.infra.identity.IdentityProperties;
  * state across thread reuse.
  * </p>
  */
-class IdentityFilter extends OncePerRequestFilter {
+public class IdentityFilter extends OncePerRequestFilter {
 
     private final IdentityProperties.Http.Headers headerKeys;
 

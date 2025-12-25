@@ -49,7 +49,9 @@ import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
  * the number of in-flight requests inside the service, protecting heap, CPU, and
  * downstream dependencies from unbounded concurrency.</p>
  */
-class BulkheadFilter extends OncePerRequestFilter {
+public class BulkheadFilter extends OncePerRequestFilter {
+
+    public static final String BULKHEAD_INSTANCE_NAME = "webBulkheadFilter";
 
     private final Bulkhead bulkhead;
     private final ErrorResponseWriter errorResponseWriter;

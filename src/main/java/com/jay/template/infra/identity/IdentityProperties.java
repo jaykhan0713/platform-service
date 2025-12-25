@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
-@ConfigurationProperties(prefix = "app.identity")
+@ConfigurationProperties(prefix = "platform.identity")
 @Validated
 public record IdentityProperties(
         @NotNull @Valid Http http

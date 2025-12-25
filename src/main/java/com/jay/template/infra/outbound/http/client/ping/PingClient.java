@@ -3,12 +3,12 @@ package com.jay.template.infra.outbound.http.client.ping;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.jay.template.app.smoke.outbound.ping.contract.DownstreamPingResponse;
+import com.jay.template.app.smoke.dependency.ping.contract.DownstreamPingResponse; //smoke test drop-in for OpenAPI
 import com.jay.template.infra.outbound.http.client.rest.RestClientFactory;
 
 @Component
 public class PingClient {
-    private static final String CLIENT_NAME = "ping"; // yaml binded name.
+    private static final String CLIENT_NAME = "ping";
 
     private final RestClient restClient;
 

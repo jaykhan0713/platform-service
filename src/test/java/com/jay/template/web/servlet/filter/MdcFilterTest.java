@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class MdcFilterTest {
 
-    private static final String MDC_PROPS_KEY = "app.logging.mdc";
+    private static final String MDC_PROPS_KEY = "platform.logging.mdc";
     private static final Logger MDC_FILTER_LOGGER = (Logger) LoggerFactory.getLogger(MdcFilter.class);
 
     private static MdcProperties mdcProps;

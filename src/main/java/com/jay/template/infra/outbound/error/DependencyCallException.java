@@ -2,7 +2,7 @@ package com.jay.template.infra.outbound.error;
 
 import java.util.Objects;
 
-// infra ping layer exception bridge to app.
+// infra layer exception bridge to app.
 public class DependencyCallException extends RuntimeException {
 
     private final Reason reason;

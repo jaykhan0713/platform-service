@@ -2,7 +2,7 @@ package com.jay.template.app.smoke.service;
 
 import org.springframework.stereotype.Service;
 
-import com.jay.template.app.smoke.outbound.ping.contract.DownstreamPingResponse;
+import com.jay.template.app.smoke.dependency.ping.contract.DownstreamPingResponse;
 import com.jay.template.app.smoke.model.SmokeModel;
 import com.jay.template.infra.outbound.http.client.ping.PingClient;
 
@@ -15,7 +15,7 @@ public class SmokeService {
     }
 
     public SmokeModel executeFlow() {
-        DownstreamPingResponse response = pingClient.get();
+        DownstreamPingResponse response = pingClient.ping();
 
         boolean ok = "pong".equals(response.msg());
 

@@ -36,7 +36,7 @@ import com.jay.template.infra.logging.MdcProperties;
  * reuse.
  * </p>
  */
-class MdcFilter extends OncePerRequestFilter {
+public class MdcFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MdcFilter.class);
 

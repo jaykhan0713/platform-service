@@ -12,8 +12,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import tools.jackson.databind.ObjectMapper;
 
-import com.jay.template.app.smoke.outbound.ping.contract.DownstreamPingResponse;
-import com.jay.template.app.smoke.api.v1.smoke.model.SmokeResponse;
+import com.jay.template.app.smoke.dependency.ping.contract.DownstreamPingResponse;
+import com.jay.template.app.smoke.api.model.SmokeResponse;
 import com.jay.template.common.FunctionalTestBase;
 import com.jay.template.common.SpringBootTestShared;
 

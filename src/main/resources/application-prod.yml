@@ -21,7 +21,7 @@ management:
         enabled: true
 
 server:
-  compression: #if ping sends Accept-Encoding: gzip, automatically get this feature during response
+  compression: #if client sends Accept-Encoding: gzip, automatically get this feature during response
     enabled: true
     min-response-size: 1024   # bytes
     mime-types:

@@ -10,7 +10,7 @@ import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
-import com.jay.template.infra.outbound.http.client.properties.HttpProperties;
+import com.jay.template.bootstrap.outbound.http.properties.OutboundHttpProperties;
 import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyDecorator;
 import com.jay.template.infra.outbound.http.client.interceptor.RequestInterceptorRegistry;
 
@@ -21,13 +21,13 @@ public class RestClientFactory {
 
     private final RequestInterceptorRegistry requestInterceptorRegistry;
     private final ResiliencyDecorator resiliencyDecorator;
-    private final HttpProperties props;
+    private final OutboundHttpProperties props;
 
     public RestClientFactory(
             RestClient.Builder restClientBuilder,
             ResiliencyDecorator resiliencyDecorator,
             RequestInterceptorRegistry requestInterceptorRegistry,
-            HttpProperties props
+            OutboundHttpProperties props
     ) {
         this.restClientBuilder = restClientBuilder;
         this.resiliencyDecorator = resiliencyDecorator;
@@ -40,7 +40,7 @@ public class RestClientFactory {
         var cfg = props.clients().get(Objects.requireNonNull(clientName));
         if (cfg == null) {
             throw new IllegalStateException(
-                    "Missing ping http ping config: app.ping.http.clients." + clientName
+                    "Missing config: platform.http.clients." + clientName
             );
         }
 
@@ -75,8 +75,8 @@ public class RestClientFactory {
 
     // signal intent: JDK Http Client usage default, but may want different Http clients in future.
     private ClientHttpRequestFactory createJdkHttpClientFactory(
-            HttpProperties.ClientConfig cfg,
-            HttpProperties.ClientDefaults defaults
+            OutboundHttpProperties.ClientConfig cfg,
+            OutboundHttpProperties.ClientDefaults defaults
     ) {
         var connectTimeout = cfg.connectTimeoutOrDefault(defaults);
         var readTimeout = cfg.readTimeoutOrDefault(defaults);

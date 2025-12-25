@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.jay.template.infra.outbound.http.client.properties.HttpProperties;
+import com.jay.template.bootstrap.outbound.http.properties.OutboundHttpProperties;
 import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyDecorator;
 import com.jay.template.infra.outbound.http.client.interceptor.RequestInterceptorRegistry;
 import com.jay.template.infra.outbound.http.client.rest.RestClientFactory;
@@ -24,13 +24,13 @@ import static org.mockito.Mockito.*;
 
 class RestClientFactoryTest {
 
-    private static final String OUTBOUND_HTTP_KEY = "app.ping.http";
+    private static final String OUTBOUND_HTTP_KEY = "platform.http";
 
-    private static HttpProperties props;
+    private static OutboundHttpProperties props;
 
     @BeforeAll
     static void initClass() throws Exception {
-        props = new YamlBinder().bind(OUTBOUND_HTTP_KEY, HttpProperties.class);
+        props = new YamlBinder().bind(OUTBOUND_HTTP_KEY, OutboundHttpProperties.class);
     }
 
     @Test
@@ -46,14 +46,14 @@ class RestClientFactoryTest {
         IllegalStateException ex = assertThrows(IllegalStateException.class,
                 () -> factory.buildClient("missing"));
 
-        assertEquals("Missing ping http ping config: app.ping.http.clients.missing",
+        assertEquals("Missing config: platform.http.clients.missing",
                 ex.getMessage());
     }
 
     @Test
     void buildsClientWithResiliencyAndInterceptors() {
 
-        String clientName = "downstreamPing";
+        String clientName = "ping";
 
         ResiliencyDecorator resiliencyDecorator = mock(ResiliencyDecorator.class);
         ClientHttpRequestFactory decoratedFactory = mock(ClientHttpRequestFactory.class);
