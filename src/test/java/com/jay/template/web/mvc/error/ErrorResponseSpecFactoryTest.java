@@ -7,13 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ErrorType;
 import com.jay.template.helper.MockTracerUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import static com.jay.template.app.error.ErrorType.INTERNAL_SERVER_ERROR;
+import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
 
 class ErrorResponseSpecFactoryTest {
 

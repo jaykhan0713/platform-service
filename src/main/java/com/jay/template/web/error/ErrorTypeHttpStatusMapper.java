@@ -6,12 +6,12 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ErrorType;
 
-import static com.jay.template.app.error.ErrorType.BAD_REQUEST;
-import static com.jay.template.app.error.ErrorType.INTERNAL_SERVER_ERROR;
-import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
-import static com.jay.template.app.error.ErrorType.USER_ID_MISSING;
+import static com.jay.template.core.error.api.ErrorType.BAD_REQUEST;
+import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
+import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
+import static com.jay.template.core.error.api.ErrorType.USER_ID_MISSING;
 
 final class ErrorTypeHttpStatusMapper {
 

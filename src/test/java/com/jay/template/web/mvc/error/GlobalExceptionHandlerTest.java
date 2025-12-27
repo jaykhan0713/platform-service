@@ -3,13 +3,13 @@ package com.jay.template.web.mvc.error;
 import com.jay.template.web.error.ErrorResponseSpecFactory;
 import org.junit.jupiter.api.Test;
 
-import com.jay.template.app.error.ApiException;
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ApiException;
+import com.jay.template.core.error.api.ErrorType;
 
 import static org.mockito.Mockito.*;
 
-import static com.jay.template.app.error.ErrorType.INTERNAL_SERVER_ERROR;
-import static com.jay.template.app.error.ErrorType.USER_ID_MISSING;
+import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
+import static com.jay.template.core.error.api.ErrorType.USER_ID_MISSING;
 
 class GlobalExceptionHandlerTest {
 

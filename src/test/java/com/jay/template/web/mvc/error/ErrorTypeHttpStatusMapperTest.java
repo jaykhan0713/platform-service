@@ -11,15 +11,15 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.http.HttpStatus;
 
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ErrorType;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
-import static com.jay.template.app.error.ErrorType.BAD_REQUEST;
-import static com.jay.template.app.error.ErrorType.INTERNAL_SERVER_ERROR;
-import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
-import static com.jay.template.app.error.ErrorType.USER_ID_MISSING;
+import static com.jay.template.core.error.api.ErrorType.BAD_REQUEST;
+import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
+import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
+import static com.jay.template.core.error.api.ErrorType.USER_ID_MISSING;
 
 class ErrorTypeHttpStatusMapperTest {
 

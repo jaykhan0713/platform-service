@@ -1,5 +1,7 @@
 package com.jay.template.infra.identity;
 
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

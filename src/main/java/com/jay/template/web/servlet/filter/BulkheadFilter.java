@@ -11,7 +11,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jay.template.web.servlet.support.ErrorResponseWriter;
 
-import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
+import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
 
 /**
  * Inbound concurrency guard implemented as a servlet filter.
@@ -70,7 +70,6 @@ public class BulkheadFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain
     ) throws ServletException, IOException {
-
         if (bulkhead.tryAcquirePermission()) {
             try {
                 filterChain.doFilter(request, response);

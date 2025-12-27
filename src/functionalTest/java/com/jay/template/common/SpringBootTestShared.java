@@ -14,7 +14,7 @@ import com.jay.template.Starter;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 /*
- * make sure to include all annotations in other functional tests so configured context stays same and the same
+ * make sure to include all annotations in other functional tests so configured propagation stays same and the same
  * spring instance is used instead of starting up a new one. This ensures functionalTest suite speed.
  */
 @SpringBootTest(classes = Starter.class, webEnvironment = RANDOM_PORT)

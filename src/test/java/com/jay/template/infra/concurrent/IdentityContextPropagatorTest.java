@@ -2,13 +2,14 @@ package com.jay.template.infra.concurrent;
 
 import java.util.concurrent.Callable;
 
+import com.jay.template.infra.concurrent.propagation.identity.IdentityContextPropagator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
-import com.jay.template.infra.identity.IdentityContextSnapshot;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -67,7 +68,7 @@ class IdentityContextPropagatorTest {
     void runnablePropagateRestoresPreviousWhenCapturedIsEmpty() {
 
         Runnable propagated = propagator.propagate(() -> {
-            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context()); // Captured context is empty
+            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context()); // Captured propagation is empty
         });
 
         // Between propagate() and run(), something sets new snapshot:
@@ -118,7 +119,7 @@ class IdentityContextPropagatorTest {
     void callablePropagateRestoresPreviousWhenCapturedIsEmpty() throws Exception {
 
         Callable<Void> propagated = propagator.propagate(() -> {
-            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context()); // Captured context is empty
+            assertSame(IdentityContextSnapshot.EMPTY, IdentityContextHolder.context()); // Captured propagation is empty
             return null;
         });
 

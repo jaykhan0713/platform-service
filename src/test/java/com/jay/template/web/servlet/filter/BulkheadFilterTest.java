@@ -14,7 +14,7 @@ import com.jay.template.web.servlet.support.ErrorResponseWriter;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
+import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
 
 class BulkheadFilterTest {
 

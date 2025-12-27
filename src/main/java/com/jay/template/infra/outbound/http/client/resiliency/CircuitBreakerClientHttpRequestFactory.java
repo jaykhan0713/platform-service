@@ -47,7 +47,7 @@ public class CircuitBreakerClientHttpRequestFactory implements ClientHttpRequest
         public ClientHttpResponse execute() throws IOException {
             try {
                 return circuitBreaker.executeCallable(delegate::execute);
-            } catch (IOException | RuntimeException ex) { //RuntimeException catches CallNotPermittedException
+            } catch (IOException | CallNotPermittedException ex) {
                 throw ex;
             } catch (Exception ex) { //needs wider Exception for executeCallable
                 throw new IOException(ex);

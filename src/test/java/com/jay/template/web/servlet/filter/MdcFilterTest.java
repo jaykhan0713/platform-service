@@ -7,9 +7,9 @@ import jakarta.servlet.ServletException;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
-import com.jay.template.infra.identity.IdentityContextSnapshot;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jay.template.helper.YamlBinder;
-import com.jay.template.infra.logging.MdcProperties;
+import com.jay.template.bootstrap.observability.properties.MdcProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 

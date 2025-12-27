@@ -3,6 +3,8 @@ package com.jay.template.infra.concurrent;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 
+import com.jay.template.infra.concurrent.propagation.ContextPropagator;
+import com.jay.template.infra.concurrent.propagation.mdc.MdcContextPropagator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -13,9 +13,9 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jay.template.helper.YamlBinder;
-import com.jay.template.infra.identity.IdentityContextHolder;
-import com.jay.template.infra.identity.IdentityContextSnapshot;
-import com.jay.template.infra.identity.IdentityProperties;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
+import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,12 +23,12 @@ class IdentityFilterTest {
 
     private static final String IDENTITY_PROPS_KEY = "platform.identity";
 
-    private static IdentityProperties props;
+    private static TransportHttpProperties props;
 
     @BeforeAll
     static void initClass() throws Exception {
         YamlBinder binder = new YamlBinder();
-        props = binder.bind(IDENTITY_PROPS_KEY, IdentityProperties.class);
+        props = binder.bind(IDENTITY_PROPS_KEY, TransportHttpProperties.class);
     }
 
     @BeforeEach

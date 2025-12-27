@@ -19,7 +19,7 @@ public interface SampleApi {
 
     @Operation(
             summary = "Sample endpoint",
-            description = "Demonstrates API structure, identity identity extraction, and OpenAPI documentation."
+            description = "Demonstrates API structure, identity extraction, and OpenAPI documentation."
     )
     @StandardErrorResponses
     @ApiResponses({

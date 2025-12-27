@@ -11,13 +11,13 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import tools.jackson.databind.ObjectMapper;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ErrorType;
 import com.jay.template.web.error.ErrorResponseSpecFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import static com.jay.template.app.error.ErrorType.TOO_MANY_REQUESTS;
+import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
 
 class ErrorResponseWriterTest {
 

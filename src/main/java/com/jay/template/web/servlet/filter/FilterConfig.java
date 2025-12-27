@@ -5,17 +5,17 @@ import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.jay.template.infra.identity.IdentityProperties;
-import com.jay.template.infra.logging.MdcProperties;
+import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
+import com.jay.template.bootstrap.observability.properties.MdcProperties;
 import com.jay.template.web.servlet.support.ErrorResponseWriter;
 
 @Configuration
-class FilterConfig {
+public class FilterConfig {
 
     private static final String API_WILDCARD = "/api/*";
 
     @Bean
-    public FilterRegistrationBean<IdentityFilter> identityFilter(IdentityProperties identityProps) {
+    public FilterRegistrationBean<IdentityFilter> identityFilter(TransportHttpProperties identityProps) {
         FilterRegistrationBean<IdentityFilter> registration = new FilterRegistrationBean<>();
         IdentityFilter identityFilter = new IdentityFilter(identityProps);
 

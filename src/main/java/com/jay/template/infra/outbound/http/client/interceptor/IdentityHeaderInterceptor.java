@@ -9,18 +9,18 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Component;
 
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
-import com.jay.template.infra.identity.IdentityProperties;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
 
 @Component
 public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor, RequestInterceptorFeature {
 
     private static final String KEY = "identity";
 
-    private final IdentityProperties.Http.Headers headerKeys;
+    private final TransportHttpProperties.Http.Headers headerKeys;
 
-    public IdentityHeaderInterceptor(IdentityProperties props) {
+    public IdentityHeaderInterceptor(TransportHttpProperties props) {
         this.headerKeys = props.http().headers();
     }
 

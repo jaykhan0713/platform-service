@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ErrorType;
 import com.jay.template.web.error.ErrorResponseSpecFactory;
 
 // for servlet/ support

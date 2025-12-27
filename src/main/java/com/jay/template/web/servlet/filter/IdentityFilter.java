@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
-import com.jay.template.infra.identity.IdentityContextSnapshot;
-import com.jay.template.infra.identity.IdentityProperties;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
+import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
 
 /**
  * Binds identity to the current thread for the duration of a single HTTP identity.
@@ -23,15 +23,15 @@ import com.jay.template.infra.identity.IdentityProperties;
  * </p>
  *
  * <p>
- * The identity context is cleared in a {@code finally} block to prevent leaking identity
+ * The identity propagation is cleared in a {@code finally} block to prevent leaking identity
  * state across thread reuse.
  * </p>
  */
 public class IdentityFilter extends OncePerRequestFilter {
 
-    private final IdentityProperties.Http.Headers headerKeys;
+    private final TransportHttpProperties.Http.Headers headerKeys;
 
-    IdentityFilter(IdentityProperties props) {
+    IdentityFilter(TransportHttpProperties props) {
         this.headerKeys = props.http().headers();
     }
 

@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.app.error.ApiException;
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ApiException;
+import com.jay.template.core.error.api.ErrorType;
 import com.jay.template.web.error.ErrorResponseSpec;
 import com.jay.template.web.error.ErrorResponseSpecFactory;
 
-import static com.jay.template.app.error.ErrorType.INTERNAL_SERVER_ERROR;
+import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

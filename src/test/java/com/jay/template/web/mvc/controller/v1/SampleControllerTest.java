@@ -5,10 +5,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.app.error.ApiException;
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
-import com.jay.template.infra.identity.IdentityContextSnapshot;
+import com.jay.template.core.error.api.ApiException;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
 
 import static org.junit.jupiter.api.Assertions.*;
 

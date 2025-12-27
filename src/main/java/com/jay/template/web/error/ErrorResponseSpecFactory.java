@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ErrorType;
 
 @Component
 public class ErrorResponseSpecFactory {

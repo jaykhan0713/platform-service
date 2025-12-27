@@ -6,11 +6,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.jay.template.api.v1.sample.SampleApi;
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.app.error.ApiException;
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.core.error.api.ApiException;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
 
-import static com.jay.template.app.error.ErrorType.USER_ID_MISSING;
+import static com.jay.template.core.error.api.ErrorType.USER_ID_MISSING;
 
 @RestController
 public class SampleController implements SampleApi {

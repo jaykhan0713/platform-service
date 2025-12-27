@@ -69,14 +69,15 @@ resilience4j:
         max-wait-duration: 0 # fail-fast when no permits available.
 
 platform: # namespace for Spring configuration keys
-  identity: # ex can add app.differentConcern.http.headers for other headers. Inbound/Outbound share these
+  transport: # Inbound/Outbound can share attributes here
     http:
       headers:
         user-id: "x-user-id"
         request-id: "x-request-id"
-    #future protocol identity properties can be added here.
 
-  logging:
+    #future protocol attributes we're concerned with can be added here.
+
+  observability:
     mdc:
       # transport protocol agnostic
       user-id: "userId"
@@ -87,7 +88,7 @@ platform: # namespace for Spring configuration keys
       status: "status"
       duration-ms: "durationMs"
 
-      kindValues: # future protocol kindValue can be added here
+      kind-values: # future protocol kindValue can be added here
         http: "http"
 
   outbound:
@@ -98,7 +99,6 @@ platform: # namespace for Spring configuration keys
 
         # ORDER matters for interceptors, applied in list-order. client value overwrites defaults when present
         # String key defined for implementation of infra.http.interceptor.RequestInterceptorFeature
-        request-interceptors: []
 
         resiliency:
           bulkhead:
@@ -123,6 +123,5 @@ platform: # namespace for Spring configuration keys
           base-url: "http://ping-service.internal" # Example smoke service endpoint
           connect-timeout: 2s
           read-timeout: 5s
-          request-interceptors: ["identity"]
 
 

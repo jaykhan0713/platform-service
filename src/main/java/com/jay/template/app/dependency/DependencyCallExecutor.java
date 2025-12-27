@@ -2,8 +2,8 @@ package com.jay.template.app.dependency;
 
 import java.util.function.Supplier;
 
-import com.jay.template.app.error.ApiException;
-import com.jay.template.app.error.ErrorType;
+import com.jay.template.core.error.api.ApiException;
+import com.jay.template.core.error.api.ErrorType;
 import com.jay.template.infra.outbound.error.DependencyCallException;
 
 final class DependencyCallExecutor {

@@ -7,14 +7,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.jay.template.infra.identity.Identity;
-import com.jay.template.infra.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.infra.logging.MdcProperties;
+import com.jay.template.bootstrap.observability.properties.MdcProperties;
 
 /**
  * Populates MDC (Mapped Diagnostic Context) fields for structured identity logging.
@@ -22,7 +22,7 @@ import com.jay.template.infra.logging.MdcProperties;
  * <p>
  * {@code MdcFilter} extracts a small set of identity attributes and configured
  * inbound headers and writes them into {@link MDC} so all log entries produced during
- * identity handling include consistent context.
+ * identity handling include consistent propagation.
  * </p>
  *
  * <p>
@@ -32,7 +32,7 @@ import com.jay.template.infra.logging.MdcProperties;
  * </p>
  *
  * <p>
- * MDC is cleared in a {@code finally} block to prevent context leakage across thread
+ * MDC is cleared in a {@code finally} block to prevent propagation leakage across thread
  * reuse.
  * </p>
  */
