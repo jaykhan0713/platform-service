@@ -5,8 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.jay.template.bootstrap.outbound.http.properties.OutboundHttpProperties;
-import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyDecorator;
-import com.jay.template.infra.outbound.http.client.interceptor.RequestInterceptorRegistry;
+import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyChainBuilder;
 import com.jay.template.infra.outbound.http.client.rest.RestClientFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ class RestClientFactoryTest {
 
         RestClientFactory factory = new RestClientFactory(
                 mock(RestClient.Builder.class),
-                mock(ResiliencyDecorator.class),
+                mock(ResiliencyChainBuilder.class),
                 mock(RequestInterceptorRegistry.class),
                 props
         );
@@ -55,9 +54,9 @@ class RestClientFactoryTest {
 
         String clientName = "ping";
 
-        ResiliencyDecorator resiliencyDecorator = mock(ResiliencyDecorator.class);
+        ResiliencyChainBuilder resiliencyDecorator = mock(ResiliencyChainBuilder.class);
         ClientHttpRequestFactory decoratedFactory = mock(ClientHttpRequestFactory.class);
-        when(resiliencyDecorator.decorate(any(), any(), any(), eq(clientName))).thenReturn(decoratedFactory);
+        when(resiliencyDecorator.applyBulkhead(any(), any(), any(), eq(clientName))).thenReturn(decoratedFactory);
 
         RequestInterceptorRegistry requestInterceptorRegistry = mock(RequestInterceptorRegistry.class);
 
@@ -91,7 +90,7 @@ class RestClientFactoryTest {
 
         verify(rootBuilder).clone();
         verify(builder).requestFactory(same(decoratedFactory));
-        verify(resiliencyDecorator).decorate(any(), any(), any(), eq(clientName));
+        verify(resiliencyDecorator).applyBulkhead(any(), any(), any(), eq(clientName));
         verify(builder).baseUrl(eq(props.clients().get(clientName).baseUrl()));
         verify(requestInterceptorRegistry).createInterceptors(anyList());
         verify(builder).build();

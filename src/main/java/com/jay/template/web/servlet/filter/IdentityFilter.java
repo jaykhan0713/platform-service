@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import com.jay.template.core.transport.http.IdentityHeaders;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jay.template.core.context.identity.Identity;
@@ -29,10 +30,10 @@ import com.jay.template.bootstrap.transport.http.properties.TransportHttpPropert
  */
 public class IdentityFilter extends OncePerRequestFilter {
 
-    private final TransportHttpProperties.Http.Headers headerKeys;
+    private final IdentityHeaders headers;
 
-    IdentityFilter(TransportHttpProperties props) {
-        this.headerKeys = props.http().headers();
+    public IdentityFilter(IdentityHeaders headers) {
+        this.headers = headers;
     }
 
     @Override
@@ -42,8 +43,8 @@ public class IdentityFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        String userId = request.getHeader(headerKeys.userId());
-        String requestId = request.getHeader(headerKeys.requestId());
+        String userId = request.getHeader(headers.userId());
+        String requestId = request.getHeader(headers.requestId());
 
         Identity identity = new Identity(userId, requestId);
 

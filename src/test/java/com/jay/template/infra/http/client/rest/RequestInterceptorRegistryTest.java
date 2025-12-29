@@ -2,11 +2,8 @@ package com.jay.template.infra.http.client.rest;
 
 import java.util.List;
 
-import com.jay.template.infra.outbound.http.client.interceptor.RequestInterceptorRegistry;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
-
-import com.jay.template.infra.outbound.http.client.interceptor.RequestInterceptorFeature;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;

@@ -23,7 +23,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
 import com.jay.template.helper.YamlBinder;
-import com.jay.template.bootstrap.observability.properties.MdcProperties;
+import com.jay.template.bootstrap.observability.properties.ObservabilityProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,14 +32,14 @@ class MdcFilterTest {
     private static final String MDC_PROPS_KEY = "platform.logging.mdc";
     private static final Logger MDC_FILTER_LOGGER = (Logger) LoggerFactory.getLogger(MdcFilter.class);
 
-    private static MdcProperties mdcProps;
+    private static ObservabilityProperties mdcProps;
 
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeAll
     static void initClass() throws Exception {
         YamlBinder binder = new YamlBinder();
-        mdcProps = binder.bind(MDC_PROPS_KEY, MdcProperties.class);
+        mdcProps = binder.bind(MDC_PROPS_KEY, ObservabilityProperties.class);
     }
 
     @BeforeEach

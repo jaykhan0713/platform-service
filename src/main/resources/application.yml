@@ -64,7 +64,7 @@ management:
 resilience4j:
   bulkhead:
     instances: #inbound instances only as it's a framework level concern.
-      webBulkheadFilter:
+      "web.bulkhead.filter":
         max-concurrent-calls: 200 # max number of permits given at the inbound filter.
         max-wait-duration: 0 # fail-fast when no permits available.
 

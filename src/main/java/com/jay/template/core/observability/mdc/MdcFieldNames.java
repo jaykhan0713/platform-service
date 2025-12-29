@@ -10,5 +10,5 @@ public record MdcFieldNames(
         String durationMs,
         KindValues kindValues
 ) {
-    public record KindValues(String kind) {}
+    public record KindValues(String http) {}
 }

@@ -1,12 +1,12 @@
 package com.jay.template.web.mvc.controller.smoke;
 
+import com.jay.template.core.domain.smoke.SmokeCheckResult;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jay.template.app.smoke.api.model.SmokeResponse;
-import com.jay.template.app.smoke.model.SmokeModel;
+import com.jay.template.web.mvc.controller.smoke.api.model.SmokeResponse;
 import com.jay.template.app.smoke.service.SmokeService;
 
 @Profile("smoke")
@@ -22,7 +22,7 @@ public class SmokeController {
 
     @GetMapping("/api/smoke")
     public SmokeResponse get() {
-        SmokeModel model = smokeService.executeFlow();
-        return new SmokeResponse(model.ok(), model.msg());
+        SmokeCheckResult result = smokeService.executeFlow();
+        return new SmokeResponse(result.aggregatedMsg());
     }
 }

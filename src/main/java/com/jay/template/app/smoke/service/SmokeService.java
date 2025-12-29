@@ -1,27 +1,26 @@
 package com.jay.template.app.smoke.service;
 
+import com.jay.template.core.domain.smoke.SmokeCheckResult;
+import com.jay.template.core.port.dependency.ping.PingDependency;
 import org.springframework.stereotype.Service;
 
-import com.jay.template.app.smoke.dependency.ping.contract.DownstreamPingResponse;
-import com.jay.template.app.smoke.model.SmokeModel;
-import com.jay.template.infra.outbound.http.client.ping.PingClient;
+import com.jay.template.core.domain.dependency.ping.PingResult;
 
 @Service
 public class SmokeService {
-    private final PingClient pingClient;
+    private final PingDependency pingDependency;
 
-    public SmokeService(PingClient pingClient) {
-        this.pingClient = pingClient;
+    public SmokeService(PingDependency pingDependency) {
+        this.pingDependency = pingDependency;
     }
 
-    public SmokeModel executeFlow() {
-        DownstreamPingResponse response = pingClient.ping();
+    public SmokeCheckResult executeFlow() {
+        PingResult pingResult = pingDependency.ping();
 
-        boolean ok = "pong".equals(response.msg());
+        //map ping + other dependencies to business use-case (smoke check in this case)
 
-        //create Model, do more processing if needed. Return model.
-
-        return new SmokeModel(ok, response.msg());
+        String aggregatedMsg = "ping.ok: " + pingResult.ok() + " ping.msg: " + pingResult.msg();
+        return new SmokeCheckResult(aggregatedMsg);
 
     }
 }

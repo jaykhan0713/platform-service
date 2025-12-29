@@ -9,12 +9,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.observability.mdc.MdcFieldNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.bootstrap.observability.properties.MdcProperties;
+import com.jay.template.bootstrap.observability.properties.ObservabilityProperties;
 
 /**
  * Populates MDC (Mapped Diagnostic Context) fields for structured identity logging.
@@ -40,10 +41,10 @@ public class MdcFilter extends OncePerRequestFilter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MdcFilter.class);
 
-    private final MdcProperties mdcProps;
+    private final MdcFieldNames mdcFieldNames;
 
-    MdcFilter(MdcProperties mdcProps) {
-        this.mdcProps = mdcProps;
+    public MdcFilter(MdcFieldNames mdcProps) {
+        this.mdcFieldNames = mdcProps;
     }
 
     @Override
@@ -62,21 +63,21 @@ public class MdcFilter extends OncePerRequestFilter {
 
         try {
 
-            //note that MDC does not allow null values so it removes the key and logback will print empty.
+            //note that MDC does not allow null values so it removes the key from map and logback will print empty.
 
-            MDC.put(mdcProps.userId(), userId);
-            MDC.put(mdcProps.requestId(), requestId);
-            MDC.put(mdcProps.kind(), mdcProps.kindValues().http());
-            MDC.put(mdcProps.method(), method);
-            MDC.put(mdcProps.name(), path);
+            MDC.put(mdcFieldNames.userId(), userId);
+            MDC.put(mdcFieldNames.requestId(), requestId);
+            MDC.put(mdcFieldNames.kind(), mdcFieldNames.kindValues().http());
+            MDC.put(mdcFieldNames.method(), method);
+            MDC.put(mdcFieldNames.name(), path);
 
             filterChain.doFilter(request, response);
         } finally {
 
-            MDC.put(mdcProps.status(), String.valueOf(response.getStatus()));
+            MDC.put(mdcFieldNames.status(), String.valueOf(response.getStatus()));
 
             long durationMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
-            MDC.put(mdcProps.durationMs(), String.valueOf(durationMs));
+            MDC.put(mdcFieldNames.durationMs(), String.valueOf(durationMs));
 
             LOGGER.info("");
             MDC.clear();

@@ -7,21 +7,17 @@ import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.ClientHttpResponse;
-import org.springframework.stereotype.Component;
 
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
-import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
+import com.jay.template.core.transport.http.IdentityHeaders;
 
-@Component
-public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor, RequestInterceptorFeature {
+public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor {
 
-    private static final String KEY = "identity";
+    private final IdentityHeaders headers;
 
-    private final TransportHttpProperties.Http.Headers headerKeys;
-
-    public IdentityHeaderInterceptor(TransportHttpProperties props) {
-        this.headerKeys = props.http().headers();
+    public IdentityHeaderInterceptor(IdentityHeaders headers) {
+        this.headers = headers;
     }
 
     @Override
@@ -30,19 +26,9 @@ public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor, 
         HttpHeaders headers = request.getHeaders();
         Identity identity = IdentityContextHolder.context().identity();
 
-        headers.set(headerKeys.userId(), identity.userId());
-        headers.set(headerKeys.requestId(), identity.requestId());
+        headers.set(this.headers.userId(), identity.userId());
+        headers.set(this.headers.requestId(), identity.requestId());
 
         return execution.execute(request, body);
-    }
-
-    @Override
-    public ClientHttpRequestInterceptor interceptor() {
-        return this;
-    }
-
-    @Override
-    public String key() {
-        return KEY;
     }
 }

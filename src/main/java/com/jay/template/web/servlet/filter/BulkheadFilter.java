@@ -56,7 +56,7 @@ public class BulkheadFilter extends OncePerRequestFilter {
     private final Bulkhead bulkhead;
     private final ErrorResponseWriter errorResponseWriter;
 
-    BulkheadFilter(
+    public BulkheadFilter(
             Bulkhead bulkhead,
             ErrorResponseWriter errorResponseWriter
     ) {

@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 
 import com.jay.template.core.error.api.ApiException;
 import com.jay.template.core.error.api.ErrorType;
-import com.jay.template.infra.outbound.error.DependencyCallException;
+import com.jay.template.core.error.dependency.DependencyCallException;
 
 final class DependencyCallExecutor {
 
