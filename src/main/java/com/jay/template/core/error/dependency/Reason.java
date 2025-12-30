@@ -1,9 +1,14 @@
 package com.jay.template.core.error.dependency;
 
 public enum Reason {
-    //Resiliency related
-    CIRCUIT_BREAKER_REJECT,
-    BULKHEAD_FULL
+    //IO related
+    IO_ERROR,
 
-    //TODO: IO related
+    //status code in response related
+    RESPONSE_CLIENT_ERROR, //4xx
+    RESPONSE_SERVER_ERROR, //5xx
+
+    //Resiliency related
+    CAPACITY_REJECTED,
+    SHORT_CIRCUITED
 }

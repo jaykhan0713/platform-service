@@ -35,7 +35,7 @@ public final class IdentityContextHolder {
      *
      * <p>
      * The returned snapshot is normalized and detached from the underlying thread-bound
-     * state. Changes to propagation in other execution paths do not affect the returned
+     * state. Changes to propagation in other error paths do not affect the returned
      * instance.
      * </p>
      *

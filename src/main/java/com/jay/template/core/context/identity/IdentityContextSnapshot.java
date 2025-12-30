@@ -10,7 +10,7 @@ package com.jay.template.core.context.identity;
  *
  * <p>
  * Snapshots are treated as immutable value objects. Snapshot instances may be copied on
- * retrieval and binding to prevent accidental coupling between execution paths. The
+ * retrieval and binding to prevent accidental coupling between error paths. The
  * contained {@link Identity} is reused directly since it is currently immutable. If
  * {@link Identity} later contains mutable state, this implementation may defensively
  * copy identity data at this boundary to preserve snapshot isolation.

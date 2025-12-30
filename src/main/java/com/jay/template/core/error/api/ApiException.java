@@ -2,7 +2,6 @@ package com.jay.template.core.error.api;
 
 import java.util.Objects;
 
-// app layer exception
 public final class ApiException extends RuntimeException {
 
     private final ErrorType type;
@@ -17,8 +16,7 @@ public final class ApiException extends RuntimeException {
     }
 
     public ApiException(ErrorType type, Throwable cause) {
-        super(cause);
-        this.type = Objects.requireNonNull(type);
+        this(Objects.requireNonNull(type), type.defaultMessage(), cause);
     }
 
     public ApiException(ErrorType type, String customMessage, Throwable cause) {

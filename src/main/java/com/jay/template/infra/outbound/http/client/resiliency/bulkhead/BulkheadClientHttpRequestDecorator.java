@@ -13,7 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
 
-class BulkheadClientHttpRequestDecorator implements ClientHttpRequest {
+final class BulkheadClientHttpRequestDecorator implements ClientHttpRequest {
     private final ClientHttpRequest delegate;
     private final Bulkhead bulkhead;
 

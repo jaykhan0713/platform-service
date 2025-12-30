@@ -14,7 +14,8 @@ import com.jay.template.infra.outbound.http.client.resiliency.bulkhead.BulkheadC
 //orchestration of functional resiliency responsibilities
 public class ResiliencyChainBuilder {
 
-    private static final String INSTANCE_SUFFIX = "OutboundClient";
+    //note that micrometer r4j metrics will use same instance name but give it distinct (bulkhead/cb) metrics
+    private static final String INSTANCE_SUFFIX = "outbound.client";
 
     private final BulkheadRegistry bulkheadRegistry;
     private final CircuitBreakerRegistry circuitBreakerRegistry;

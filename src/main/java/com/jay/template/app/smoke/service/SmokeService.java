@@ -1,10 +1,11 @@
 package com.jay.template.app.smoke.service;
 
-import com.jay.template.core.domain.smoke.SmokeCheckResult;
-import com.jay.template.core.port.dependency.ping.PingDependency;
 import org.springframework.stereotype.Service;
 
+import com.jay.template.app.dependency.error.DependencyExceptionTranslator;
 import com.jay.template.core.domain.dependency.ping.PingResult;
+import com.jay.template.core.domain.smoke.SmokeCheckResult;
+import com.jay.template.core.port.dependency.ping.PingDependency;
 
 @Service
 public class SmokeService {
@@ -14,8 +15,9 @@ public class SmokeService {
         this.pingDependency = pingDependency;
     }
 
-    public SmokeCheckResult executeFlow() {
-        PingResult pingResult = pingDependency.ping();
+    public SmokeCheckResult runSmokeCheck() {
+
+        PingResult pingResult = DependencyExceptionTranslator.execute(pingDependency::ping);
 
         //map ping + other dependencies to business use-case (smoke check in this case)
 

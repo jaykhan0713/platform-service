@@ -18,7 +18,7 @@ import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
  *
  * <p>This filter enforces a global, filter-level concurrency limit using a
  * Resilience4j {@link io.github.resilience4j.bulkhead.Bulkhead} (semaphore-based).
- * In traditional servlet execution, the servlet container parsed requests and dispatched them
+ * In traditional servlet error, the servlet container parsed requests and dispatched them
  * onto a bounded worker thread pool. With virtual threads, that implicit bound
  * no longer exists, so explicit admission control is required.</p>
  *

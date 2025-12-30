@@ -11,11 +11,15 @@ import com.jay.template.infra.outbound.http.client.rest.ping.PingRestClientAdapt
 @Configuration
 public class PingRestClientConfig {
 
+    private static final String CLIENT_NAME = "ping";
+    private static final String PING_URI = "/api/v1/ping";
+
     @Bean
     public PingDependency pingDependency(RestClientFactory restClientFactory) {
         return new PingRestClientAdapter(
-                restClientFactory.buildClient("ping"),
-                "/api/v1/ping",
+                restClientFactory.buildClient(CLIENT_NAME),
+                CLIENT_NAME,
+                PING_URI,
                 new DownstreamPingResponseMapper()
         );
     }

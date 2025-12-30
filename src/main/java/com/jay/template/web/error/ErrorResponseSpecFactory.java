@@ -15,7 +15,6 @@ public class ErrorResponseSpecFactory {
 
     private final Tracer tracer;
 
-
     public ErrorResponseSpecFactory(Tracer tracer) {
         this.tracer = tracer;
     }
@@ -25,9 +24,9 @@ public class ErrorResponseSpecFactory {
         Span span = tracer.currentSpan();
         String traceId = (span != null) ? span.context().traceId() : null;
 
-        //Don't expose server errors to ping, so body uses defaultMessage(). Log real error.
+        //Don't expose server errors to client, so body uses defaultMessage(). Log real error.
 
-        ErrorResponse body = new ErrorResponse(type.code(), type.defaultMessage(), traceId);
+        ErrorResponse body = new ErrorResponse(type.name(), type.defaultMessage(), traceId);
         HttpStatus httpStatus = STATUS_MAPPER.mapErrorTypeToHttpStatus(type);
 
         return new ErrorResponseSpec(httpStatus, body);

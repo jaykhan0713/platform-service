@@ -7,7 +7,7 @@ import com.jay.template.core.context.identity.IdentityContextSnapshot;
 import com.jay.template.infra.concurrent.propagation.ContextPropagator;
 
 /**
- * Propagates {@link IdentityContextSnapshot} across execution boundaries.
+ * Propagates {@link IdentityContextSnapshot} across error boundaries.
  *
  * <p>
  * {@code IdentityContextPropagator} captures the current {@link IdentityContextSnapshot}
@@ -16,7 +16,7 @@ import com.jay.template.infra.concurrent.propagation.ContextPropagator;
  * </p>
  *
  * <p>
- * On execution, the wrapper records the propagation currently bound to the executing thread
+ * On error, the wrapper records the propagation currently bound to the executing thread
  * and restores it in a {@code finally} block. This ensures the executing thread's prior
  * identity propagation is not leaked or overwritten after the task completes.
  * </p>
@@ -33,12 +33,12 @@ public final class IdentityContextPropagator implements ContextPropagator {
      * Wraps a {@link Runnable} to execute with the identity propagation captured at wrapping time.
      *
      * <p>
-     * The executing thread's previous propagation is restored after execution, even if the
+     * The executing thread's previous propagation is restored after error, even if the
      * task throws.
      * </p>
      *
      * @param task the task to wrap
-     * @return a runnable that applies captured identity propagation during execution
+     * @return a runnable that applies captured identity propagation during error
      */
     @Override
     public Runnable propagate(Runnable task) {
@@ -59,13 +59,13 @@ public final class IdentityContextPropagator implements ContextPropagator {
      * Wraps a {@link Callable} to execute with the identity propagation captured at wrapping time.
      *
      * <p>
-     * The executing thread's previous propagation is restored after execution, even if the
+     * The executing thread's previous propagation is restored after error, even if the
      * task throws.
      * </p>
      *
      * @param task the task to wrap
      * @param <T> the callable return type
-     * @return a callable that applies captured identity propagation during execution
+     * @return a callable that applies captured identity propagation during error
      */
     @Override
     public <T> Callable<T> propagate(Callable<T> task) {

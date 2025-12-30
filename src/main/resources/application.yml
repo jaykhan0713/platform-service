@@ -106,16 +106,37 @@ platform: # namespace for Spring configuration keys
             max-concurrent-calls: 50
             max-wait-duration: 0
 
-#          circuit-breaker:
-#            enabled: true
-#            failure-rate-threshold: 50
-#            slow-call-rate-threshold: 100
-#            slow-call-duration-threshold: 2s
-#            sliding-window-type: COUNT_BASED
-#            sliding-window-size: 50
-#            minimum-number-of-calls: 20
-#            permitted-number-of-calls-in-half-open-state: 10
-#            wait-duration-in-open-state: 10s
+
+        circuit-breaker:
+          enabled: true
+
+          # Percentage of recorded failures required to open the breaker
+          failure-rate-threshold: 50
+
+          # Any call taking longer than this is classified as "slow"
+          slow-call-duration-threshold: 4s
+
+          # Percentage of slow calls required to open the breaker
+          slow-call-rate-threshold: 50
+
+          # Sliding window counts a fixed number of calls (not time-based)
+          # Better for consistent traffic and predictable behavior
+          sliding-window-type: COUNT_BASED
+
+          # Number of calls kept in the sliding window for statistics
+          # Larger = smoother but slower reaction
+          sliding-window-size: 50
+
+          # Minimum number of calls before the breaker is allowed to open
+          # Prevents tripping on low traffic or cold start
+          minimum-number-of-calls: 20
+
+          # Number of test calls allowed when transitioning from OPEN to HALF_OPEN
+          # Used to probe whether the dependency has recovered
+          permitted-number-of-calls-in-half-open-state: 10
+
+          # Time the breaker stays OPEN before attempting HALF_OPEN probes
+          wait-duration-in-open-state: 10s
 
       # add configurable http clients here. Transport agnostic, doesn't need to be RestClient
       clients:

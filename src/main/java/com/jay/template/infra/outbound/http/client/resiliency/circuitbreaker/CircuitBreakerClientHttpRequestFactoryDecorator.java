@@ -43,9 +43,19 @@ public final class CircuitBreakerClientHttpRequestFactoryDecorator implements Cl
 
         @Override
         public ClientHttpResponse execute() throws IOException {
+            /* TODO: Decide whether the circuit breaker should treat downstream HTTP 5xx responses as failures.
+             *  Current behavior: breaker records failures only when the request throws
+             *  (default config records all exceptions).
+             *
+             *  TODO: When needed, translate downstream 5xx into exceptions in the outbound client adapter
+             *    so the breaker can learn.
+             *
+             *  Note: CallNotPermittedException is thrown when the breaker is open and the call is rejected
+             *  (no call executed).
+             */
             try {
                 return circuitBreaker.executeCallable(delegate::execute);
-            } catch (IOException | CallNotPermittedException ex) {
+            } catch (IOException | RuntimeException ex) { //RuntimeException accounts for CallNotPermittedException
                 throw ex;
             } catch (Exception ex) { //needs wider Exception for executeCallable
                 throw new IOException(ex);

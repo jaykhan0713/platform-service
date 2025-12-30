@@ -1,5 +1,7 @@
 package com.jay.template.web.mvc.error;
 
+import com.jay.template.core.error.dependency.DependencyCallException;
+import com.jay.template.core.error.dependency.Reason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +20,8 @@ import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
 public class GlobalExceptionHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    private static final String MESSAGE_FORMAT = "errorCode={} cause={} {}";
+    private static final String API_EX_MESSAGE_FORMAT = "error.code={} root.cause={} ex.msg=\"{}\"";
+    private static final String GENERIC_EX_MESSAGE_FORMAT = "error.code=";
 
     private final ErrorResponseSpecFactory errorResponseSpecFactory;
 
@@ -33,13 +36,15 @@ public class GlobalExceptionHandler {
         // NOTE: expected error, no stack trace noise
         // optionally surface errorCode via MDC for identity-complete logging for MDCFilter
 
-        Throwable throwable = ex.getCause();
-        String cause = throwable == null ? "UNKNOWN" : throwable.getClass().getSimpleName();
+        // TODO: enrich dependency failure logging (clientName, reason) if needed.
+        // Current approach logs root cause only to avoid overengineering.
+        String rootCauseName = rootCause(ex);
 
+        // ApiException always carries a non-null message, defaulting to ErrorType.defaultMessage()
         LOGGER.error(
-                MESSAGE_FORMAT,
-                type.code(),
-                cause,
+                API_EX_MESSAGE_FORMAT,
+                type.name(),
+                rootCauseName,
                 ex.getMessage()
         );
 
@@ -51,7 +56,8 @@ public class GlobalExceptionHandler {
 
         ErrorType type = INTERNAL_SERVER_ERROR;
 
-        LOGGER.error(type.code(), ex);
+        String msg = GENERIC_EX_MESSAGE_FORMAT + type.name();
+        LOGGER.error(msg, ex);
 
         return buildResponseEntity(type);
     }
@@ -62,5 +68,15 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(spec.status())
                 .body(spec.body());
+    }
+
+    private String rootCause(Throwable throwable) {
+        Throwable cause = throwable;
+
+        while (cause.getCause() != null && cause.getCause() != cause) { //safeguard against cause loops.
+            cause = cause.getCause();
+        }
+
+        return cause.getClass().getSimpleName();
     }
 }

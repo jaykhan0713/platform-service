@@ -2,23 +2,34 @@ package com.jay.template.core.error.dependency;
 
 import java.util.Objects;
 
-// infra layer exception bridge to app.
+// infra layer error bridge to app.
 public class DependencyCallException extends RuntimeException {
 
-    private final Reason reason;
     private final String clientName;
+    private final Reason reason;
 
-    public DependencyCallException(Reason reason, String clientName, Throwable cause) {
+    public DependencyCallException(
+            String clientName,
+            Reason reason,
+            Throwable cause
+    ) {
         super(cause);
-        this.reason = Objects.requireNonNull(reason);
         this.clientName = Objects.requireNonNull(clientName);
+        this.reason = Objects.requireNonNull(reason);
     }
 
-    public Reason reason() {
-        return reason;
+    public DependencyCallException(
+            String clientName,
+            Reason reason
+    ) {
+        this(clientName, reason, null);
     }
 
     public String clientName() {
         return clientName;
+    }
+
+    public Reason reason() {
+        return reason;
     }
 }
