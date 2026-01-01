@@ -87,7 +87,7 @@ sonarqube {
         property("sonar.organization", "jaykhan0713")
         property("sonar.projectKey", "jaykhan0713_service-template")
 
-        // coverage config
+        // coverage settings
         property("sonar.sources", "src/main/java")
         property("sonar.java.binaries", "build/classes/java/main")
 

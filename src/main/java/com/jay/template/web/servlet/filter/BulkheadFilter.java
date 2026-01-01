@@ -51,8 +51,6 @@ import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
  */
 public class BulkheadFilter extends OncePerRequestFilter {
 
-    public static final String BULKHEAD_INSTANCE_NAME = "webBulkheadFilter";
-
     private final Bulkhead bulkhead;
     private final ErrorResponseWriter errorResponseWriter;
 

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import com.jay.template.bootstrap.outbound.http.properties.OutboundHttpProperties;
-import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyChainBuilder;
+import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyChainAssembler;
 import com.jay.template.infra.outbound.http.client.rest.RestClientFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class RestClientFactoryTest {
 
         RestClientFactory factory = new RestClientFactory(
                 mock(RestClient.Builder.class),
-                mock(ResiliencyChainBuilder.class),
+                mock(ResiliencyChainAssembler.class),
                 mock(RequestInterceptorRegistry.class),
                 props
         );
@@ -45,7 +45,7 @@ class RestClientFactoryTest {
         IllegalStateException ex = assertThrows(IllegalStateException.class,
                 () -> factory.buildClient("missing"));
 
-        assertEquals("Missing config: platform.http.clients.missing",
+        assertEquals("Missing settings: platform.http.clients.missing",
                 ex.getMessage());
     }
 
@@ -54,9 +54,9 @@ class RestClientFactoryTest {
 
         String clientName = "ping";
 
-        ResiliencyChainBuilder resiliencyDecorator = mock(ResiliencyChainBuilder.class);
+        ResiliencyChainAssembler resiliencyDecorator = mock(ResiliencyChainAssembler.class);
         ClientHttpRequestFactory decoratedFactory = mock(ClientHttpRequestFactory.class);
-        when(resiliencyDecorator.applyBulkhead(any(), any(), any(), eq(clientName))).thenReturn(decoratedFactory);
+        when(resiliencyDecorator.assemble(any(), any(), any(), eq(clientName))).thenReturn(decoratedFactory);
 
         RequestInterceptorRegistry requestInterceptorRegistry = mock(RequestInterceptorRegistry.class);
 
@@ -90,7 +90,7 @@ class RestClientFactoryTest {
 
         verify(rootBuilder).clone();
         verify(builder).requestFactory(same(decoratedFactory));
-        verify(resiliencyDecorator).applyBulkhead(any(), any(), any(), eq(clientName));
+        verify(resiliencyDecorator).assemble(any(), any(), any(), eq(clientName));
         verify(builder).baseUrl(eq(props.clients().get(clientName).baseUrl()));
         verify(requestInterceptorRegistry).createInterceptors(anyList());
         verify(builder).build();

@@ -17,6 +17,7 @@ import com.jay.template.web.servlet.support.ErrorResponseWriter;
 public class FilterConfig {
 
     private static final String API_WILDCARD = "/api/*";
+    private static final String BULKHEAD_FILTER_INSTANCE_NAME = "web.bulkhead.filter";
 
     @Bean
     public FilterRegistrationBean<IdentityFilter> identityFilter(IdentityHeadersProvider identityHeadersProvider) {
@@ -48,9 +49,9 @@ public class FilterConfig {
         ErrorResponseWriter errorResponseWriter
     ) {
         FilterRegistrationBean<BulkheadFilter> registration = new FilterRegistrationBean<>();
-        String instanceName = BulkheadFilter.BULKHEAD_INSTANCE_NAME;
+
         BulkheadFilter bulkheadFilter = new BulkheadFilter(
-                bulkheadRegistry.bulkhead(instanceName),
+                bulkheadRegistry.bulkhead(BULKHEAD_FILTER_INSTANCE_NAME),
                 errorResponseWriter
         );
 

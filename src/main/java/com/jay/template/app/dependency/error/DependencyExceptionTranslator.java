@@ -8,6 +8,8 @@ import com.jay.template.core.error.dependency.DependencyCallException;
 
 public final class DependencyExceptionTranslator {
 
+    private DependencyExceptionTranslator() {}
+
     public static <T> T execute(Supplier<T> supplier) {
         try {
             return supplier.get();
@@ -16,6 +18,4 @@ public final class DependencyExceptionTranslator {
             throw new ApiException(ErrorType.DEPENDENCY_UNAVAILABLE, ex);
         }
     }
-
-    private DependencyExceptionTranslator() {}
 }

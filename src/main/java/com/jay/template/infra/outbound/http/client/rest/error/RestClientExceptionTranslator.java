@@ -34,6 +34,16 @@ public final class RestClientExceptionTranslator {
         }
     }
 
+    /*
+     * TODO: Per-client error handling is contract-specific.
+     *  Default behavior here is to throw for 4xx/5xx.
+     *  If a specific downstream has a generated Error DTO, the concrete RestClient adapter for that client
+     *  may override onStatus handling to:
+     *  - parse the downstream Error DTO for logging/diagnostics
+     *  - throw a typed exception that carries the parsed DTO (recommended for 5xx so CB learns)
+     *  - optionally map certain 4xx responses into an explicit domain outcome when they represent expected behavior
+     *  Do this only when concrete use cases exist. Avoid a generic "domain model has an error field" by default.
+     */
     public static RestClient.ResponseSpec applyDefaultOnStatusHandlers(
             RestClient.ResponseSpec spec,
             String clientName

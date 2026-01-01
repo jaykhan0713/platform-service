@@ -88,7 +88,7 @@ platform: # namespace for Spring configuration keys
       status: "status"
       duration-ms: "durationMs"
 
-      kind-values: # future protocol kindValue can be added here
+      kind-values: # future protocol kindValues can be added here
         http: "http"
 
   outbound:
@@ -97,52 +97,52 @@ platform: # namespace for Spring configuration keys
         connect-timeout: 2s # max time allowed for getting a usable network connection (DNS + TCP + TLS), end to end.
         read-timeout: 5s # waiting on external I/O
 
-        # ORDER matters for interceptors, applied in list-order. client value overwrites defaults when present
-        # String key defined for implementation of infra.http.interceptor.RequestInterceptorFeature
-
         resiliency:
           bulkhead:
             enabled: true #for downstream we ALWAYS want to enable for backpressure safety.
             max-concurrent-calls: 50
             max-wait-duration: 0
 
+          circuit-breaker:
+            enabled: true
 
-        circuit-breaker:
-          enabled: true
+            # Percentage of recorded failures required to open the breaker
+            failure-rate-threshold: 50
 
-          # Percentage of recorded failures required to open the breaker
-          failure-rate-threshold: 50
+            # Any call taking longer than this is considered slow
+            # Note that connect and read timeouts are worst case scenario guardrails
+            # should be below the sum of those + give headroom for expected in-app processing
+            # to meet Service Level Objectives (SLOs)
+            slow-call-duration-threshold: 5s
 
-          # Any call taking longer than this is classified as "slow"
-          slow-call-duration-threshold: 4s
+            # Percentage of slow calls required to open the breaker
+            # Note that you can have slow success and slow failure recorded in sliding window.
+            slow-call-rate-threshold: 50
 
-          # Percentage of slow calls required to open the breaker
-          slow-call-rate-threshold: 50
+            # Sliding window counts a fixed number of calls (not time-based)
+            # Better for consistent traffic and predictable behavior
+            # TIME_BASED is better for unpredictable traffic patterns.
+            sliding-window-type: COUNT_BASED
 
-          # Sliding window counts a fixed number of calls (not time-based)
-          # Better for consistent traffic and predictable behavior
-          sliding-window-type: COUNT_BASED
+            # Number of calls kept in the sliding window for statistics
+            # Larger = smoother but slower reaction
+            sliding-window-size: 50
 
-          # Number of calls kept in the sliding window for statistics
-          # Larger = smoother but slower reaction
-          sliding-window-size: 50
+            # Minimum number of calls needed before circuit breaker is allowed to open
+            # Prevents tripping on low traffic or cold start
+            minimum-number-of-calls: 20
 
-          # Minimum number of calls before the breaker is allowed to open
-          # Prevents tripping on low traffic or cold start
-          minimum-number-of-calls: 20
+            # Number of test calls allowed in HALF_OPEN open state
+            # Used to check whether the dependency has recovered
+            permitted-number-of-calls-in-half-open-state: 10
 
-          # Number of test calls allowed when transitioning from OPEN to HALF_OPEN
-          # Used to probe whether the dependency has recovered
-          permitted-number-of-calls-in-half-open-state: 10
-
-          # Time the breaker stays OPEN before attempting HALF_OPEN probes
-          wait-duration-in-open-state: 10s
+            # Time the breaker stays OPEN before transition to HALF_OPEN
+            wait-duration-in-open-state: 10s
 
       # add configurable http clients here. Transport agnostic, doesn't need to be RestClient
       clients:
         ping: # example client for services in same VPC or organization, propagates identity
           base-url: "http://ping-service.internal" # Example smoke service endpoint
-          connect-timeout: 2s
-          read-timeout: 5s
+          read-timeout: 4s
 
 

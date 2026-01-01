@@ -5,17 +5,17 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyChainBuilder;
+import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyChainAssembler;
 
 @Configuration
 public class ResiliencyConfig {
 
     @Bean
-    ResiliencyChainBuilder resiliencyDecorator(
+    ResiliencyChainAssembler resiliencyDecorator(
             BulkheadRegistry bulkheadRegistry,
             CircuitBreakerRegistry circuitBreakerRegistry
     ) {
-        return new ResiliencyChainBuilder(
+        return new ResiliencyChainAssembler(
                 bulkheadRegistry,
                 circuitBreakerRegistry
         );

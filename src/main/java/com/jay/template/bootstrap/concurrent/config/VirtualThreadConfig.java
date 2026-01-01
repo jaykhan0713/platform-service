@@ -19,8 +19,14 @@ public class VirtualThreadConfig {
         return new PlatformVirtualThreadFactory(List.copyOf(propagators));
     }
 
-    @Bean(name = "platformVirtualThreadExecutor", destroyMethod = "shutdown")
-    ExecutorService platformVirtualThreadExecutor(ThreadFactory platformVirtualThreadFactory) {
+    /*
+     * TODO : When real async orchestration use cases show up, prefer CompletableFuture with this
+     *  executor (do not use the ForkJoin common pool). Choose per-use-case policies such as fail-fast,
+     *  join-all, or partial results with explicit exception handling. If async patterns repeat across
+     *  services, consider introducing a small infra helper or port at that time.
+     */
+    @Bean(name = "platformVirtualThreadExecutorService", destroyMethod = "shutdown")
+    ExecutorService platformVirtualThreadExecutorService(ThreadFactory platformVirtualThreadFactory) {
         return Executors.newThreadPerTaskExecutor(platformVirtualThreadFactory);
     }
 }
