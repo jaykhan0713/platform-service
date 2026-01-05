@@ -1,0 +1,5 @@
+#this settings is loaded into the main spring propagation, NOT by the test framework.
+spring:
+  config:
+    activate:
+      on-profile: smoke

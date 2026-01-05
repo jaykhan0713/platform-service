@@ -2,14 +2,15 @@ package com.jay.template;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @SpringBootApplication
-@EnableConfigurationProperties
+@ConfigurationPropertiesScan
 public class Starter {
 
-    public static void main(String[] args) {
+    private Starter() {}
+
+    static void main(String[] args) {
         SpringApplication.run(Starter.class, args);
     }
-
 }

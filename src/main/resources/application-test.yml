@@ -2,7 +2,3 @@ spring:
   config:
     activate:
       on-profile: test
-
-logging:
-  level:
-    root: INFO

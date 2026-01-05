@@ -13,7 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 
 public final class YamlBinder {
 
-    private static final String APP_YAML = "application.yml";
+    private static final String APP_YAML = "unittest.yml";
 
     private final Binder binder;
 

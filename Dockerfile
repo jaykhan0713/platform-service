@@ -1,23 +1,36 @@
+# ---- Dockerfile (production) ----
+# Clean, portable build. Relies only on normal Docker layer caching.
+# No BuildKit cache mounts, so it behaves the same in CI and locally.
+
 # ---- build stage ----
-FROM eclipse-temurin:21-jdk AS build
+FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 
 # Copy Gradle wrapper FIRST so layers cache well
 COPY gradlew gradlew.bat ./
 COPY gradle/wrapper/ ./gradle/wrapper/
 
-# Build scripts
+# Build scripts (dependency graph inputs)
 COPY settings.gradle.kts build.gradle.kts ./
 
-# Sources
+# Prime Gradle dependency resolution.
+# This layer stays cached as long as build scripts do not change.
+RUN chmod +x gradlew && ./gradlew --no-daemon -x test help
+
+# Sources (change most often)
 COPY src ./src
 
-RUN chmod +x gradlew && ./gradlew --no-daemon clean bootJar
+# Build the Spring Boot executable jar (bootJar).
+# Gradle config sets bootJar archiveFileName to app.jar.
+RUN ./gradlew --no-daemon -x test clean bootJar
 
 # ---- runtime stage ----
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:25-jre
 WORKDIR /app
-COPY --from=build /app/build/libs/*-SNAPSHOT.jar app.jar
+
+# Copy the single boot jar output (no wildcards).
+COPY --from=build /app/build/libs/app.jar app.jar
+
 ENV JAVA_OPTS=""
 EXPOSE 8080
 ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]

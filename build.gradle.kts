@@ -1,24 +1,29 @@
 plugins {
     java
-    id("org.springframework.boot") version "3.5.5"
-    id("io.spring.dependency-management") version "1.1.7"
-    id("com.gorylenko.gradle-git-properties") version "2.4.1"
-    id("org.sonarqube") version "6.3.1.5724"
     jacoco
+    `jvm-test-suite`
+
+    //spring
+    id("io.spring.dependency-management") version "1.1.7"
+    id("org.springframework.boot") version "4.0.0"
+
+    //third party
+    id("org.sonarqube") version "6.3.1.5724"
 }
 
-group = "com.jay.showcase"
+group = "com.jay.template"
 version = "0.0.1-SNAPSHOT"
 description = "service-template"
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
 configurations {
     compileOnly {
+        // keep annotation processors to compile path, and not packaged on runtime classpath
         extendsFrom(configurations.annotationProcessor.get())
     }
 }
@@ -28,36 +33,56 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") // embedded tomcat servlet container
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-restclient")
+    implementation("org.springframework.boot:spring-boot-starter-opentelemetry")
 
     //logback
     implementation(platform("com.eoniantech.build:logback-contrib-bom:0.1.5"))
     implementation("ch.qos.logback.contrib:logback-json-classic")
     implementation("ch.qos.logback.contrib:logback-jackson")
 
-    // micrometer tracing with brave
-    implementation("io.micrometer:micrometer-core")
-    implementation("io.micrometer:micrometer-tracing-bridge-brave")
+    //micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
 
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    //OpenAPI
+    implementation(platform("org.springdoc:springdoc-openapi-bom:3.0.0"))
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui")
 
+    //Resilience4j
+    implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
+    // no boot4 r4j starter yet. Need for autoconfig of source (yaml) properties
+    implementation("io.github.resilience4j:resilience4j-spring-boot3")
+    implementation("io.github.resilience4j:resilience4j-micrometer")
+
+    //IDE mapping such as yml configs with javadocs, generates meta-data json at build time.
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
+/* This is an application, not a library.
+ * Disable the default <service-name>-SNAPSHOT-"plain" jar (classes-only, non-runnable) so that
+ * build/libs contains ONLY the Spring Boot executable jar produced by bootJar.
+ * Explicility name to app.jar
+ */
+tasks.jar { enabled = false }
+tasks.bootJar {
+    enabled = true
+    archiveFileName.set("app.jar")
+}
+
 // JUnit
-tasks.withType<Test> {
+tasks.withType<Test> { //test and functionalTest will use this runner
     useJUnitPlatform()
 }
 
 //Spring boot
 springBoot {
-    mainClass.set("com.jay.showcase.Starter")
+    mainClass.set("com.jay.template.Starter")
     buildInfo()
 }
 
@@ -68,15 +93,30 @@ sonarqube {
         property("sonar.organization", "jaykhan0713")
         property("sonar.projectKey", "jaykhan0713_service-template")
 
-        // coverage config
+        // coverage settings
         property("sonar.sources", "src/main/java")
-        property("sonar.tests", "src/test/java")
         property("sonar.java.binaries", "build/classes/java/main")
-        property("sonar.java.test.binaries", "build/classes/java/test")
-        property("sonar.junit.reportPaths", "build/test-results/test")
+
+        property("sonar.tests", "src/test/java,src/functionalTest/java")
+        property("sonar.java.test.binaries", "build/classes/java/test,build/classes/java/functionalTest")
+
+        property("sonar.junit.reportPaths", "build/test-results/test,build/test-results/functionalTest")
         property(
             "sonar.coverage.jacoco.xmlReportPaths",
             "build/reports/jacoco/test/jacocoTestReport.xml"
+        )
+
+        //exclusions
+        property(
+            "sonar.exclusions", "**/api/**/openapi/**" // sonar complains about openAPI style annotations.
+        )
+
+        // stops openApi plural annotations from being marked as an issue
+        property("sonar.issue.ignore.multicriteria", "openapiS1710") //',' separated value for more rules if needed.
+        property("sonar.issue.ignore.multicriteria.openapiS1710.ruleKey", "java:S1710")
+        property(
+            "sonar.issue.ignore.multicriteria.openapiS1710.resourceKey",
+            "src/main/java/com/jay/template/api/**"
         )
     }
 }
@@ -87,37 +127,42 @@ jacoco {
 }
 
 tasks.test {
-    useJUnitPlatform()
-
     finalizedBy(tasks.jacocoTestReport) // run report after tests
 }
 
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
-
+    dependsOn(tasks.test) //when this task is ran, will run test first.
     reports {
         xml.required.set(true)
-        html.required.set(true)  // for local
+        html.required.set(true)
         csv.required.set(false)
     }
-
-    classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    "**/*Config.class",
-                    "**/*Properties.class",
-                    "**/Starter.class"
-                )
-            }
-        })
-    )
 }
 
+// separate from jacocoTestReport, this is your actual gate. Coverage is per class basis
 tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.jacocoTestReport)
+
     violationRules {
         rule {
+            element = "CLASS"
+
+            includes = listOf(
+                "com.jay.template.app.*",
+                "com.jay.template.infra.*",
+                "com.jay.template.web.*",
+                "com.jay.template.core.context.*"
+            )
+
+            excludes = listOf(
+                //exclude any smoke test related package path.
+                "com.jay.template.*.smoke.*",
+                "com.jay.template.*.ping.*"
+            )
+
             limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
                 minimum = 0.75.toBigDecimal()
             }
         }
@@ -126,4 +171,79 @@ tasks.jacocoTestCoverageVerification {
 
 tasks.named("check") {
     dependsOn("jacocoTestCoverageVerification")
+    dependsOn(tasks.named("functionalTest"))
+}
+
+/* Functional (smoke) test suite
+ -----------------------------
+ We use Gradle's `jvm-test-suite` instead of manually creating a source set.
+ Important gotchas this setup addresses:
+
+ 1) This is an *application*, not a published library.
+    - jar is disabled and only bootJar is produced.
+    - Because of that, implementation(project()) DOES NOT reliably put
+      main classes on the functional test classpath.
+    - We must depend directly on sourceSets.main.output.
+
+ 2) testImplementation / testRuntimeOnly are NOT resolvable configurations.
+    - They cannot be "used" as dependencies.
+    - Instead, the functional test configurations must EXTEND them so they
+      inherit the same deps (JUnit, Mockito, Spring Boot test support, etc).
+
+ 3) Spring Boot context bootstraps the *real application*.
+    - Functional tests must see all main classes + runtime deps.
+    - Missing this causes ClassNotFound / NoClassDefFound errors in CI.
+
+ This wiring ensures functional tests behave like "run the app and hit it",
+ without coupling tests to internal packaging or published artifacts.
+ */
+testing {
+    suites {
+        val functionalTest by registering(JvmTestSuite::class) {
+            useJUnitJupiter()
+
+            dependencies {
+                // Make main application classes visible to functional tests
+                implementation(sourceSets.main.get().output)
+
+                // HTTP client for smoke tests (RestClient-based)
+                implementation("org.springframework.boot:spring-boot-resttestclient")
+
+                // Mock downstream HTTP services
+                implementation(platform("com.squareup.okhttp3:okhttp-bom:5.2.1"))
+                implementation("com.squareup.okhttp3:mockwebserver")
+            }
+
+            targets.all {
+                testTask.configure {
+                    // Use smoke profile to limit beans and external integrations
+                    systemProperty("spring.profiles.active", "smoke")
+
+                    // Ensure functional tests run after unit tests when running `check`
+                    shouldRunAfter(tasks.test)
+                }
+            }
+        }
+    }
+}
+
+/* Functional test configurations
+ ------------------------------
+ These configs inherit from the standard test configs so functional tests
+ automatically get:
+ - spring-boot-starter-test
+ - junit-jupiter
+ - mockito
+ - test runtime support
+
+ We EXTEND instead of "depending on" because testImplementation/testRuntimeOnly
+ are not resolvable by design.
+*/
+configurations {
+    named("functionalTestImplementation") {
+        extendsFrom(configurations.testImplementation.get())
+    }
+    named("functionalTestRuntimeOnly") {
+        extendsFrom(configurations.testRuntimeOnly.get())
+    }
 }

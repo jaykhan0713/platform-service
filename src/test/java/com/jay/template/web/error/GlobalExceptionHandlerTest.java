@@ -1,51 +1,66 @@
 package com.jay.template.web.error;
 
-import com.jay.template.error.ApiException;
-import com.jay.template.error.ErrorType;
-import com.jay.template.helper.MockTracerUtils;
-
-import brave.Tracer;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import com.jay.template.api.v1.common.error.ErrorResponse;
+import com.jay.template.core.error.api.ApiException;
+import com.jay.template.web.mvc.error.GlobalExceptionHandler;
+
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
+import static com.jay.template.core.error.api.ErrorType.UNAUTHORIZED;
 
 class GlobalExceptionHandlerTest {
 
     @Test
-    void testHandleGenericException() {
-        String message = "generic error";
-        Exception ex = new Exception(message);
-        String traceId = "trace-001";
-        Tracer tracer = MockTracerUtils.mockTracer(traceId);
+    void handlesApiException() {
+        ApiException ex = mock(ApiException.class);
+        when(ex.type()).thenReturn(UNAUTHORIZED);
 
-        GlobalExceptionHandler handler = new GlobalExceptionHandler(tracer);
-        ResponseEntity<ErrorResponse> entity = handler.handleGenericException(ex);
+        ErrorResponseSpecFactory errorResponseSpecFactory = mock(ErrorResponseSpecFactory.class);
+        ErrorResponseSpec spec = mock(ErrorResponseSpec.class);
 
-        ErrorResponse body = entity.getBody();
-        assertNotNull(body);
-        assertEquals(ErrorType.INTERNAL_SERVER_ERROR.getDefaultMessage(), body.message());
-        assertEquals(ErrorType.INTERNAL_SERVER_ERROR.getCode(), body.code());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
-        assertEquals(traceId, body.correlationId());
+        when(errorResponseSpecFactory.buildResponseSpec(any())).thenReturn(spec);
+        when(spec.status()).thenReturn(HttpStatus.BAD_REQUEST);
+        ErrorResponse errorResponse = mock(ErrorResponse.class);
+        when(spec.body()).thenReturn(errorResponse);
+
+        GlobalExceptionHandler handler = new GlobalExceptionHandler(errorResponseSpecFactory);
+        ResponseEntity<ErrorResponse> entity = handler.handleApiException(ex);
+
+        verify(errorResponseSpecFactory).buildResponseSpec(UNAUTHORIZED);
+
+        assertSame(HttpStatus.BAD_REQUEST, entity.getStatusCode());
+        assertSame(errorResponse, entity.getBody());
     }
 
     @Test
-    void testHandleApiException() {
-        String message = "bad request error";
-        ApiException ex = new ApiException(ErrorType.BAD_REQUEST, message);
-        String traceId = "trace-001";
-        Tracer tracer = MockTracerUtils.mockTracer(traceId);
+    void handlesGenericException() {
+        Exception ex = mock(Exception.class);
 
-        GlobalExceptionHandler handler = new GlobalExceptionHandler(tracer);
-        ResponseEntity<ErrorResponse> entity = handler.handleApiException(ex);
+        ErrorResponseSpecFactory errorResponseSpecFactory = mock(ErrorResponseSpecFactory.class);
+        ErrorResponseSpec spec = mock(ErrorResponseSpec.class);
 
-        ErrorResponse body = entity.getBody();
-        assertNotNull(body);
-        assertEquals(ErrorType.BAD_REQUEST.getDefaultMessage(), body.message());
-        assertEquals(ErrorType.BAD_REQUEST.getCode(), body.code());
-        assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
-        assertEquals(traceId, body.correlationId());
+        when(errorResponseSpecFactory.buildResponseSpec(any())).thenReturn(spec);
+        when(spec.status()).thenReturn(HttpStatus.INTERNAL_SERVER_ERROR);
+        ErrorResponse errorResponse = mock(ErrorResponse.class);
+        when(spec.body()).thenReturn(errorResponse);
+
+        GlobalExceptionHandler handler = new GlobalExceptionHandler(errorResponseSpecFactory);
+        ResponseEntity<ErrorResponse> entity = handler.handleGenericException(ex);
+
+        verify(errorResponseSpecFactory).buildResponseSpec(INTERNAL_SERVER_ERROR);
+
+        assertSame(HttpStatus.INTERNAL_SERVER_ERROR, entity.getStatusCode());
+        assertSame(errorResponse, entity.getBody());
     }
+
+
 }
