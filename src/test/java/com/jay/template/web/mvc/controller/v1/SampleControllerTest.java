@@ -5,12 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.core.error.api.ApiException;
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
 import com.jay.template.core.context.identity.IdentityContextSnapshot;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SampleControllerTest {
 
@@ -38,18 +37,5 @@ class SampleControllerTest {
 
         assertEquals(SampleController.SUCCESS_MESSAGE, sampleResponse.message());
         assertEquals(requestId, sampleResponse.requestId());
-    }
-
-    @Test
-    void getThrowsWhenIdentityUserIdMissing() {
-
-        String requestId = "identity-001";
-
-        Identity identity = new Identity(null, requestId);
-        IdentityContextHolder.context(IdentityContextSnapshot.of(identity));
-
-        SampleController controller = new SampleController();
-
-        assertThrows(ApiException.class, controller::get);
     }
 }

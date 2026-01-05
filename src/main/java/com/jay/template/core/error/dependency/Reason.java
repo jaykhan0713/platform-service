@@ -1,6 +1,9 @@
 package com.jay.template.core.error.dependency;
 
 public enum Reason {
+
+    UNKNOWN,
+
     //IO related
     IO_ERROR,
 

@@ -22,7 +22,7 @@ public final class RestClientExceptionTranslator {
         try {
             return supplier.get();
         } catch (ResourceAccessException ex) {
-            /*TODO: handle wrapped IO exceptions for other http client adapters if used in the future
+            /*NOTE: Must handle wrapped IO exceptions similarly for other http client adapters if used in the future
              * ResourceAccessException is Spring's IOException contract for RestClient
              */
             //IO Exceptions like ConnectException, SocketException, DNS/handshake/connection refused etc.
@@ -31,6 +31,8 @@ public final class RestClientExceptionTranslator {
             throw new DependencyCallException(clientName, Reason.CAPACITY_REJECTED, ex);
         } catch (CallNotPermittedException ex) {
             throw new DependencyCallException(clientName, Reason.SHORT_CIRCUITED, ex);
+        } catch (RuntimeException ex) {
+            throw new DependencyCallException(clientName,  Reason.UNKNOWN, ex);
         }
     }
 

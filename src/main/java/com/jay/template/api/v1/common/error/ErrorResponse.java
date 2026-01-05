@@ -10,7 +10,7 @@ public record ErrorResponse(
 
         @Schema(
                 description = "Stable application-specific error code (varies by failure type).",
-                example = "ERROR_CODE"
+                example = "BAD_REQUEST"
         )
         String code,
 

@@ -1,7 +1,5 @@
 package com.jay.template.web.mvc.error;
 
-import com.jay.template.core.error.dependency.DependencyCallException;
-import com.jay.template.core.error.dependency.Reason;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

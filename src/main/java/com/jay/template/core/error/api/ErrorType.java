@@ -7,17 +7,17 @@ public enum ErrorType {
 
     //Client errors
     BAD_REQUEST("Bad Request"),
-    USER_ID_MISSING( "User ID is missing"),
+    UNAUTHORIZED( "Unauthorized"), //never used as it's guaranteed by api gateway + cognito
     TOO_MANY_REQUESTS("Too many requests");
 
 
-    private final String message; //these messages are for human readability of the consumer
+    private final String defaultMessage; //these messages are for human readability of the consumer
 
     ErrorType(String defaultMessage) {
-        this.message = defaultMessage;
+        this.defaultMessage = defaultMessage;
     }
 
     public String defaultMessage() {
-        return message;
+        return defaultMessage;
     }
 }

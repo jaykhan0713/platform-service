@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import com.jay.template.api.v1.common.error.openapi.StandardErrorResponses;
 import com.jay.template.api.v1.sample.model.SampleResponse;
 
-
 @Tag(
         name = "Sample",
         description = "Endpoints used to demonstrate the template structure and conventions."

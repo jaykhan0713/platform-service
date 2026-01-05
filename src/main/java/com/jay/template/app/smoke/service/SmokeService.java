@@ -20,9 +20,8 @@ public class SmokeService {
         PingResult pingResult = DependencyExceptionTranslator.execute(pingDependency::ping);
 
         //map ping + other dependencies to business use-case (smoke check in this case)
+        var pingCheckResult = new SmokeCheckResult.PingCheckResult(pingResult.ok(), pingResult.msg());
 
-        String aggregatedMsg = "ping.ok: " + pingResult.ok() + " ping.msg: " + pingResult.msg();
-        return new SmokeCheckResult(aggregatedMsg);
-
+        return new SmokeCheckResult(pingCheckResult);
     }
 }

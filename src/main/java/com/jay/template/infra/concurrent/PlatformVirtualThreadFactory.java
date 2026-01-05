@@ -12,7 +12,7 @@ public final class PlatformVirtualThreadFactory implements ThreadFactory {
 
     public PlatformVirtualThreadFactory(List<ContextPropagator> propagators) {
         this.delegate = Thread.ofVirtual().factory();
-        this.propagators = propagators;
+        this.propagators = List.copyOf(propagators);
     }
 
     @Override

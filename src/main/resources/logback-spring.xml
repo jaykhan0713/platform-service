@@ -2,31 +2,40 @@
 <configuration scan="false">
 
     <!-- MDC key Spring properties -->
-    <springProperty name="MDC_USER_ID" source="platform.logging.mdc.userId"/>
-    <springProperty name="MDC_REQUEST_ID" source="platform.logging.mdc.requestId"/>
-    <springProperty name="MDC_KIND" source="platform.logging.mdc.kind"/>
-    <springProperty name="MDC_NAME" source="platform.logging.mdc.name"/>
-    <springProperty name="MDC_METHOD" source="platform.logging.mdc.method"/>
-    <springProperty name="MDC_STATUS" source="platform.logging.mdc.status"/>
-    <springProperty name="MDC_DURATION_MS" source="platform.logging.mdc.durationMs"/>
+    <springProperty name="MDC_USER_ID" source="platform.observability.mdc.user-id"/>
+    <springProperty name="MDC_REQUEST_ID" source="platform.observability.mdc.request-id"/>
+    <springProperty name="MDC_KIND" source="platform.observability.mdc.kindValues.http"/>
+    <springProperty name="MDC_NAME" source="platform.observability.mdc.name"/>
+    <springProperty name="MDC_METHOD" source="platform.observability.mdc.method"/>
+    <springProperty name="MDC_STATUS" source="platform.observability.mdc.status"/>
+    <springProperty name="MDC_DURATION_MS" source="platform.observability.mdc.duration-ms"/>
 
     <!-- index friendly pattern for lookups -->
     <property name="SIMPLE_PATTERN"
               value='[%thread] logger="%logger{36}" level="%-5level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" msg="%msg"%n'/>
 
+    <property name="BOOTSTRAP_PATTERN"
+              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" msg="%msg"%n'/>
+
     <property name="APP_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" %msg%n'/>
+              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId:--}" spanId="%X{spanId:--}" %msg%n'/>
 
     <property name="MDC_FILTER_PATTERN"
-              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{${MDC_USER_ID}}" requestId="%X{${MDC_REQUEST_ID}}" kind="%X{${MDC_KIND}}" name="%X{${MDC_NAME}}" method="%X{${MDC_METHOD}}" status="%X{${MDC_STATUS}}" durationMs="%X{${MDC_DURATION_MS}}"%n'/>
+              value='[%thread] logger="%logger{36}" level="%level" date="%d{yyyy-MM-dd HH:mm:ss.SSS}" traceId="%X{traceId}" spanId="%X{spanId}" userId="%X{${MDC_USER_ID}}" requestId="%X{${MDC_REQUEST_ID}}" kind="%X{kind}" name="%X{${MDC_NAME}}" method="%X{${MDC_METHOD}}" status="%X{${MDC_STATUS}}" durationMs="%X{${MDC_DURATION_MS}}"%n'/>
 
     <!-- ================= DEV PROFILE ================= -->
-    <springProfile name="dev,smoke"> <!-- for helping with seeing logs in smoke tests -->
+    <springProfile name="dev,smoke"> <!-- smoke for helping with seeing logs in functional tests -->
 
         <!-- Library/Framework logs -->
         <appender name="DEV_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
             <encoder>
                 <pattern>${SIMPLE_PATTERN}</pattern>
+            </encoder>
+        </appender>
+
+        <appender name="DEV_BOOTSTRAP_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>${BOOTSTRAP_PATTERN}</pattern>
             </encoder>
         </appender>
 
@@ -50,6 +59,10 @@
         <!-- Classes in com.jay.template.* Non-identity-based logs -->
         <logger name="com.jay.template.Starter" level="INFO" additivity="false">
             <appender-ref ref="DEV_CONSOLE"/>
+        </logger>
+
+        <logger name="com.jay.template.bootstrap" level="DEBUG" additivity="false">
+            <appender-ref ref="DEV_BOOTSTRAP_CONSOLE"/>
         </logger>
 
         <!-- All classes under com.jay.template.* logs with MDC traceId and userId etc. -->
@@ -79,7 +92,7 @@
                     <includeMessage>true</includeMessage>
                     <includeException>true</includeException>
 
-                    <!-- timstamp -->
+                    <!-- timestamp -->
                     <includeTimestamp>true</includeTimestamp>
                     <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</timestampFormat>
                     <timestampTimeZone>UTC</timestampTimeZone>

@@ -7,6 +7,8 @@ package com.jay.template.core.context.identity;
  * {@code IdentityContextHolder} manages identity-scoped identity using a {@link ThreadLocal}.
  * It is owned by infrastructure code and is responsible for binding identity at identity
  * entry and clearing it at identity completion.
+ * TODO: In the future this structure will be revisited to see if we should move thread local handling to Infra
+ *  and inject non-infra layers (or at least business layer) with a bean containing Identity for the current context
  * </p>
  *
  * <p>

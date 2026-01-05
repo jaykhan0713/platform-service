@@ -7,9 +7,6 @@ import jakarta.servlet.ServletException;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import com.jay.template.core.context.identity.Identity;
-import com.jay.template.core.context.identity.IdentityContextHolder;
-import com.jay.template.core.context.identity.IdentityContextSnapshot;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,24 +19,37 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.jay.template.helper.YamlBinder;
-import com.jay.template.bootstrap.observability.properties.ObservabilityProperties;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.context.identity.IdentityContextSnapshot;
+import com.jay.template.core.observability.mdc.MdcFieldNames;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class MdcFilterTest {
 
-    private static final String MDC_PROPS_KEY = "platform.logging.mdc";
     private static final Logger MDC_FILTER_LOGGER = (Logger) LoggerFactory.getLogger(MdcFilter.class);
 
-    private static ObservabilityProperties mdcProps;
+    private static MdcFieldNames mdcFieldNames;
 
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeAll
     static void initClass() throws Exception {
-        YamlBinder binder = new YamlBinder();
-        mdcProps = binder.bind(MDC_PROPS_KEY, ObservabilityProperties.class);
+        mdcFieldNames = new MdcFieldNames(
+                "userId",
+                "requestId",
+                "kind",
+                "name",
+                "method",
+                "status",
+                "durationMs",
+                new MdcFieldNames.KindValues("http")
+        );
     }
 
     @BeforeEach
@@ -71,7 +81,7 @@ class MdcFilterTest {
 
     @Test
     void filterChainIsCalled() throws ServletException, IOException {
-        MdcFilter filter = new MdcFilter(mdcProps);
+        MdcFilter filter = new MdcFilter(mdcFieldNames);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -85,7 +95,7 @@ class MdcFilterTest {
 
     @Test
     void mdcFieldsArePopulatedAndClears() throws ServletException, IOException {
-        MdcFilter filter = new MdcFilter(mdcProps);
+        MdcFilter filter = new MdcFilter(mdcFieldNames);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -107,25 +117,25 @@ class MdcFilterTest {
         assertEquals("", listAppender.list.getFirst().getFormattedMessage());
 
         Map<String, String> expected = Map.of(
-                mdcProps.userId(), userId,
-                mdcProps.requestId(), requestId,
-                mdcProps.kind(), mdcProps.kindValues().http(),
-                mdcProps.name(), requestUri,
-                mdcProps.method(), HttpMethod.GET.name(),
-                mdcProps.status(), String.valueOf(HttpStatus.OK.value()));
+                mdcFieldNames.userId(), userId,
+                mdcFieldNames.requestId(), requestId,
+                mdcFieldNames.kind(), mdcFieldNames.kindValues().http(),
+                mdcFieldNames.name(), requestUri,
+                mdcFieldNames.method(), HttpMethod.GET.name(),
+                mdcFieldNames.status(), String.valueOf(HttpStatus.OK.value()));
 
         Map<String, String> actual = listAppender.list.getFirst().getMDCPropertyMap();
 
         assertEquals(expected.size() + 1, actual.size()); // +1 for durationMs
         assertTrue(expected.entrySet().stream().allMatch(
                 e -> actual.get(e.getKey()).equals(e.getValue())));
-        assertTrue(Integer.parseInt(actual.get(mdcProps.durationMs())) >= 0);
+        assertTrue(Integer.parseInt(actual.get(mdcFieldNames.durationMs())) >= 0);
         assertNull(MDC.getCopyOfContextMap());
     }
 
     @Test
     void clearsWhenThrows() throws IOException {
-        MdcFilter filter = new MdcFilter(mdcProps);
+        MdcFilter filter = new MdcFilter(mdcFieldNames);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -154,12 +164,12 @@ class MdcFilterTest {
         assertEquals("", listAppender.list.getFirst().getFormattedMessage());
 
         Map<String, String> expected = Map.of(
-                mdcProps.userId(), userId,
-                mdcProps.requestId(), requestId,
-                mdcProps.kind(), mdcProps.kindValues().http(),
-                mdcProps.name(), requestUri,
-                mdcProps.method(), HttpMethod.GET.name(),
-                mdcProps.status(), String.valueOf(HttpStatus.OK.value()));
+                mdcFieldNames.userId(), userId,
+                mdcFieldNames.requestId(), requestId,
+                mdcFieldNames.kind(), mdcFieldNames.kindValues().http(),
+                mdcFieldNames.name(), requestUri,
+                mdcFieldNames.method(), HttpMethod.GET.name(),
+                mdcFieldNames.status(), String.valueOf(HttpStatus.OK.value()));
 
         Map<String, String> actual = listAppender.list.getFirst().getMDCPropertyMap();
 
@@ -168,7 +178,7 @@ class MdcFilterTest {
                 e -> actual.get(e.getKey()).equals(e.getValue())));
 
         // Duration should exist and be non-negative.
-        assertTrue(Integer.parseInt(actual.get(mdcProps.durationMs())) >= 0);
+        assertTrue(Integer.parseInt(actual.get(mdcFieldNames.durationMs())) >= 0);
 
         assertNull(MDC.getCopyOfContextMap());
     }

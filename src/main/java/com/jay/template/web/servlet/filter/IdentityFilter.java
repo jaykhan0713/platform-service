@@ -6,13 +6,12 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.jay.template.core.transport.http.IdentityHeaders;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
 import com.jay.template.core.context.identity.IdentityContextSnapshot;
-import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
+import com.jay.template.core.transport.http.IdentityHeaders;
 
 /**
  * Binds identity to the current thread for the duration of a single HTTP identity.

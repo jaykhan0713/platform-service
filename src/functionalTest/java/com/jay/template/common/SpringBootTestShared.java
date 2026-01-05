@@ -18,8 +18,8 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
  * spring instance is used instead of starting up a new one. This ensures functionalTest suite speed.
  */
 @SpringBootTest(classes = Starter.class, webEnvironment = RANDOM_PORT)
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE) // use this annotation on class
+@Retention(RetentionPolicy.RUNTIME) //So Spring can see this annotation
 @AutoConfigureTestRestTemplate
 @TestConstructor(autowireMode = TestConstructor.AutowireMode.ALL)
 public @interface SpringBootTestShared {

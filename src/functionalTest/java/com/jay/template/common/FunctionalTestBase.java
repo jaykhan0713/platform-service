@@ -36,7 +36,7 @@ public abstract class FunctionalTestBase {
     @DynamicPropertySource
     static void outboundProps(DynamicPropertyRegistry registry) throws IOException {
         ensureStarted();
-        registry.add("platform.dependency.http.clients.ping.base-url",
+        registry.add("platform.outbound.http.clients.ping.base-url",
                 () -> mockWebServer.url("/").toString());
     }
 }

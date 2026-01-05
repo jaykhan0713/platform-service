@@ -8,7 +8,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpRequestFactory;
 
-// factory that decorates the delegate’s request
 public final class BulkheadRequestDecoratorFactory implements ClientHttpRequestFactory {
 
     private final ClientHttpRequestFactory delegate;

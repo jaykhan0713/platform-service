@@ -7,15 +7,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import com.jay.template.core.context.identity.Identity;
-import com.jay.template.core.context.identity.IdentityContextHolder;
-import com.jay.template.core.observability.mdc.MdcFieldNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.bootstrap.observability.properties.ObservabilityProperties;
+import com.jay.template.core.context.identity.Identity;
+import com.jay.template.core.context.identity.IdentityContextHolder;
+import com.jay.template.core.observability.mdc.MdcFieldNames;
 
 /**
  * Populates MDC (Mapped Diagnostic Context) fields for structured identity logging.

@@ -9,9 +9,6 @@ management:
       exposure:
         include: health,info,metrics,loggers,prometheus
   endpoint.health.show-details: never
-  info: #will be on actuator info endpoint
-    git:
-      mode: full
   tracing:
     sampling:
       probability: 1.0

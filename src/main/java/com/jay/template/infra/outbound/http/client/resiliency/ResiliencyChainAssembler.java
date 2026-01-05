@@ -3,24 +3,24 @@ package com.jay.template.infra.outbound.http.client.resiliency;
 import java.io.IOException;
 import java.time.Duration;
 
-import com.jay.template.infra.outbound.http.client.resiliency.circuitbreaker.CircuitBreakerRequestDecoratorFactory;
 import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.bulkhead.BulkheadConfig;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerConfig;
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.client.ClientHttpRequestFactory;
 
 import com.jay.template.core.outbound.resiliency.policy.ResiliencyPolicy;
+import com.jay.template.infra.outbound.http.client.resiliency.circuitbreaker.CircuitBreakerRequestDecoratorFactory;
 import com.jay.template.infra.outbound.http.client.resiliency.bulkhead.BulkheadRequestDecoratorFactory;
-import org.springframework.http.client.ClientHttpResponse;
 
 //orchestration of functional resiliency responsibilities
 public class ResiliencyChainAssembler {
 
     //note that micrometer r4j metrics will use same instance name but give it distinct (bulkhead/cb) metrics
-    private static final String INSTANCE_SUFFIX = "outbound.client";
+    private static final String INSTANCE_SUFFIX = "OutboundClient";
 
     private final BulkheadRegistry bulkheadRegistry;
     private final CircuitBreakerRegistry circuitBreakerRegistry;
@@ -53,7 +53,7 @@ public class ResiliencyChainAssembler {
     }
 
     //bulkhead
-    private ClientHttpRequestFactory applyBulkhead(
+    ClientHttpRequestFactory applyBulkhead(
             ClientHttpRequestFactory delegate,
             ResiliencyPolicy.BulkheadPolicy clientBulkheadPolicy,
             String instanceName
@@ -78,7 +78,7 @@ public class ResiliencyChainAssembler {
     }
 
     // circuit breaker
-    private ClientHttpRequestFactory applyCircuitBreaker(
+    ClientHttpRequestFactory applyCircuitBreaker(
             ClientHttpRequestFactory delegate,
             ResiliencyPolicy.CircuitBreakerPolicy clientCircuitBreakerPolicy,
             String instanceName

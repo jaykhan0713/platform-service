@@ -9,7 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import io.github.resilience4j.bulkhead.Bulkhead;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.jay.template.web.servlet.support.ErrorResponseWriter;
+import com.jay.template.web.servlet.error.ErrorResponseWriter;
 
 import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
 

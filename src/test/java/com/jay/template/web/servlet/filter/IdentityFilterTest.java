@@ -12,23 +12,23 @@ import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
-import com.jay.template.helper.YamlBinder;
 import com.jay.template.core.context.identity.IdentityContextHolder;
 import com.jay.template.core.context.identity.IdentityContextSnapshot;
-import com.jay.template.bootstrap.transport.http.properties.TransportHttpProperties;
+import com.jay.template.core.transport.http.IdentityHeaders;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class IdentityFilterTest {
 
-    private static final String IDENTITY_PROPS_KEY = "platform.identity";
-
-    private static TransportHttpProperties props;
+    static IdentityHeaders identityHeaders;
 
     @BeforeAll
     static void initClass() throws Exception {
-        YamlBinder binder = new YamlBinder();
-        props = binder.bind(IDENTITY_PROPS_KEY, TransportHttpProperties.class);
+        identityHeaders = new IdentityHeaders("x-user-id", "x-request-id");
     }
 
     @BeforeEach
@@ -43,7 +43,7 @@ class IdentityFilterTest {
 
     @Test
     void filterChainIsCalled() throws ServletException, IOException {
-        IdentityFilter filter = new IdentityFilter(props);
+        IdentityFilter filter = new IdentityFilter(identityHeaders);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
@@ -57,16 +57,14 @@ class IdentityFilterTest {
 
     @Test
     void identityContextSnapshotIsSetAndClears() throws ServletException, IOException {
-        IdentityFilter filter = new IdentityFilter(props);
+        IdentityFilter filter = new IdentityFilter(identityHeaders);
 
         String userId = "user-001";
         String requestId = "req-001";
 
-        var headerKeys = props.http().headers();
-
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.addHeader(headerKeys.userId(), userId);
-        request.addHeader(headerKeys.requestId(), requestId);
+        request.addHeader(identityHeaders.userId(), userId);
+        request.addHeader(identityHeaders.requestId(), requestId);
         MockHttpServletResponse response = new MockHttpServletResponse();
         FilterChain assertingChain = (req, res) -> {
             IdentityContextSnapshot ctx = IdentityContextHolder.context();
@@ -84,12 +82,12 @@ class IdentityFilterTest {
 
     @Test
     void clearsContextWhenChainThrows() {
-        IdentityFilter filter = new IdentityFilter(props);
+        IdentityFilter filter = new IdentityFilter(identityHeaders);
 
         MockHttpServletRequest request = new MockHttpServletRequest();
-        var headerKeys = props.http().headers();
-        request.addHeader(headerKeys.userId(), "user-001");
-        request.addHeader(headerKeys.requestId(), "req-001");
+
+        request.addHeader(identityHeaders.userId(), "user-001");
+        request.addHeader(identityHeaders.requestId(), "req-001");
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         FilterChain throwingChain = (req, res) -> { throw new ServletException("error"); };

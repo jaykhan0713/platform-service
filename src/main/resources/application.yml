@@ -42,10 +42,6 @@ management:
 
   endpoint.health.show-details: always
 
-  info:
-    git:
-      mode: full
-
   tracing:
     propagation:
       type: w3c
@@ -64,7 +60,7 @@ management:
 resilience4j:
   bulkhead:
     instances: #inbound instances only as it's a framework level concern.
-      "web.bulkhead.filter":
+      webBulkheadFilter:
         max-concurrent-calls: 200 # max number of permits given at the inbound filter.
         max-wait-duration: 0 # fail-fast when no permits available.
 

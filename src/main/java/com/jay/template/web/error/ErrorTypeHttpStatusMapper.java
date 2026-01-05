@@ -12,11 +12,11 @@ import static com.jay.template.core.error.api.ErrorType.BAD_REQUEST;
 import static com.jay.template.core.error.api.ErrorType.DEPENDENCY_UNAVAILABLE;
 import static com.jay.template.core.error.api.ErrorType.INTERNAL_SERVER_ERROR;
 import static com.jay.template.core.error.api.ErrorType.TOO_MANY_REQUESTS;
-import static com.jay.template.core.error.api.ErrorType.USER_ID_MISSING;
+import static com.jay.template.core.error.api.ErrorType.UNAUTHORIZED;
 
 final class ErrorTypeHttpStatusMapper {
 
-    private static final Map<ErrorType,HttpStatus> TYPE_TO_STATUS_MAP = createMap();
+    static final Map<ErrorType,HttpStatus> TYPE_TO_STATUS_MAP = createMap();
 
     HttpStatus mapErrorTypeToHttpStatus(ErrorType type) {
         return TYPE_TO_STATUS_MAP.getOrDefault(type, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -28,7 +28,7 @@ final class ErrorTypeHttpStatusMapper {
 
         // 400s
         map.put(BAD_REQUEST, HttpStatus.BAD_REQUEST);
-        map.put(USER_ID_MISSING, HttpStatus.BAD_REQUEST);
+        map.put(UNAUTHORIZED, HttpStatus.BAD_REQUEST);
         map.put(TOO_MANY_REQUESTS, HttpStatus.TOO_MANY_REQUESTS);
 
         // 500s

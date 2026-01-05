@@ -10,19 +10,19 @@ public class DependencyCallException extends RuntimeException {
 
     public DependencyCallException(
             String clientName,
+            Reason reason
+    ) {
+        this(clientName, reason, null);
+    }
+
+    public DependencyCallException(
+            String clientName,
             Reason reason,
             Throwable cause
     ) {
         super(cause);
         this.clientName = Objects.requireNonNull(clientName);
         this.reason = Objects.requireNonNull(reason);
-    }
-
-    public DependencyCallException(
-            String clientName,
-            Reason reason
-    ) {
-        this(clientName, reason, null);
     }
 
     public String clientName() {

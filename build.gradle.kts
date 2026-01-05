@@ -8,10 +8,7 @@ plugins {
     id("org.springframework.boot") version "4.0.0"
 
     //third party
-    id("com.gorylenko.gradle-git-properties") version "2.5.4"
     id("org.sonarqube") version "6.3.1.5724"
-
-
 }
 
 group = "com.jay.template"
@@ -56,17 +53,26 @@ dependencies {
 
     //Resilience4j
     implementation(platform("io.github.resilience4j:resilience4j-bom:2.3.0"))
+    // no boot4 r4j starter yet. Need for autoconfig of source (yaml) properties
     implementation("io.github.resilience4j:resilience4j-spring-boot3")
     implementation("io.github.resilience4j:resilience4j-micrometer")
 
-
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-
-    //IDE support such as yml configs with javadocs, generates meta-data json at build time.
+    //IDE mapping such as yml configs with javadocs, generates meta-data json at build time.
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+
+/* This is an application, not a library.
+ * Disable the default <service-name>-SNAPSHOT-"plain" jar (classes-only, non-runnable) so that
+ * build/libs contains ONLY the Spring Boot executable jar produced by bootJar.
+ * Explicility name to app.jar
+ */
+tasks.jar { enabled = false }
+tasks.bootJar {
+    enabled = true
+    archiveFileName.set("app.jar")
 }
 
 // JUnit
@@ -111,44 +117,29 @@ tasks.test {
     finalizedBy(tasks.jacocoTestReport) // run report after tests
 }
 
-tasks.jacocoTestReport {
+tasks.jacocoTestCoverageVerification {
     dependsOn(tasks.test)
 
-    reports {
-        xml.required.set(true)
-        html.required.set(true)  // for local
-        csv.required.set(false)
-    }
-
-    classDirectories.setFrom(
-        files(classDirectories.files.map {
-            fileTree(it) {
-                exclude(
-                    // SpringApplication runner class.
-                    "**/Starter.class",
-
-                    //@Configuration and @ConfigurationProperties classes.
-                    "**/*Config.class",
-                    "**/*Config$*.class",
-                    "**/*Properties.class",
-                    "**/*Properties$*.class", //nested records
-
-
-                    // OpenAPI contract surface (DTOs, error models, annotations)
-                    "**/com/jay/template/api/**",
-
-                    // Functional Test related
-                    "**/smoke/**"
-                )
-            }
-        })
-    )
-}
-
-tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
+            element = "CLASS"
+
+            includes = listOf(
+                "com.jay.template.app.*",
+                "com.jay.template.infra.*",
+                "com.jay.template.web.*",
+                "com.jay.template.core.context.*"
+            )
+
+            excludes = listOf(
+                //exclude any smoke test related package path.
+                "com.jay.template.*.smoke.*",
+                "com.jay.template.*.ping.*"
+            )
+
             limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
                 minimum = 0.75.toBigDecimal()
             }
         }

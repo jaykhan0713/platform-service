@@ -1,16 +1,12 @@
 package com.jay.template.web.mvc.controller.v1;
 
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jay.template.api.v1.sample.SampleApi;
 import com.jay.template.api.v1.sample.model.SampleResponse;
-import com.jay.template.core.error.api.ApiException;
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
-
-import static com.jay.template.core.error.api.ErrorType.USER_ID_MISSING;
 
 @RestController
 public class SampleController implements SampleApi {
@@ -22,10 +18,6 @@ public class SampleController implements SampleApi {
     public SampleResponse get() {
 
         Identity identity = IdentityContextHolder.context().identity();
-
-        if (!StringUtils.hasText(identity.userId())) {
-            throw new ApiException(USER_ID_MISSING);
-        }
 
         return new SampleResponse(SUCCESS_MESSAGE, identity.requestId());
     }

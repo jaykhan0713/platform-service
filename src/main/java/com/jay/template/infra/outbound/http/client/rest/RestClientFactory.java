@@ -9,24 +9,24 @@ import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 import com.jay.template.core.outbound.http.client.settings.HttpClientSettings;
-import com.jay.template.core.port.outbound.http.client.HttpClientSettingsRegistry;
+import com.jay.template.infra.outbound.http.client.registry.HttpClientSettingsRegistry;
 import com.jay.template.infra.outbound.http.client.resiliency.ResiliencyChainAssembler;
 
 public class RestClientFactory {
 
     private final RestClient.Builder restClientBuilder;
-    private final HttpClientSettingsRegistry clientConfigRegistry;
+    private final HttpClientSettingsRegistry clientSettingsRegistry;
     private final ResiliencyChainAssembler resiliencyChainAssembler;
     private final List<ClientHttpRequestInterceptor> defaultRequestInterceptors;
 
     public RestClientFactory(
             RestClient.Builder restClientBuilder,
-            HttpClientSettingsRegistry clientConfigRegistry,
+            HttpClientSettingsRegistry clientSettingsRegistry,
             List<ClientHttpRequestInterceptor> defaultRequestInterceptors,
             ResiliencyChainAssembler resiliencyChainAssembler
     ) {
         this.restClientBuilder = restClientBuilder;
-        this.clientConfigRegistry = clientConfigRegistry;
+        this.clientSettingsRegistry = clientSettingsRegistry;
         this.defaultRequestInterceptors = defaultRequestInterceptors;
         this.resiliencyChainAssembler = resiliencyChainAssembler;
     }
@@ -39,7 +39,7 @@ public class RestClientFactory {
             String clientName,
             List<ClientHttpRequestInterceptor> requestInterceptors
     ) {
-        var cfg = clientConfigRegistry.httpClientSettings(clientName);
+        var settings = clientSettingsRegistry.httpClientSettings(clientName);
 
         /* Start from Spring Boot's auto-configured builder to preserve settings and micrometer/Otel instrumentation
          * Micrometer / OpenTelemetry ping span instrumentation
@@ -47,35 +47,26 @@ public class RestClientFactory {
          */
         RestClient.Builder builder = restClientBuilder.clone();
 
-        ClientHttpRequestFactory requestFactory = createJdkHttpClientFactory(cfg);
+        ClientHttpRequestFactory requestFactory = createJdkHttpClientFactory(settings);
         requestFactory = resiliencyChainAssembler.assemble(
                 requestFactory,
-                cfg.resiliencyPolicy(),
-                cfg.clientName()
+                settings.resiliencyPolicy(),
+                settings.clientName()
         );
-
         builder.requestFactory(requestFactory)
-                .baseUrl(cfg.baseUrl());
+                .baseUrl(settings.baseUrl());
 
-        final List<ClientHttpRequestInterceptor> requestInterceptorsOrDefault;
-
-        if (requestInterceptors == null) {
-            requestInterceptorsOrDefault = defaultRequestInterceptors;
-        } else {
-            requestInterceptorsOrDefault = requestInterceptors;
-        }
-
-        builder.requestInterceptors(list -> list.addAll(requestInterceptorsOrDefault));
+        builder.requestInterceptors(list -> list.addAll(requestInterceptors));
 
         return builder.build();
     }
 
     // signal intent: JDK Http Client usage default, but may want different Http clients in future.
     private ClientHttpRequestFactory createJdkHttpClientFactory(
-            HttpClientSettings cfg
+            HttpClientSettings settings
     ) {
-        var connectTimeout = cfg.connectTimeout();
-        var readTimeout = cfg.readTimeout();
+        var connectTimeout = settings.connectTimeout();
+        var readTimeout = settings.readTimeout();
 
         /*
          * connectTimeout bounds the entire connection-establishment attempt (DNS + TCP + TLS if https).
