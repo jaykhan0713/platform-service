@@ -111,7 +111,7 @@ public class ResiliencyChainAssembler {
                         if (response.getStatusCode().is5xxServerError()) {
                             return true;
                         }
-                    } catch (IOException _) {} // getStatusCode() throwing is not job of this class to handle
+                    } catch (IOException _) { /* getStatusCode() throwing is not job of this class to handle */ }
                 }
 
                 return false; //instance shouldn't be used outside of decorator, but harmless failsafe.

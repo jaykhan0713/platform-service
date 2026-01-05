@@ -110,6 +110,14 @@ sonarqube {
         property(
             "sonar.exclusions", "**/api/**/openapi/**" // sonar complains about openAPI style annotations.
         )
+
+        // stops openApi plural annotations from being marked as an issue
+        property("sonar.issue.ignore.multicriteria", "openapiS1710") //',' separated value for more rules if needed.
+        property("sonar.issue.ignore.multicriteria.openapiS1710.ruleKey", "java:S1710")
+        property(
+            "sonar.issue.ignore.multicriteria.openapiS1710.resourceKey",
+            "src/main/java/com/jay/template/api/**"
+        )
     }
 }
 
