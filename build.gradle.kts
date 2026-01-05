@@ -113,12 +113,18 @@ jacoco {
     toolVersion = "0.8.14"
 }
 
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport) // run report after tests
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
 }
 
+// separate from jacocoTestReport, this is your actual gate. Coverage is per class basis
 tasks.jacocoTestCoverageVerification {
-    dependsOn(tasks.test)
+    dependsOn(tasks.jacocoTestReport)
 
     violationRules {
         rule {
@@ -157,12 +163,12 @@ tasks.named("check") {
  Important gotchas this setup addresses:
 
  1) This is an *application*, not a published library.
-    - `jar` is disabled and only `bootJar` is produced.
-    - Because of that, `implementation(project())` DOES NOT reliably put
+    - jar is disabled and only bootJar is produced.
+    - Because of that, implementation(project()) DOES NOT reliably put
       main classes on the functional test classpath.
-    - We must depend directly on `sourceSets.main.output`.
+    - We must depend directly on sourceSets.main.output.
 
- 2) `testImplementation` / `testRuntimeOnly` are NOT resolvable configurations.
+ 2) testImplementation / testRuntimeOnly are NOT resolvable configurations.
     - They cannot be "used" as dependencies.
     - Instead, the functional test configurations must EXTEND them so they
       inherit the same deps (JUnit, Mockito, Spring Boot test support, etc).
