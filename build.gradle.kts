@@ -105,6 +105,11 @@ sonarqube {
             "sonar.coverage.jacoco.xmlReportPaths",
             "build/reports/jacoco/test/jacocoTestReport.xml"
         )
+
+        //exclusions
+        property(
+            "sonar.exclusions", "**/api/**/openapi/**" // sonar complains about openAPI style annotations.
+        )
     }
 }
 
@@ -113,8 +118,12 @@ jacoco {
     toolVersion = "0.8.14"
 }
 
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // run report after tests
+}
+
 tasks.jacocoTestReport {
-    dependsOn(tasks.test)
+    dependsOn(tasks.test) //when this task is ran, will run test first.
     reports {
         xml.required.set(true)
         html.required.set(true)

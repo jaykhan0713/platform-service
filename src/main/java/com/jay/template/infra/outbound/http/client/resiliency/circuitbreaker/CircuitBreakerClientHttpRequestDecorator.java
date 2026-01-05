@@ -23,11 +23,11 @@ final class CircuitBreakerClientHttpRequestDecorator implements ClientHttpReques
 
     @Override
     public ClientHttpResponse execute() throws IOException {
-        /* TODO: Decide whether the circuit breaker should treat downstream HTTP 5xx responses as failures.
+        /* FUTURE-NOTE: Decide whether the circuit breaker should treat downstream HTTP 5xx responses as failures.
          *  Current behavior: breaker records failures only when the request throws
          *  (default settings records all exceptions).
          *
-         *  TODO: When needed, translate downstream 5xx into exceptions in the outbound client adapter
+         *  FUTURE-NOTE: When needed, translate downstream 5xx into exceptions in the outbound client adapter
          *    so the breaker can learn.
          *
          *  Note: CallNotPermittedException is thrown when the breaker is open and the call is rejected

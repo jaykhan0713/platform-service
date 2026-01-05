@@ -137,13 +137,15 @@ class RestClientExceptionTranslatorTest {
         HttpRequest req = mock(HttpRequest.class);
         ClientHttpResponse res = mock(ClientHttpResponse.class);
 
+        var handler4xx = handlerCaptor.getAllValues().get(0);
         DependencyCallException depException4xx =
-                assertThrows(DependencyCallException.class, () -> handlerCaptor.getAllValues().get(0).handle(req, res));
+                assertThrows(DependencyCallException.class, () -> handler4xx.handle(req, res));
         assertEquals(clientName, depException4xx.clientName());
         assertEquals(Reason.RESPONSE_CLIENT_ERROR, depException4xx.reason());
 
+        var handler5xx = handlerCaptor.getAllValues().get(1);
         DependencyCallException depException5xx =
-                assertThrows(DependencyCallException.class, () -> handlerCaptor.getAllValues().get(1).handle(req, res));
+                assertThrows(DependencyCallException.class, () -> handler5xx.handle(req, res));
         assertEquals(clientName, depException5xx.clientName());
         assertEquals(Reason.RESPONSE_SERVER_ERROR, depException5xx.reason());
     }

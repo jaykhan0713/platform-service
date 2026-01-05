@@ -28,7 +28,7 @@ class IdentityHeaderInterceptorTest {
     static IdentityHeaders identityHeaders;
 
     @BeforeAll
-    static void initClass() throws Exception {
+    static void initClass() {
         identityHeaders = new IdentityHeaders("x-user-id", "x-request-id");
     }
 

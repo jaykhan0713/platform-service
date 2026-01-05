@@ -80,7 +80,7 @@ class BulkheadClientHttpRequestDecoratorTest {
     }
 
     @Test
-    void executeWhenPermitNotAcquiredThrowsBulkheadFullExceptionAndDoesNotCallDelegate() throws IOException {
+    void executeWhenPermitNotAcquiredThrowsBulkheadFullExceptionAndDoesNotCallDelegate() {
         var delegate = mock(ClientHttpRequest.class);
 
         Bulkhead bulkhead =

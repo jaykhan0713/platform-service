@@ -76,7 +76,6 @@ public class BulkheadFilter extends OncePerRequestFilter {
             }
         } else {
             errorResponseWriter.writeJsonErrorResponse(response, TOO_MANY_REQUESTS);
-            return;
         }
     }
 }

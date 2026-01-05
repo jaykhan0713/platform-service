@@ -27,12 +27,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.MediaType.APPLICATION_JSON;
 
 @SpringBootTestShared
-public class SmokeApiTest extends FunctionalTestBase {
+class SmokeApiTest extends FunctionalTestBase {
 
     private final TestRestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
-    public SmokeApiTest(
+    SmokeApiTest(
             TestRestTemplate restTemplate,
             ObjectMapper objectMapper
     ) {

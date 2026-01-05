@@ -14,20 +14,20 @@ import com.jay.template.core.transport.http.IdentityHeaders;
 
 public class IdentityHeaderInterceptor implements ClientHttpRequestInterceptor {
 
-    private final IdentityHeaders headers;
+    private final IdentityHeaders identityHeaders;
 
-    public IdentityHeaderInterceptor(IdentityHeaders headers) {
-        this.headers = headers;
+    public IdentityHeaderInterceptor(IdentityHeaders identityHeaders) {
+        this.identityHeaders = identityHeaders;
     }
 
     @Override
     public ClientHttpResponse intercept(HttpRequest request, byte[] body, ClientHttpRequestExecution execution)
             throws IOException {
-        HttpHeaders headers = request.getHeaders();
+        HttpHeaders httpHeaders = request.getHeaders();
         Identity identity = IdentityContextHolder.context().identity();
 
-        headers.set(this.headers.userId(), identity.userId());
-        headers.set(this.headers.requestId(), identity.requestId());
+        httpHeaders.set(identityHeaders.userId(), identity.userId());
+        httpHeaders.set(identityHeaders.requestId(), identity.requestId());
 
         return execution.execute(request, body);
     }

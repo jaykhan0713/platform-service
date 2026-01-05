@@ -76,7 +76,7 @@ class RestClientFactoryTest {
                 eq(httpClientSettings.resiliencyPolicy()),
                 eq(httpClientSettings.clientName())
         );
-        verify(builder).baseUrl(eq(httpClientSettings.baseUrl()));
+        verify(builder).baseUrl(httpClientSettings.baseUrl());
         verify(builder).build();
 
         //verify interceptors

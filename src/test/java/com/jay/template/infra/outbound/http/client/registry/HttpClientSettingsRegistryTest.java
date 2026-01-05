@@ -28,8 +28,9 @@ class HttpClientSettingsRegistryTest {
 
         assertSame(clientSettings, registry.httpClientSettings(clientName));
 
+        var clientNames = registry.clientNames();
         assertThrows(UnsupportedOperationException.class, () ->
-                registry.clientNames().add("newClient")
+                clientNames.add("newClient")
         );
     }
 

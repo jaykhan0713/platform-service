@@ -20,7 +20,7 @@ public class VirtualThreadConfiguration {
     }
 
     /*
-     * TODO : When real async orchestration use cases show up, prefer CompletableFuture with this
+     * FUTURE-NOTE: When real async orchestration use cases show up, prefer CompletableFuture with this
      *  executor (do not use the ForkJoin common pool). Choose per-use-case policies such as fail-fast,
      *  join-all, or partial results with explicit exception handling. If async patterns repeat across
      *  services, consider introducing a small infra helper or port at that time.

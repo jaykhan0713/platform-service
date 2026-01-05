@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
         // NOTE: expected error, no stack trace noise
         // optionally surface errorCode via MDC for identity-complete logging for MDCFilter
 
-        // TODO: enrich dependency failure logging (clientName, reason) if needed.
+        // FUTURE-NOTE: enrich dependency failure logging (clientName, reason) if needed.
         // Current approach logs root cause only to avoid overengineering.
         String rootCauseName = rootCause(ex);
 

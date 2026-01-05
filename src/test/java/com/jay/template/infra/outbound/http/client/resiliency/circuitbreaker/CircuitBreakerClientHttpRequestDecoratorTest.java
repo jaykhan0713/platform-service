@@ -80,7 +80,7 @@ class CircuitBreakerClientHttpRequestDecoratorTest {
     }
 
     @Test
-    void delegatesPassthroughMethods() throws IOException {
+    void delegatesPassthroughMethods() {
         var delegate = mock(ClientHttpRequest.class);
         var circuitBreaker = mock(CircuitBreaker.class);
 

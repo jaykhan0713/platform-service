@@ -18,9 +18,8 @@ public abstract class FunctionalTestBase {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        // shut down on JVM exit only.
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            try { mockWebServer.shutdown(); } catch (Exception _) {}
+            try { mockWebServer.shutdown(); } catch (Exception _) {} // shut down on JVM exit only.
         }));
     }
 

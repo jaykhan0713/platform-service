@@ -14,7 +14,7 @@ public final class DependencyExceptionTranslator {
         try {
             return supplier.get();
         } catch (DependencyCallException ex) {
-            //TODO: Map based on reason as reason enum grows.
+            //FUTURE-NOTE: Map based on reason as reason enum grows.
             throw new ApiException(ErrorType.DEPENDENCY_UNAVAILABLE, ex);
         }
     }

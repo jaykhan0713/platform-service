@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTestShared
-public class ApplicationStartupTest extends FunctionalTestBase {
+class ApplicationStartupTest extends FunctionalTestBase {
 
     private final ApplicationContext appContext;
 
-    public ApplicationStartupTest(ApplicationContext appContext) {
+    ApplicationStartupTest(ApplicationContext appContext) {
         this.appContext = appContext;
     }
 

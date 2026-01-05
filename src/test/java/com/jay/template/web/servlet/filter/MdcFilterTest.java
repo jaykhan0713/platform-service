@@ -39,7 +39,7 @@ class MdcFilterTest {
     private ListAppender<ILoggingEvent> listAppender;
 
     @BeforeAll
-    static void initClass() throws Exception {
+    static void initClass() {
         mdcFieldNames = new MdcFieldNames(
                 "userId",
                 "requestId",
@@ -134,7 +134,7 @@ class MdcFilterTest {
     }
 
     @Test
-    void clearsWhenThrows() throws IOException {
+    void clearsWhenThrows() {
         MdcFilter filter = new MdcFilter(mdcFieldNames);
 
         MockHttpServletRequest request = new MockHttpServletRequest();

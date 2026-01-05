@@ -37,7 +37,7 @@ public final class RestClientExceptionTranslator {
     }
 
     /*
-     * TODO: Per-client error handling is contract-specific.
+     * FUTURE-NOTE: Per-client error handling is contract-specific.
      *  Default behavior here is to throw for 4xx/5xx.
      *  If a specific downstream has a generated Error DTO, the concrete RestClient adapter for that client
      *  may override onStatus handling to:
