@@ -151,30 +151,76 @@ tasks.named("check") {
     dependsOn(tasks.named("functionalTest"))
 }
 
-//functional test
+/* Functional (smoke) test suite
+ -----------------------------
+ We use Gradle's `jvm-test-suite` instead of manually creating a source set.
+ Important gotchas this setup addresses:
+
+ 1) This is an *application*, not a published library.
+    - `jar` is disabled and only `bootJar` is produced.
+    - Because of that, `implementation(project())` DOES NOT reliably put
+      main classes on the functional test classpath.
+    - We must depend directly on `sourceSets.main.output`.
+
+ 2) `testImplementation` / `testRuntimeOnly` are NOT resolvable configurations.
+    - They cannot be "used" as dependencies.
+    - Instead, the functional test configurations must EXTEND them so they
+      inherit the same deps (JUnit, Mockito, Spring Boot test support, etc).
+
+ 3) Spring Boot context bootstraps the *real application*.
+    - Functional tests must see all main classes + runtime deps.
+    - Missing this causes ClassNotFound / NoClassDefFound errors in CI.
+
+ This wiring ensures functional tests behave like "run the app and hit it",
+ without coupling tests to internal packaging or published artifacts.
+ */
 testing {
     suites {
         val functionalTest by registering(JvmTestSuite::class) {
             useJUnitJupiter()
 
             dependencies {
-                implementation(project())
+                // Make main application classes visible to functional tests
+                implementation(sourceSets.main.get().output)
 
-                implementation("org.springframework.boot:spring-boot-starter-web")
-
-                implementation("org.springframework.boot:spring-boot-starter-test")
+                // HTTP client for smoke tests (RestClient-based)
                 implementation("org.springframework.boot:spring-boot-resttestclient")
 
+                // Mock downstream HTTP services
                 implementation(platform("com.squareup.okhttp3:okhttp-bom:5.2.1"))
                 implementation("com.squareup.okhttp3:mockwebserver")
             }
 
             targets.all {
                 testTask.configure {
+                    // Use smoke profile to limit beans and external integrations
                     systemProperty("spring.profiles.active", "smoke")
-                    shouldRunAfter(tasks.test) // only for <gradlew check> chain, runs after test
+
+                    // Ensure functional tests run after unit tests when running `check`
+                    shouldRunAfter(tasks.test)
                 }
             }
         }
+    }
+}
+
+/* Functional test configurations
+ ------------------------------
+ These configs inherit from the standard test configs so functional tests
+ automatically get:
+ - spring-boot-starter-test
+ - junit-jupiter
+ - mockito
+ - test runtime support
+
+ We EXTEND instead of "depending on" because testImplementation/testRuntimeOnly
+ are not resolvable by design.
+*/
+configurations {
+    named("functionalTestImplementation") {
+        extendsFrom(configurations.testImplementation.get())
+    }
+    named("functionalTestRuntimeOnly") {
+        extendsFrom(configurations.testRuntimeOnly.get())
     }
 }
