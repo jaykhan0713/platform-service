@@ -15,7 +15,7 @@ import com.jay.template.bootstrap.outbound.resiliency.properties.ResiliencyPrope
 @Validated
 public record OutboundHttpProperties(
         @NotNull @Valid ClientDefaults clientDefaults,
-        @NotEmpty @Valid Map<String, Client> clients
+        @Valid Map<String, Client> clients // add @NotEmpty if service always expects clients.
 ) {
 
     /*

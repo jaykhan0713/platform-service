@@ -1,5 +1,6 @@
 package com.jay.template.app.smoke.service;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.jay.template.app.dependency.error.DependencyExceptionTranslator;
@@ -8,6 +9,7 @@ import com.jay.template.core.domain.smoke.SmokeCheckResult;
 import com.jay.template.core.port.dependency.ping.PingDependency;
 
 @Service
+@Profile("smoke")
 public class SmokeService {
     private final PingDependency pingDependency;
 

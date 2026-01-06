@@ -136,9 +136,9 @@ platform: # namespace for Spring configuration keys
             wait-duration-in-open-state: 10s
 
       # add configurable http clients here. Transport agnostic, doesn't need to be RestClient
-      clients:
-        ping: # example client for services in same VPC or organization, propagates identity
-          base-url: "http://ping-service.internal" # Example smoke service endpoint
-          read-timeout: 4s
+#      clients:
+#        payments: # example client for services in same VPC or organization, propagates identity
+#          base-url: "http://payments-service.internal" # Example endpoint
+#          read-timeout: 4s
 
 
