@@ -1,15 +1,12 @@
-
-Dependencies always point inward.
+## Spring framework as apart of layering
 
 ---
 
 ## Core principles
 
 - Business logic must not depend on frameworks
-- Infrastructure details must not leak into business layers
 - Spring component scanning is restricted by design
 - Wiring and lifecycle decisions must be explicit
-- Adapters translate at boundaries, not in the middle
 
 ---
 
@@ -121,49 +118,6 @@ This layer defines:
 
 ---
 
-## Hexagonal interpretation
-
-This project uses a pragmatic hexagonal architecture:
-
-- Outbound ports are defined explicitly in `core/port`
-- Infrastructure implements those ports in `infra`
-- Inbound HTTP delivery is implemented directly in `web`
-- Controllers call application services rather than inbound ports
-
-The emphasis is on dependency direction and boundary clarity rather than enforcing indirection everywhere.
-
----
-
-## Error translation boundaries
-
-Errors are translated at explicit boundaries:
-
-- **infra → app**  
-  Outbound Infrastructure failures are normalized into `DependencyCallException`
-
-- **app → web**  
-  Application-level failures are represented as `ApiException`
-
-- **web → protocol**  
-  HTTP status codes and error payloads are derived at the web boundary
-
-Each layer owns translation at its boundary and does not leak internal exception types upward.
-
----
-
-## Why this matters
-
-This structure:
-- Keeps business logic portable and testable
-- Prevents framework creep into core logic
-- Makes concurrency and resiliency behavior explicit
-- Scales cleanly as services grow
-- Reduces surprise during debugging and operations
-
-The intent is not purity, but clarity and long-term maintainability.
-
----
-
 ## Summary
 
 Spring is used as:
@@ -172,4 +126,4 @@ Spring is used as:
 
 It is **not** the architecture.
 
-Architecture lives in the code structure and dependency rules, not in annotations.
+Architecture lives in the code structure and dependency rules, not in Spring annotations.
