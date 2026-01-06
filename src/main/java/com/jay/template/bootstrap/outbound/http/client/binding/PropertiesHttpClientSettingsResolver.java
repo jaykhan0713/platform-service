@@ -26,6 +26,9 @@ public class PropertiesHttpClientSettingsResolver implements HttpClientSettingsP
         return resolvedSettings;
     }
 
+    /*
+     * Note that orDefaults usage at every level enables the settings to act as partial overrides as intended.
+     */
     private static List<HttpClientSettings> resolve(OutboundHttpProperties props) {
 
         if (props.clients() == null || props.clients().isEmpty()) {

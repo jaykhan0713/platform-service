@@ -10,11 +10,10 @@ import com.jay.template.core.port.transport.http.IdentityHeadersProvider;
 import com.jay.template.web.servlet.filter.BulkheadFilter;
 import com.jay.template.web.servlet.filter.IdentityFilter;
 import com.jay.template.web.servlet.filter.MdcFilter;
-
 import com.jay.template.web.servlet.error.ErrorResponseWriter;
 
 @Configuration
-public class FilterConfiguration {
+public class ServletFilterConfiguration {
 
     private static final String API_WILDCARD = "/api/*";
     private static final String BULKHEAD_FILTER_INSTANCE_NAME = "webBulkheadFilter";

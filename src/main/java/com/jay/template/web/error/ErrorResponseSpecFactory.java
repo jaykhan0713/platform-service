@@ -3,12 +3,10 @@ package com.jay.template.web.error;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
 import com.jay.template.api.v1.common.error.ErrorResponse;
 import com.jay.template.core.error.api.ErrorType;
 
-@Component
 public class ErrorResponseSpecFactory {
 
     private static final ErrorTypeHttpStatusMapper STATUS_MAPPER = new ErrorTypeHttpStatusMapper();

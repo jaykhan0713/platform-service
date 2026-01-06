@@ -26,10 +26,10 @@ class ErrorResponseWriterTest {
 
     @Test
     void writeErrorResponseWriterTest() throws IOException {
-        ObjectMapper objectMapper = mock(ObjectMapper.class);
         ErrorResponseSpecFactory factory = mock(ErrorResponseSpecFactory.class);
+        ObjectMapper objectMapper = mock(ObjectMapper.class);
 
-        ErrorResponseWriter writer = new ErrorResponseWriter(objectMapper, factory);
+        ErrorResponseWriter writer = new ErrorResponseWriter(factory, objectMapper);
 
         ErrorType type = TOO_MANY_REQUESTS;
         String correlationId = "trace-001";
@@ -56,16 +56,16 @@ class ErrorResponseWriterTest {
 
     @Test
     void whenResponseIsCommittedReturns() throws IOException {
-        ObjectMapper objectMapper = mock(ObjectMapper.class);
         ErrorResponseSpecFactory factory = mock(ErrorResponseSpecFactory.class);
+        ObjectMapper objectMapper = mock(ObjectMapper.class);
 
-        ErrorResponseWriter writer = new ErrorResponseWriter(objectMapper, factory);
+        ErrorResponseWriter writer = new ErrorResponseWriter(factory, objectMapper);
 
         MockHttpServletResponse response = new MockHttpServletResponse();
         response.setCommitted(true);
 
         writer.writeJsonErrorResponse(response, TOO_MANY_REQUESTS);
 
-        verifyNoInteractions(objectMapper, factory);
+        verifyNoInteractions(factory, objectMapper);
     }
 }

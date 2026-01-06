@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import com.jay.template.core.outbound.http.client.settings.HttpClientSettings;
 import com.jay.template.core.port.outbound.http.client.HttpClientSettingsProvider;
 
+//takes resolved core HttpClientSettings model and creates a stateful registry to be accessed by client.
 public class HttpClientSettingsRegistry {
     private final Map<String, HttpClientSettings> httpClientSettingsMap;
 

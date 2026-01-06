@@ -1,6 +1,6 @@
 # platform-service
 
-A production-grade Spring Boot 4 service platform baseline designed to run as a real service and serve as a repeatable foundation for additional services.
+A production-grade Spring Boot 4 service platform baseline designed to run as a real service and serve as a repeatable foundation for additional services on AWS architecture.
 
 This is **not** a simple boilerplate or starter template. It is an opinionated, fully runnable service built around **Project Loom virtual threads**, **Spring Boot 4**, **Java 25**, and modern production concerns such as explicit backpressure, structured logging, distributed tracing readiness, and resilience-by-default.
 
@@ -15,8 +15,8 @@ Project Loom makes blocking I/O cheap and abundant by removing the traditional c
 This platform demonstrates how to build a microservice **from the ground up** when:
 
 - Concurrency is effectively unbounded due to virtual threads
+- Resilience must be intentional. CircuitBreaker and Bulkhead decorations at the outbound protocol request boundary
 - Backpressure must be explicit
-- Resilience must be intentional
 - Observability must be first-class
 
 The goal is **clarity, safety, and realism**.
