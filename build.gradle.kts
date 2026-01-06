@@ -219,7 +219,7 @@ testing {
                     // Use smoke profile to limit beans and external integrations
                     systemProperty("spring.profiles.active", "smoke")
 
-                    // Ensure functional tests run after unit tests when running `check`
+                    // Ensure functional tests run after unit tests when running check
                     shouldRunAfter(tasks.test)
                 }
             }

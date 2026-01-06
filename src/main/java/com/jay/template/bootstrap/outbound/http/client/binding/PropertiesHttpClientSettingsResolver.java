@@ -1,6 +1,7 @@
 package com.jay.template.bootstrap.outbound.http.client.binding;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -26,6 +27,11 @@ public class PropertiesHttpClientSettingsResolver implements HttpClientSettingsP
     }
 
     private static List<HttpClientSettings> resolve(OutboundHttpProperties props) {
+
+        if (props.clients() == null || props.clients().isEmpty()) {
+            return Collections.emptyList();
+        }
+
         var propsClientMap = props.clients();
 
         var propsClientDefaults = props.clientDefaults();

@@ -20,6 +20,6 @@ management:
 server:
   compression: #if client sends Accept-Encoding: gzip, automatically get this feature during response
     enabled: true
-    min-response-size: 1024   # bytes
+    min-response-size: 1024
     mime-types:
       - application/json

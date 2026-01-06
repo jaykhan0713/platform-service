@@ -1,6 +1,7 @@
 package com.jay.template.bootstrap.outbound.http.client.binding;
 
 import java.time.Duration;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +20,19 @@ import static org.mockito.Mockito.mock;
 
 class PropertiesHttpClientSettingsResolverTest {
 
+    private static final OutboundHttpProperties PROPS = buildPropsWithClientAAndClientB();
+
+    @Test
+    void resolvesToEmptyListWhenNoMapExists() {
+        var props =
+                new OutboundHttpProperties(mock(OutboundHttpProperties.ClientDefaults.class), Collections.emptyMap());
+        var resolver = new PropertiesHttpClientSettingsResolver(props);
+        assertTrue(resolver.provide().isEmpty());
+    }
+
     @Test
     void resolvesClientAUsingDefaults() {
-
-        var props = buildPropsWithClientAAndClientB();
-
-        var resolver = new PropertiesHttpClientSettingsResolver(props);
+        var resolver = new PropertiesHttpClientSettingsResolver(PROPS);
         List<HttpClientSettings> resolved = resolver.provide();
 
         HttpClientSettings a = getByClientName(resolved, "clientA");
@@ -55,10 +63,7 @@ class PropertiesHttpClientSettingsResolverTest {
 
     @Test
     void resolvesClientBUsingOverridesAndDefaults() {
-
-        var props = buildPropsWithClientAAndClientB();
-
-        var resolver = new PropertiesHttpClientSettingsResolver(props);
+        var resolver = new PropertiesHttpClientSettingsResolver(PROPS);
         List<HttpClientSettings> resolved = resolver.provide();
 
         HttpClientSettings b = getByClientName(resolved, "clientB");
@@ -90,10 +95,7 @@ class PropertiesHttpClientSettingsResolverTest {
 
     @Test
     void returnsImmutableList() {
-
-        var props = buildPropsWithClientAAndClientB();
-
-        var resolver = new PropertiesHttpClientSettingsResolver(props);
+        var resolver = new PropertiesHttpClientSettingsResolver(PROPS);
         List<HttpClientSettings> resolved = resolver.provide();
 
         assertThrows(UnsupportedOperationException.class, () -> resolved.add(mock(HttpClientSettings.class)));
