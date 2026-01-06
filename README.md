@@ -7,6 +7,43 @@ This is **not** a simple boilerplate or starter template. It is an opinionated, 
 The repository demonstrates how a real-world microservice should be built when **implicit thread-based safety nets no longer exist**.
 
 ---
+## About this project
+
+This project exists as a concrete demonstration of how I approach building modern backend services in today’s Java and Spring ecosystem.
+
+- After spending 7 years at Expedia working on distributed systems and microservices, I accumulated deep, hands-on experience with resiliency, scalability, and operational reliability. This repository distills that experience into a tangible, runnable service rather than abstract examples.
+
+- The goal was to design and build an end-to-end, production-oriented microservice platform that reflects real-world constraints. This includes explicit backpressure, disciplined layering, resilience-by-default, and observability as a first-class concern rather than an afterthought.
+
+- A key intention of this platform is to provide a strong baseline for resiliency, with circuit breakers and bulkheads treated as mandatory primitives. Through industry experience, I have seen how essential these patterns are in large microservice ecosystems. With Project Loom removing implicit thread-based backpressure, bulkheads in particular become a required design choice rather than an optional optimization.
+
+- This is my first opportunity to build an opinionated service platform from the ground up, with the explicit goal of future-proofing microservices. Infrastructure concerns, concurrency models, and resiliency mechanics are solved once so that future services can focus primarily on business orchestration.
+
+- In environments where many engineers collaborate on a single service, architectural layering tends to erode over time unless it is explicitly enforced. Short-term optimizations often win, while structure degrades silently. This project demonstrates that clean layering, performance, and operational safety can coexist when the architecture is intentional.
+
+- The platform reflects where the Java and Spring ecosystem is today and where it is heading. It showcases a virtual thread concurrency model using Project Loom, Spring Boot 4, and Java 25, all of which are now stable and production-ready. The project originally started on Spring Boot 3 and Java 21 and was intentionally migrated forward to mirror real-world evolution.
+
+- Modern observability standards are adopted throughout the platform, moving away from legacy tracing approaches toward OpenTelemetry with Micrometer, and providing a foundation suitable for real production diagnostics.
+
+- The project also demonstrates an end-to-end AWS deployment architecture, from API Gateway with Cognito-based JWT authentication, through VPC Link into a private VPC, terminating at an Application Load Balancer fronting ECS services. CI/CD practices are incorporated to reflect how services are built, deployed, and evolved in production environments.
+
+- The long-term vision is simple: spin up new microservices by plugging in business logic, without repeatedly re-solving infrastructure, concurrency, resiliency, or deployment concerns.
+
+---
+## Running locally 
+
+### Docker (recommended)
+
+```
+docker compose up --build
+```
+
+### Gradle
+
+```
+./gradlew bootRun --args="--spring.profiles.active=dev"
+```
+---
 
 ## Why this exists
 
@@ -198,21 +235,6 @@ This service does **NOT** use Spring Security
 - Rolling deployments by default
 - Blue-green or canary deployments at the ALB layer when service is behind ALB (TO-DO)
 - Starting at Http API Gateway via VPC link -> ALB (private subnet) at the edge
----
-
-## Running locally
-
-### Docker (recommended)
-
-```
-docker compose up --build
-```
-
-### Gradle
-
-```
-./gradlew bootRun --args="--spring.profiles.active=dev"
-```
 ---
 
 ## Status
