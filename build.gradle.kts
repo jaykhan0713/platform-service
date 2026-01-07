@@ -57,6 +57,10 @@ dependencies {
     implementation("io.github.resilience4j:resilience4j-spring-boot3")
     implementation("io.github.resilience4j:resilience4j-micrometer")
 
+    //OpenTelemetry
+    implementation(platform("io.opentelemetry:opentelemetry-bom:1.50.0"))
+    implementation("io.opentelemetry:opentelemetry-exporter-otlp")
+
     //IDE mapping such as yml configs with javadocs, generates meta-data json at build time.
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 

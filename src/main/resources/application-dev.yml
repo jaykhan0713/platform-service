@@ -4,21 +4,16 @@ spring:
       on-profile: dev
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,loggers,prometheus
   prometheus:
     metrics:
       export:
         enabled: true
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: ${OTLP_ENDPOINT:http://otel-collector:4318/v1/traces}
   tracing:
     export:
       otlp:
-        enabled: ${OTLP_ENABLED:false}
-        endpoint: ${OTLP_ENDPOINT:http://localhost:4317}
-
-  otlp:
-    metrics:
-      export:
-        enabled: false
+        enabled: ${OTLP_ENABLED:false} #enable exporting SPANS
