@@ -40,6 +40,12 @@ management:
       exposure:
         include: "*" #health,metrics,prometheus,env,loggers,beans
 
+  endpoint:
+    env:
+      show-values: always
+    configprops:
+      show-values: always
+
   endpoint.health.show-details: always
 
   tracing:
@@ -50,7 +56,7 @@ management:
     export:
       otlp:
         # NOTE: this flag MUST be explicit for spring to configure correct handler Propagators
-        enabled: false # tracer still exists, but spans don't leave the process
+        enabled: false # tracer still exists, but SPANS don't leave the process
 
   otlp:
     metrics:

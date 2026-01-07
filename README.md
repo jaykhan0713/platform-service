@@ -190,9 +190,11 @@ The platform is observable by default:
 - Distributed tracing readiness
 - Standardized error responses
 - Health and readiness endpoints
+- Micrometer, OpenTelemetry, MDC, and Logback are used as a part of this.
 
-Micrometer, OpenTelemetry, MDC, and Logback are used as a part of this.
-
+On Docker (development only), Jaeger is used to inspect distributed traces.
+- The service exports spans via the OTLP exporter to the OpenTelemetry Collector container.
+- The OpenTelemetry Collector then forwards traces to Jaeger for visualization.
 ---
 
 ## Functional tests
@@ -233,7 +235,7 @@ prometheus-url: http://localhost:9090
 ```
 
 ```
-grafana-url: http://localhost:3030
+grafana-url: http://localhost:3000
 ```
 
 ---
