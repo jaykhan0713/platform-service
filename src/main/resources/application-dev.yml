@@ -12,3 +12,13 @@ management:
     metrics:
       export:
         enabled: true
+  tracing:
+    export:
+      otlp:
+        enabled: ${OTLP_ENABLED:false}
+        endpoint: ${OTLP_ENDPOINT:http://localhost:4317}
+
+  otlp:
+    metrics:
+      export:
+        enabled: false

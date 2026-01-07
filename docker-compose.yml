@@ -1,4 +1,3 @@
-# Only used for dev
 services:
   service-template:
     build:
@@ -10,6 +9,11 @@ services:
       - "8080:8080"
     environment:
       SPRING_PROFILES_ACTIVE: dev
+      OTLP_ENABLED: "true"
+      OTLP_ENDPOINT: "http://otel-collector:4317"
+      OTEL_SERVICE_NAME: "service-template"
+    depends_on:
+      - otel-collector
 
   prometheus:
     image: prom/prometheus
@@ -19,6 +23,27 @@ services:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command:
       - "--config.file=/etc/prometheus/prometheus.yml"
+
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    ports:
+      - "3200:3200"   # Tempo HTTP (Grafana datasource points here)
+    volumes:
+      - ./docker/tempo/tempo.yml:/etc/tempo.yml
+    command: ["-config.file=/etc/tempo.yml"]
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    ports:
+      - "4317:4317"   # OTLP gRPC receiver (your app sends here)
+      - "4318:4318"   # OTLP HTTP receiver (optional)
+    volumes:
+      - ./docker/otel/otel-collector.yml:/etc/otelcol/config.yml
+    command: ["--config=/etc/otelcol/config.yml"]
+    depends_on:
+      - tempo
 
   grafana:
     image: grafana/grafana
@@ -31,6 +56,8 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./docker/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - tempo
 
 volumes:
   grafana-data:

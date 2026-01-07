@@ -220,10 +220,20 @@ This service does **NOT** use Spring Security
 ## HTTP endpoints
 
 ```
+service-url: http://localhost:8080
+
 /actuator/              Health, metrics, diagnostics
 /v3/api-docs            OpenAPI specification
 /swagger-ui.html        Swagger UI
 /api/v1/sample          Sample endpoint to showcase OpenAPI and service workflow
+```
+
+```
+prometheus-url: http://localhost:9090
+```
+
+```
+grafana-url: http://localhost:3030
 ```
 
 ---
