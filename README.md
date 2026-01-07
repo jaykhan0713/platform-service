@@ -238,6 +238,10 @@ prometheus-url: http://localhost:9090
 grafana-url: http://localhost:3000
 ```
 
+```
+jaeger-url: http://localhost:16686
+```
+
 ---
 
 ## AWS notes
