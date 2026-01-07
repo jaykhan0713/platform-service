@@ -28,6 +28,7 @@ public class SmokeController {
 
     @GetMapping("/api/smoke")
     public SmokeResponse get() {
+
         SmokeCheckResult smokeCheckResult = smokeService.runSmokeCheck();
 
         //map app orchestration model to response DTO

@@ -12,7 +12,7 @@ import com.jay.template.infra.concurrent.PlatformVirtualThreadFactory;
 import com.jay.template.infra.concurrent.propagation.ContextPropagator;
 
 @Configuration
-public class VirtualThreadConfiguration {
+public class VirtualThreadsConfiguration {
 
     @Bean
     ThreadFactory platformVirtualThreadFactory(List<ContextPropagator> propagators) {

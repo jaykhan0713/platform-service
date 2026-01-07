@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets;
 import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import tools.jackson.databind.ObjectMapper;
 
 import com.jay.template.core.error.api.ErrorType;
@@ -13,18 +12,17 @@ import com.jay.template.web.error.ErrorResponseSpec;
 import com.jay.template.web.error.ErrorResponseSpecFactory;
 
 // for servlet/ mapping
-@Component
 public class ErrorResponseWriter {
 
-    private final ObjectMapper objectMapper;
     private final ErrorResponseSpecFactory errorResponseSpecFactory;
+    private final ObjectMapper objectMapper;
 
     public ErrorResponseWriter(
-            ObjectMapper objectMapper,
-            ErrorResponseSpecFactory errorResponseSpecFactory
+            ErrorResponseSpecFactory errorResponseSpecFactory,
+            ObjectMapper objectMapper
     ) {
-        this.objectMapper = objectMapper;
         this.errorResponseSpecFactory = errorResponseSpecFactory;
+        this.objectMapper = objectMapper;
     }
 
     public void writeJsonErrorResponse(HttpServletResponse response, ErrorType type) throws IOException {
