@@ -235,11 +235,7 @@ prometheus-url: http://localhost:9090
 ```
 
 ```
-<<<<<<< HEAD
 grafana-url: http://localhost:3000
-=======
-grafana-url: http://localhost:3030
->>>>>>> afe91d45d12b1d85fc474ac959196c1bb8a48ccb
 ```
 
 ---
