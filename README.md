@@ -164,7 +164,7 @@ Naming convention: configuration classes use `*Configuration`, not `*Config`, to
 The term "Dependency" is meant to be a bridging convention between outbound infra and business layer
 
 For detailed layering and dependency rules, see  
-[Layering Index page](docs/layering/index.md)
+[Layering Index page](docs/layering/INDEX.md)
 
 ---
 
