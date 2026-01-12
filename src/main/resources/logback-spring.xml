@@ -80,23 +80,16 @@
 
         <!-- JSON console appender for CloudWatch -->
         <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
-                <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
-                    <!-- Use Jackson to build JSON -->
-                    <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter" />
-                    <includeMdc>true</includeMdc>
-                    <includeContextName>false</includeContextName>
-                    <includeThreadName>true</includeThreadName>
-                    <includeLoggerName>true</includeLoggerName>
-                    <includeLevel>true</includeLevel>
-                    <includeMessage>true</includeMessage>
-                    <includeException>true</includeException>
-
-                    <!-- timestamp -->
-                    <includeTimestamp>true</includeTimestamp>
-                    <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSXXX</timestampFormat>
-                    <timestampTimeZone>UTC</timestampTimeZone>
-                </layout>
+            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+                <fieldNames>
+                    <timestamp>timestamp</timestamp>
+                    <logger>logger</logger>
+                    <thread>thread</thread>
+                    <level>level</level>
+                    <levelValue>[ignore]</levelValue>
+                    <version>[ignore]</version>
+                </fieldNames>
+                <timeZone>UTC</timeZone>
             </encoder>
         </appender>
 

@@ -40,9 +40,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-opentelemetry")
 
     //logback
-    implementation(platform("com.eoniantech.build:logback-contrib-bom:0.1.5"))
-    implementation("ch.qos.logback.contrib:logback-json-classic")
-    implementation("ch.qos.logback.contrib:logback-jackson")
+    implementation("net.logstash.logback:logstash-logback-encoder:8.0")
 
     //micrometer
     implementation("io.micrometer:micrometer-registry-prometheus")
