@@ -197,6 +197,27 @@ On Docker (development only), Jaeger is used to inspect distributed traces.
 - The OpenTelemetry Collector then forwards traces to Jaeger for visualization.
 ---
 
+## Security
+
+This service does **NOT** use Spring Security
+
+- It is designed under the assumption of an API Gateway + Cognito entry
+- This starts at Http API gateway, with cognitio authorization attachment, JWT issuing. API gateway is the source of truth.
+- The sub extracted from the JWT is propagated to the service, effectively keeping microservice security "dumb" and reading that authenticated user sub from http headers
+- All services on the VPC are http, exist on private subnets. TLS is terminated at the edge by ALB.
+
+---
+
+## Git CI + SONAR PMD/Checkstyle/Code smells + Jacoco Coverage gates
+
+This service is wired via git workflows [ci.yml](.github/workflows/ci.yml) 
+
+- Pull requests are gated on CI passing.
+- Jacoco code line coverage to ensure code paths are tested.
+- Sonar qube (using sonar cloud free-tier) gates for code smells.
+
+---
+
 ## Functional tests
 
 A functional test path is created to teach implementing microservices how to model and layer correctly.
@@ -206,16 +227,6 @@ A functional test path is created to teach implementing microservices how to mod
 - an outbound dependency (infra sees it as RestClient build ontop of jdk http client) PingDependency is used app orchestration layer
 - Downstream contract model is mapped to an in-service core domain model for use with orchestration
 - this core domain model is mapped to inbound contract model to hand off to caller.
-
----
-## Security
-
-This service does **NOT** use Spring Security
-
-- It is designed under the assumption of an API Gateway + Cognito entry
-- This starts at Http API gateway, with cognitio authorization attachment, JWT issuing. API gateway is the source of truth.
-- The sub extracted from the JWT is propagated to the service, effectively keeping microservice security "dumb" and reading that authenticated user sub from http headers
-- All services on the VPC are http, exist on private subnets. TLS is terminated at the edge by ALB.
 
 ---
 

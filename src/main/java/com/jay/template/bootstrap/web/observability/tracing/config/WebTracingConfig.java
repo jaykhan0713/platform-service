@@ -17,20 +17,16 @@ public class WebTracingConfig {
         return registry ->
                 registry.observationConfig().observationPredicate((name, context) -> {
 
-                    // Only filter HTTP server spans
-                    if (!HTTP_SERVER_REQUESTS.equals(name)) {
-                        return true;
+                    if (HTTP_SERVER_REQUESTS.equals(name)
+                            && (context instanceof  ServerRequestObservationContext serverContext)
+                    ) {
+                        String uri = serverContext.getCarrier().getRequestURI();
+
+                        // Intent boundary: only trace API traffic
+                        return uri.startsWith("/api/");
                     }
 
-                    if (!(context instanceof ServerRequestObservationContext serverContext)) {
-                        return true;
-                    }
-
-                    String uri = serverContext.getCarrier().getRequestURI();
-
-                    // Intent boundary: only trace API traffic
-                    return uri.startsWith("/api/");
+                    return true;
                 });
     }
 }
-
