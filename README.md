@@ -213,6 +213,7 @@ This service does **NOT** use Spring Security
 This service is wired via git workflows [ci.yml](.github/workflows/ci.yml) 
 
 - Pull requests are gated on CI passing.
+- ./gradlew clean check covers tests, functional tests, jacoco, dependencies, etc
 - Jacoco code line coverage to ensure code paths are tested.
 - Sonar qube (using sonar cloud free-tier) gates for code smells.
 
