@@ -9,7 +9,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,loggers,prometheus,env
+        include: '*' # expose all only for tuning initially, then keep only what is needed
   endpoint.health.show-details: never
   opentelemetry:
     tracing:
