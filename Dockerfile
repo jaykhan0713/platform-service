@@ -31,5 +31,6 @@ WORKDIR /app
 # Copy the single boot jar output (no wildcards).
 COPY --from=build /app/build/libs/app.jar app.jar
 
+# must start java at entry point so it runs on PID 1, ECS send SIGTERM cleanly this way.
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "/app/app.jar"]
