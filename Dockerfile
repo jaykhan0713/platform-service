@@ -31,6 +31,5 @@ WORKDIR /app
 # Copy the single boot jar output (no wildcards).
 COPY --from=build /app/build/libs/app.jar app.jar
 
-ENV JAVA_OPTS=""
 EXPOSE 8080
-ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
