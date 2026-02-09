@@ -27,6 +27,10 @@ management:
     metrics:
       export:
         enabled: true
+  metrics:
+    tags:
+      env: ${SPRING_PROFILES_ACTIVE:unknown}
+      version: ${VERSION:unknown}
 
 server:
   shutdown: graceful
