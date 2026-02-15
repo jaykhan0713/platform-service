@@ -28,8 +28,35 @@ configurations {
     }
 }
 
+fun propOrEnv(propName: String, envName: String): String? {
+    val p = providers.gradleProperty(propName).orNull
+    if (!p.isNullOrBlank()) return p
+    val e = System.getenv(envName)
+    return if (e.isNullOrBlank()) null else e
+}
+
+val codeartifactEndpoint = propOrEnv("codeartifactEndpoint", "CODEARTIFACT_ENDPOINT")
+val codeartifactAuthToken = propOrEnv("codeartifactAuthToken", "CODEARTIFACT_AUTH_TOKEN")
+
 repositories {
     mavenCentral()
+
+    if (!codeartifactEndpoint.isNullOrBlank() && !codeartifactAuthToken.isNullOrBlank()) {
+        maven {
+            url = uri(codeartifactEndpoint)
+
+            credentials {
+                username = "aws"
+                password = codeartifactAuthToken
+            }
+
+            content {
+                includeGroup("com.jay.template") //service's own dto to consume from codeartifact
+
+                //any dependency groups go here.
+            }
+        }
+    }
 }
 
 dependencies {
@@ -62,6 +89,18 @@ dependencies {
     //IDE mapping such as yml configs with javadocs, generates meta-data json at build time.
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
 
+    //project owned DTOs
+    val disableLocalDto = System.getenv("DISABLE_LOCAL_DTO") == "true"
+    if (disableLocalDto) {
+        implementation("com.jay.template:template-openapi-dtos:0.0.1-SNAPSHOT")
+    } else {
+        implementation(project(":openapi-dtos"))
+    }
+
+    //dependency DTOs
+    //i.e ("com.jay.<service>:service-openapi-dtos:0.0.1-SNAPSHOT
+
+    //test related
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }

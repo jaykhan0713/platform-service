@@ -1,4 +1,4 @@
-package com.jay.template.api.v1.sample.model;
+package com.jay.template.api.v1.sample;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

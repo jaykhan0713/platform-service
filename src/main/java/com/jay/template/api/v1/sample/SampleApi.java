@@ -7,8 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import com.jay.template.api.v1.common.error.openapi.StandardErrorResponses;
-import com.jay.template.api.v1.sample.model.SampleResponse;
+import com.jay.template.api.v1.common.error.StandardErrorResponses;
 
 @Tag(
         name = "Sample",

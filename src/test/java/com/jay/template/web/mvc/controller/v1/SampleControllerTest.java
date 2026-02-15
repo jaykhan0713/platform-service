@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.jay.template.api.v1.sample.model.SampleResponse;
+import com.jay.template.api.v1.sample.SampleResponse;
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
 import com.jay.template.core.context.identity.IdentityContextSnapshot;

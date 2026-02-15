@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.jay.template.api.v1.sample.SampleApi;
-import com.jay.template.api.v1.sample.model.SampleResponse;
+import com.jay.template.api.v1.sample.SampleResponse;
 import com.jay.template.core.context.identity.Identity;
 import com.jay.template.core.context.identity.IdentityContextHolder;
 
