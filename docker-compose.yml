@@ -15,7 +15,7 @@ services:
       OTLP_ENDPOINT: "http://otel-collector:4318/v1/traces"
       OTEL_SERVICE_NAME: "service-template"
       OTEL_RESOURCE_ATTRIBUTES: "service.name=service-template"
-    networks: [obs]
+    networks: [platform]
     depends_on:
       - otel-collector
 
@@ -26,7 +26,7 @@ services:
     volumes:
       - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
     command: ["--config.file=/etc/prometheus/prometheus.yml"]
-    networks: [obs]
+    networks: [platform]
 
   grafana:
     image: grafana/grafana:latest
@@ -38,7 +38,7 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
-    networks: [obs]
+    networks: [platform]
     depends_on:
       - prometheus
 
@@ -48,20 +48,21 @@ services:
       COLLECTOR_OTLP_ENABLED: "true"
     ports:
       - "16686:16686" # Jaeger UI
-    networks: [obs]
+    networks: [platform]
 
   otel-collector:
     image: otel/opentelemetry-collector-contrib:latest
     volumes:
       - ./docker/otel/otel-collector.yml:/etc/otelcol/config.yml:ro
     command: ["--config=/etc/otelcol/config.yml"]
-    networks: [obs]
+    networks: [platform]
     depends_on:
       - jaeger
 
 networks:
-  obs:
-    driver: bridge #Containers on the same bridge can resolve each other by service name.
+  platform:
+    external: true
+    #driver: bridge #Containers on the same bridge can resolve each other by service name.
 
 volumes:
   grafana-data:
