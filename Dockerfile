@@ -6,6 +6,7 @@
 
 ARG BUILD_IMAGE=eclipse-temurin:25-jdk
 ARG RUNTIME_IMAGE=eclipse-temurin:25-jre
+ARG VERSION
 
 # ---- build stage ----
 FROM ${BUILD_IMAGE} AS build
@@ -40,6 +41,8 @@ RUN ./gradlew --no-daemon -x test clean bootJar
 # ---- runtime stage ----
 FROM ${RUNTIME_IMAGE}
 WORKDIR /app
+ARG VERSION
+ENV VERSION=${VERSION}
 
 # Copy the single boot jar output (no wildcards).
 COPY --from=build /app/build/libs/app.jar app.jar
