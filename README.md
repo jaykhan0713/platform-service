@@ -285,9 +285,7 @@ jaeger-url: http://localhost:16686
 
 ## Status
 
-1. Actively evolving as a platform foundation. MVP baseline complete. AWS architecture + ECS microservices that template this service are in progress
-2. Documentation for platform-service in progress
-3. Separate AWS platform architecture documentation and decions will be in a separate repo
+Actively evolving as a platform foundation. MVP complete
 
 ---
 ## Contact
