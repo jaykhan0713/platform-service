@@ -44,13 +44,13 @@ controls a fully portable end-to-end (From API Gateway to VPC) AWS architecture 
     with only service connect client mode. Simply choose exposure: 'alb'
 5. Run: npm run cdk:cicd deploy --require-approval never 'EdgeService*'
     This automates: ECR repo, CodeArtifact for DTOs, published via a dto CodePipeline. CodePipeline for the microservice itself.
-6. All that's left is to trigger the microservice's CodePipeline that deploys your service into production.
+6. Once the above dependencies are published, trigger the execution of microservice's CodePipeline via AWS console (i.e edge-service-pipeline) that deploys your service into production.
 7. You now have a fully standardized and secure ECS fargate microservice deployed in your vpc private subnet. All it took was a line of CDK code!
 8. Start working on your business-layer use cases for the microservice.
 9. K6 Load tester with Cognito OAuth2 and Client Credentials in front of an Http API gateway invoked by a lambda, so you can see AWS xray traces, Cloudwatch logs, Grafana light up
     under synthetic traffic.
 
-Of course by default for a portfolio, taskdef is on the cheapest ECS resources (with scaling and health checks in place). These mem/cpu resources are overridabble and
+Of course by default for a portfolio, taskdef is on the cheapest ECS resources (with scaling and health checks in place). These mem/cpu resources are overridable and
 distributed between your app, adot collector sidecar, and envoy sidecar (handled by ECS Service Connect)
 
 CDK project reference:
@@ -263,7 +263,7 @@ A functional test path is created to teach implementing microservices how to mod
 ```
 service-url: http://localhost:8080
 
-/actuator/              Health, metrics, diagnostics
+/actuator              Health, metrics, diagnostics, threaddump, etc
 /v3/api-docs            OpenAPI specification
 /swagger-ui.html        Swagger UI
 /api/v1/sample          Sample endpoint to showcase OpenAPI and service workflow
