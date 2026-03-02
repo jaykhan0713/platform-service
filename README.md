@@ -59,9 +59,11 @@ CDK project reference:
 ---
 ## Running locally 
 
-### Docker (recommended)
+### Docker
 
 ```
+docker network create platform
+
 docker compose up --build
 ```
 
