@@ -4,6 +4,8 @@ A production-grade Spring Boot 4 service platform baseline designed to run as a 
 
 This is **not** a simple boilerplate or starter template. It is an opinionated, fully runnable service built around **Project Loom virtual threads**, **Spring Boot 4**, **Java 25**, and modern production concerns such as explicit backpressure, structured logging, distributed tracing readiness, and resilience-by-default.
 
+Docker.dev configurations with observability are added as a part of docker compose to make local development feel like production.
+
 The repository demonstrates how a real-world microservice should be built when **implicit thread-based safety nets no longer exist**.
 
 ---
@@ -32,17 +34,44 @@ This project exists as a concrete demonstration of how I approach building moder
 - Modern observability standards are adopted throughout the platform, moving away from legacy tracing approaches toward OpenTelemetry with Micrometer, and providing a foundation suitable for real production diagnostics.
 
 
-- The project also demonstrates an end-to-end AWS deployment architecture, from API Gateway with Cognito-based JWT authentication, through VPC Link into a private VPC, terminating at an Application Load Balancer fronting ECS services. CI/CD practices are incorporated to reflect how services are built, deployed, and evolved in production environments.
+- The workflow is simple: spin up new microservices by plugging in business logic, without repeatedly re-solving infrastructure, concurrency, resiliency, or deployment concerns effortlessly.
 
 
-- The long-term vision is simple: spin up new microservices by plugging in business logic, without repeatedly re-solving infrastructure, concurrency, resiliency, or deployment concerns.
+- The goal for the microservice here. When developing initially, infra decisions are already standardized. Only business layer decisions should be plugged in. An easy plug-in-play business into a portable platform.
+
+---
+## How this project plugs into a platform AWS Architecture
+
+This service template is meant to be templated and designed in a "plug-in-play" mode to the linked AWS CDK project that
+controls a fully portable end-to-end (From API Gateway to VPC) AWS architecture with scaling, resiliency, observability.
+
+1. Template this project on github, i.e let's call it edge-service
+2. Rename all occurrences of "service-template" to "edge-service"
+3. On CDK project's platform-service-registry.ts, simply add in a key value pair one-liner into PlatformService object: edgeService: 'edge-service'
+4. By default, the service will be in service connect client + server mode, but you can choose to put it behind an ALB 
+    with only service connect client mode. Simply choose exposure: 'alb'
+5. Run: npm run cdk:cicd deploy --require-approval never 'EdgeService*'
+    This automates: ECR repo, CodeArtifact for DTOs, published via a dto CodePipeline. CodePipeline for the microservice itself.
+6. Once the above dependencies are published, trigger the execution of microservice's CodePipeline via AWS console (i.e edge-service-pipeline) that deploys your service into production.
+7. You now have a fully standardized and secure ECS fargate microservice deployed in your vpc private subnet. All it took was a line of CDK code!
+8. Start working on your business-layer use cases for the microservice.
+9. K6 Load tester with Cognito OAuth2 and Client Credentials in front of an Http API gateway invoked by a lambda, so you can see AWS xray traces, Cloudwatch logs, Grafana light up
+    under synthetic traffic.
+
+Of course by default for a portfolio, taskdef is on the cheapest ECS resources (with scaling and health checks in place). These mem/cpu resources are overridable and
+distributed between your app, adot collector sidecar, and envoy sidecar (handled by ECS Service Connect)
+
+CDK project reference:
+[platform-aws-cdk](https://github.com/jaykhan0713/platform-aws-cdk)
 
 ---
 ## Running locally 
 
-### Docker (recommended)
+### Docker
 
 ```
+docker network create platform
+
 docker compose up --build
 ```
 
@@ -120,6 +149,7 @@ Spring wiring and configuration binding live exclusively in the `bootstrap` laye
 ---
 
 ## Layer responsibilities
+
 
 For detailed layering and dependency rules, see
 
@@ -200,6 +230,9 @@ The platform is observable by default:
 - Standardized error responses
 - Health and readiness endpoints
 - Micrometer, OpenTelemetry, MDC, and Logback are used as a part of this.
+- AWS architecture contains Amazon Managed Prometheus and grafana workspaces. AWS X-ray. The service will be deployed with an ADOT collector
+    sidecar that scrapes app's /actuator/prometheus endpoint, adot then writes to APS write endpoint. The app will push sampled traces to adot collector which pushes to X-ray
+    Metrics are standardized so each templating service easily has metrics available on Grafana (which points to the prometheus datasource).
 
 On Docker (development only), Jaeger is used to inspect distributed traces.
 - The service exports spans via the OTLP exporter to the OpenTelemetry Collector container.
@@ -245,7 +278,7 @@ A functional test path is created to teach implementing microservices how to mod
 ```
 service-url: http://localhost:8080
 
-/actuator/              Health, metrics, diagnostics
+/actuator              Health, metrics, diagnostics, threaddump, etc
 /v3/api-docs            OpenAPI specification
 /swagger-ui.html        Swagger UI
 /api/v1/sample          Sample endpoint to showcase OpenAPI and service workflow
@@ -265,20 +298,9 @@ jaeger-url: http://localhost:16686
 
 ---
 
-## AWS notes
-- ECS Fargate
-- edge service behind ALB
-- Internal service-to-service communication via ECS Service Connect
-- Rolling deployments by default
-- Blue-green or canary deployments at the ALB layer when service is behind ALB (TO-DO)
-- Starting at Http API Gateway via VPC link -> ALB (private subnet) at the edge
----
-
 ## Status
 
-1. Actively evolving as a platform foundation. MVP baseline complete. AWS architecture + ECS microservices that template this service are in progress
-2. Documentation for platform-service in progress
-3. Separate AWS platform architecture documentation and decions will be in a separate repo
+Actively evolving as a platform foundation. MVP complete
 
 ---
 ## Contact
