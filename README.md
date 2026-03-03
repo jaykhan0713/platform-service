@@ -13,19 +13,27 @@ This project exists as a concrete demonstration of how I approach building moder
 
 - After spending 7 years at Expedia working on distributed systems and microservices, I accumulated deep, hands-on experience with resiliency, scalability, and operational reliability. This repository distills that experience into a tangible, runnable service rather than abstract examples.
 
+
 - The goal was to design and build an end-to-end, production-oriented microservice platform that reflects real-world constraints. This includes explicit backpressure, disciplined layering, resilience-by-default, and observability as a first-class concern rather than an afterthought.
+
 
 - A key intention of this platform is to provide a strong baseline for resiliency, with circuit breakers and bulkheads treated as mandatory primitives. Through industry experience, I have seen how essential these patterns are in large microservice ecosystems. With Project Loom removing implicit thread-based backpressure, bulkheads in particular become a required design choice rather than an optional optimization.
 
+
 - This is my first opportunity to build an opinionated service platform from the ground up, with the explicit goal of future-proofing microservices. Infrastructure concerns, concurrency models, and resiliency mechanics are solved once so that future services can focus primarily on business orchestration.
+
 
 - In environments where many engineers collaborate on a single service, architectural layering tends to erode over time unless it is explicitly enforced. Short-term optimizations often win, while structure degrades silently. This project demonstrates that clean layering, performance, and operational safety can coexist when the architecture is intentional.
 
+
 - The platform reflects where the Java and Spring ecosystem is today and where it is heading. It showcases a virtual thread concurrency model using Project Loom, Spring Boot 4, and Java 25, all of which are now stable and production-ready. The project originally started on Spring Boot 3 and Java 21 and was intentionally migrated forward to mirror real-world evolution.
+
 
 - Modern observability standards are adopted throughout the platform, moving away from legacy tracing approaches toward OpenTelemetry with Micrometer, and providing a foundation suitable for real production diagnostics.
 
+
 - The project also demonstrates an end-to-end AWS deployment architecture, from API Gateway with Cognito-based JWT authentication, through VPC Link into a private VPC, terminating at an Application Load Balancer fronting ECS services. CI/CD practices are incorporated to reflect how services are built, deployed, and evolved in production environments.
+
 
 - The long-term vision is simple: spin up new microservices by plugging in business logic, without repeatedly re-solving infrastructure, concurrency, resiliency, or deployment concerns.
 
@@ -113,6 +121,10 @@ Spring wiring and configuration binding live exclusively in the `bootstrap` laye
 
 ## Layer responsibilities
 
+For detailed layering and dependency rules, see
+
+### [Layering Index page](docs/layering/INDEX.md)
+
 ### `core/`
 Framework-agnostic business layer.
 
@@ -162,9 +174,6 @@ Notes:
 Naming convention: configuration classes use `*Configuration`, not `*Config`, to avoid conflicts with third-party conventions.
 
 The term "Dependency" is meant to be a bridging convention between outbound infra and business layer
-
-For detailed layering and dependency rules, see  
-[Layering Index page](docs/layering/INDEX.md)
 
 ---
 
