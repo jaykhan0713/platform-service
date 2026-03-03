@@ -220,6 +220,9 @@ The platform is observable by default:
 - Standardized error responses
 - Health and readiness endpoints
 - Micrometer, OpenTelemetry, MDC, and Logback are used as a part of this.
+- AWS architecture contains Amazon Managed Prometheus and grafana workspaces. AWS X-ray. The service will be deployed with an ADOT collector
+    sidecar that scrapes app's /actuator/prometheus endpoint, adot then writes to APS write endpoint. The app will push sampled traces to adot collector which pushes to X-ray
+    Metrics are standardized so each templating service easily has metrics available on Grafana (which points to the prometheus datasource).
 
 On Docker (development only), Jaeger is used to inspect distributed traces.
 - The service exports spans via the OTLP exporter to the OpenTelemetry Collector container.
