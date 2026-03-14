@@ -15,19 +15,27 @@ This project exists as a concrete demonstration of how I approach building moder
 
 - After spending 7 years at Expedia working on distributed systems and microservices, I accumulated deep, hands-on experience with resiliency, scalability, and operational reliability. This repository distills that experience into a tangible, runnable service rather than abstract examples.
 
+
 - The goal was to design and build an end-to-end, production-oriented microservice platform that reflects real-world constraints. This includes explicit backpressure, disciplined layering, resilience-by-default, and observability as a first-class concern rather than an afterthought.
+
 
 - A key intention of this platform is to provide a strong baseline for resiliency, with circuit breakers and bulkheads treated as mandatory primitives. Through industry experience, I have seen how essential these patterns are in large microservice ecosystems. With Project Loom removing implicit thread-based backpressure, bulkheads in particular become a required design choice rather than an optional optimization.
 
+
 - This is my first opportunity to build an opinionated service platform from the ground up, with the explicit goal of future-proofing microservices. Infrastructure concerns, concurrency models, and resiliency mechanics are solved once so that future services can focus primarily on business orchestration.
+
 
 - In environments where many engineers collaborate on a single service, architectural layering tends to erode over time unless it is explicitly enforced. Short-term optimizations often win, while structure degrades silently. This project demonstrates that clean layering, performance, and operational safety can coexist when the architecture is intentional.
 
+
 - The platform reflects where the Java and Spring ecosystem is today and where it is heading. It showcases a virtual thread concurrency model using Project Loom, Spring Boot 4, and Java 25, all of which are now stable and production-ready. The project originally started on Spring Boot 3 and Java 21 and was intentionally migrated forward to mirror real-world evolution.
+
 
 - Modern observability standards are adopted throughout the platform, moving away from legacy tracing approaches toward OpenTelemetry with Micrometer, and providing a foundation suitable for real production diagnostics.
 
+
 - The workflow is simple: spin up new microservices by plugging in business logic, without repeatedly re-solving infrastructure, concurrency, resiliency, or deployment concerns effortlessly.
+
 
 - The goal for the microservice here. When developing initially, infra decisions are already standardized. Only business layer decisions should be plugged in. An easy plug-in-play business into a portable platform.
 
@@ -36,22 +44,6 @@ This project exists as a concrete demonstration of how I approach building moder
 
 This service template is meant to be templated and designed in a "plug-in-play" mode to the linked AWS CDK project that
 controls a fully portable end-to-end (From API Gateway to VPC) AWS architecture with scaling, resiliency, observability.
-
-1. Template this project on github, i.e let's call it edge-service
-2. Rename all occurrences of "service-template" to "edge-service"
-3. On CDK project's platform-service-registry.ts, simply add in a key value pair one-liner into PlatformService object: edgeService: 'edge-service'
-4. By default, the service will be in service connect client + server mode, but you can choose to put it behind an ALB 
-    with only service connect client mode. Simply choose exposure: 'alb'
-5. Run: npm run cdk:cicd deploy --require-approval never 'EdgeService*'
-    This automates: ECR repo, CodeArtifact for DTOs, published via a dto CodePipeline. CodePipeline for the microservice itself.
-6. Once the above dependencies are published, trigger the execution of microservice's CodePipeline via AWS console (i.e edge-service-pipeline) that deploys your service into production.
-7. You now have a fully standardized and secure ECS fargate microservice deployed in your vpc private subnet. All it took was a line of CDK code!
-8. Start working on your business-layer use cases for the microservice.
-9. K6 Load tester with Cognito OAuth2 and Client Credentials in front of an Http API gateway invoked by a lambda, so you can see AWS xray traces, Cloudwatch logs, Grafana light up
-    under synthetic traffic.
-
-Of course by default for a portfolio, taskdef is on the cheapest ECS resources (with scaling and health checks in place). These mem/cpu resources are overridable and
-distributed between your app, adot collector sidecar, and envoy sidecar (handled by ECS Service Connect)
 
 CDK project reference:
 [platform-aws-cdk](https://github.com/jaykhan0713/platform-aws-cdk)
@@ -142,6 +134,11 @@ Spring wiring and configuration binding live exclusively in the `bootstrap` laye
 
 ## Layer responsibilities
 
+
+For detailed layering and dependency rules, see
+
+### [Layering Index page](docs/layering/INDEX.md)
+
 ### `core/`
 Framework-agnostic business layer.
 
@@ -191,9 +188,6 @@ Notes:
 Naming convention: configuration classes use `*Configuration`, not `*Config`, to avoid conflicts with third-party conventions.
 
 The term "Dependency" is meant to be a bridging convention between outbound infra and business layer
-
-For detailed layering and dependency rules, see  
-[Layering Index page](docs/layering/INDEX.md)
 
 ---
 
