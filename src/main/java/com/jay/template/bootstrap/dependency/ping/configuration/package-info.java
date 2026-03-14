@@ -3,7 +3,7 @@
  *
  * <p>
  * The core layer declares the
- * {@link com.jay.template.core.port.dependency.ping.PingDependency}
+ * {@link com.jay.template.core.port.dependency.ping.PingPort}
  * port. The infra layer provides one or more implementations of that port,
  * such as
  * {@link com.jay.template.infra.outbound.http.client.rest.adapter.ping.PingRestClientAdapter}.
