@@ -1,1 +1,2 @@
 - Update checkstyle on Sonar Cloud to detect import ordering so project imports are at bottom of groups.
+- Migrate outbound to GRPC, proto DTOs.
