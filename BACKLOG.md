@@ -9,3 +9,8 @@
 - Envoy access logs for real failures
 - add CB automatic state transition to HALF_OPEN in services.
 - Add edge service Spring Security + handling JWT + OAuth2 for phase outside of AWS not relying on api gateway.
+- R4j Timeout at ingress as well as Egress async call
+  - usecase, if client closes connection early, dont keep processing
+  - async egress, can decorate my custom VirtualThreadPerTaskFactory.
+    has to be lower timeout than parent thread.
+  - StructuredTaskScope, once added can cancel
