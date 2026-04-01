@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.jay.template.infra.concurrent.propagation.ContextPropagator;
 import com.jay.template.infra.concurrent.propagation.identity.IdentityContextPropagator;
-import com.jay.template.infra.concurrent.propagation.mdc.MdcContextPropagator;
 
 @Configuration
 public class ContextPropagationConfiguration {
@@ -15,8 +14,4 @@ public class ContextPropagationConfiguration {
         return new IdentityContextPropagator();
     }
 
-    @Bean
-    public ContextPropagator mdcContextPropagator() {
-        return new MdcContextPropagator();
-    }
 }
